@@ -148,7 +148,7 @@ def results():
   """Shows user the results from their carbon footprint quiz"""
   return render_template("/results.html")
 
-# Tracker page
+# Tracker page to track carbon footprint
 @app.route("/tracker", methods=["GET", "PASTE"])
 @login_required
 def tracker():
