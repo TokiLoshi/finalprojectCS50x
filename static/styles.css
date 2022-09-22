@@ -1,0 +1,16 @@
+nav .navbar-brand
+{
+  font-size: large;
+}
+.red {
+  color: #FF4A4A;
+}
+.orange {
+  color: #FF9551;
+}
+.blue {
+  color: #6FEDD6;
+}
+.lightblue {
+  color: #B9FFF8;
+}
