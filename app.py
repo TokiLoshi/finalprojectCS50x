@@ -29,10 +29,10 @@ Session(app)
 
 # Configure CS50 Library to use SQLite and adapt to tranfer to PostGres for Heroku deployment
 # https://cs50.readthedocs.io/heroku/
-uri = os.getenv("DATABASE_URL")
-if uri.startswith("postgres:"):
-  uri = uri.replace("postgress://", "postgresql://")
-db = SQL(uri)
+# uri = os.getenv("DATABASE_URL")
+# if uri.startswith("postgres:"):
+#   uri = uri.replace("postgress://", "postgresql://")
+# db = SQL(uri)
 
 # Handle cache (from CS50 PSET 9)
 @app.after_request
@@ -70,20 +70,20 @@ def calculator():
   return render_template("/calculator.html")
 
 # Challenges page
-@app.route("challenges", methods=["GET", "POST"])
+@app.route("/challenges", methods=["GET", "POST"])
 @login_required
 def challenges():
   """Allows the user to enroll in challenges that will promote a lower carbon footprint"""
   return render_template("/challenges.html")
 
 # Contact page
-@app.route("contact", methods=["GET", "POST"])
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
   """Allows the user to submit a request or feedback"""
   return render_template("/contact.html")
 
 # Footprint page
-@app.route("footprint", methods=["GET", "POST"])
+@app.route("/footprint", methods=["GET", "POST"])
 @login_required
 def footprint():
   """Shows user their current footprint and which areas are impacting their score the most"""
@@ -137,8 +137,8 @@ def register():
 
 # Reset password page
 @app.route("/reset", methods=["GET", "POST"])
-def register():
-  """"""
+def reset():
+  """Alllows user to reset password"""
   return render_template("/reset.html")
 
 # Results page user sees after quiz
