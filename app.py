@@ -1,5 +1,7 @@
+
 from crypt import methods
 from curses import use_default_colors
+import email
 import os
 import random
 from dataclasses import is_dataclass
@@ -163,51 +165,58 @@ def register():
   # Handle post request
   if request.method == "POST":
     # Get username, first name, password, confirmation and leaderboard name
-    username = request.form.get("username")
-    password = request.form.get("password")
-    confirmation = request.form.get("confirmation")
-    leaderboardname = request.form.get("leaderboardname")
     name = request.form.get("name")
+    password = request.form.get("password")
+    confirmation = request.form.get("confirmpassword")
+    leaderboardname = request.form.get("leaderboardname")
+    email = request.form.get("email")
 
-    # Query db
-    user_info = db.execute("SELECT * FROM users WHERE username=?", request.form.get("username"))
-
-    # Check username isn't blank
-    if len(username) == 0:
-      return apology("Please enter a username", 403)
+    # Check name isn't blank
+    if len(name) == 0:
+      return apology("Please enter your name", 403)
+    
+    # Check password isn't blank
+    elif password is None:
+      return apology("Oops! Password cannot be blank", 403)
+    
+    elif confirmation is None:
+      return apology("Confirmation is blank")
     
     # Check password and confirmation match
     elif password != confirmation:
       return apology("Oops! Your passwords don't match", 403)
     
-    # Check username is unique
-    elif len(password) == 0:
-      return apology("Oops! Password cannot be blank", 403)
-    
+    elif len(password) < 8:
+      return apology("Password should be at least 8 char long for your security")
+
     # Check leaderboard name isn't blank
     elif len(leaderboardname) == 0:
       return apology("Please choose a leaderboard name", 403)
     
     # Check leaderboard name is unique
     leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
-    if len(leaderboard_check) == 0:
-      return apology("Sorry that one has already been taken Try again")
+    if len(leaderboard_check) != 0:
+      return apology("Sorry that one has already been taken. Try again")
     
-    # Check name isn't blank
-    elif len(name) == 0:
-      return apology("Please enter your name", 403)
-    # INSERT new user and store a has of the password:
-    # **** Should look at ways to make this password more secure
-    hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
-    new_user = db.execute("INSERT INTO users (username, hash, leaderboardname")
+    # Check email isn't blank an email
+    elif len(email) == 0:
+      return apology("Please enter your email")
+    
+    else:
+      # INSERT new user and store a hash of the password:
+      # **** Should look at ways to make this password more secure
+      hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
+      new_user = db.execute("INSERT INTO users (name, email, leaderboardname, hash) VALUES(?, ?, ?, ?)", name, email, leaderboardname, hash)
+      return render_template("/login.html")
+
+  # Handle GET request 
   else:
     return render_template("/register.html")
-  return render_template("/register.html")
 
 # Reset password page
 @app.route("/reset", methods=["GET", "POST"])
 def reset():
-  """Alllows user to reset password"""
+  """Allows user to reset password"""
   return render_template("/reset.html")
 
 # Results page user sees after quiz
