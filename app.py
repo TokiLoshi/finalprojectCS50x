@@ -32,7 +32,7 @@ Session(app)
 # uri = os.getenv("DATABASE_URL")
 # if uri.startswith("postgres:"):
 #   uri = uri.replace("postgress://", "postgresql://")
-# db = SQL(uri)
+db = SQL("sqlite:///carbon.db")
 
 # Handle cache (from CS50 PSET 9)
 @app.after_request
@@ -116,10 +116,36 @@ def leaderboard():
   """Shows user how their consumption and actions rank compared to other users"""
   return render_template("/leaderboard.html")
 
-# Login page
+# Login page adapted from PSET 9 finance distribution code
 @app.route("/login", methods=["GET", "POST"])
 def login():
   """Logs user in if they have registered"""
+  
+  # Forgets user_id
+  session.clear()
+
+  # Handle POST request
+  if request.method == "POST":
+
+    # Check for username if no username render apology
+    if not request.form.get("username"):
+      return apology("Please provide username", 403)
+
+    # Check for password if no password render apology
+    elif not request.form.get("password"):
+      return apology("Please enter your password", 403)
+    
+    # Check db for username
+    user_in_db = db.execute("SELECT * FROM users WHERE username=?", request.form.get("username"))
+
+      # Check username exists and password is correct
+    if len(user_in_db) !=1 or not check_password_hash(user_in_db[0]["hash"], request.form.get("password")):
+      return apology("Oops! Either your username or password are incorrect", 403)
+
+    # Remember which user has logged in
+    session["user_id"] = user_in_db[0]["id"]
+    return redirect("/")
+
   return render_template("/login.html")
 
 # Logout page
@@ -133,6 +159,49 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
   """Allows user to register so they can login"""
+
+  # Handle post request
+  if request.method == "POST":
+    # Get username, first name, password, confirmation and leaderboard name
+    username = request.form.get("username")
+    password = request.form.get("password")
+    confirmation = request.form.get("confirmation")
+    leaderboardname = request.form.get("leaderboardname")
+    name = request.form.get("name")
+
+    # Query db
+    user_info = db.execute("SELECT * FROM users WHERE username=?", request.form.get("username"))
+
+    # Check username isn't blank
+    if len(username) == 0:
+      return apology("Please enter a username", 403)
+    
+    # Check password and confirmation match
+    elif password != confirmation:
+      return apology("Oops! Your passwords don't match", 403)
+    
+    # Check username is unique
+    elif len(password) == 0:
+      return apology("Oops! Password cannot be blank", 403)
+    
+    # Check leaderboard name isn't blank
+    elif len(leaderboardname) == 0:
+      return apology("Please choose a leaderboard name", 403)
+    
+    # Check leaderboard name is unique
+    leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
+    if len(leaderboard_check) == 0:
+      return apology("Sorry that one has already been taken Try again")
+    
+    # Check name isn't blank
+    elif len(name) == 0:
+      return apology("Please enter your name", 403)
+    # INSERT new user and store a has of the password:
+    # **** Should look at ways to make this password more secure
+    hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
+    new_user = db.execute("INSERT INTO users (username, hash, leaderboardname")
+  else:
+    return render_template("/register.html")
   return render_template("/register.html")
 
 # Reset password page

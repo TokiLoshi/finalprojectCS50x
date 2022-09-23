@@ -7,7 +7,24 @@
 {% block main %}
 <form action="login" method="get">
   <div>
-
+    <div class="container p-3 shadow rounded-3 orange">
+      <h2 class="whiteText">Welcome Back</h2>
+      <!--Trees and soil during day by Curioso Photography from Pexels https://www.pexels.com/photo/trees-and-soil-during-day-288093/ -->
+      <img class="img-fluid rounded-2" src="/static/trees_and_soil.jpg" width="400" alt="green island in the ocean"/>
+      </br>
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>Login</h4>
+        <div class="mb-3 container-fluid align-content-start">
+          <label for="exampleFormControlInput1" class="form-label">Email address:</label>
+          <input type="email" autofocus class="form-control mx-auto w-auto" id="exampleFormControlInput1" placeholder="name@example.com">
+          <label for="exampleFormControlInput1" class="form-label">Password:</label>
+          <input type="password" autofocus class="form-control mx-auto w-auto" id="exampleFormControlInput1" placeholder="*****">
+        <button class="btn btn-dark m-2 p-3 col-2">Login</button>
+        <p><a href="/reset">Forgot your password?</a></p>
+      </div>
+  </div>
+  </div>
+  </form>
   </div>
 </form>
 {% endblock %}

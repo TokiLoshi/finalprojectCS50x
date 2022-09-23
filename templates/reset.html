@@ -7,7 +7,20 @@
 {% block main %}
 <form action="reset" method="get">
   <div>
-
+    <div class="container p-3 shadow rounded-3 orange">
+      <h2 class="whiteText">Forget your password?</h2>
+      <h3 class="whiteText">It happens. Let's get you back online.</h3>
+      <!--Small blue flower by JJ Jordan from Pexels https://www.pexels.com/photo/macro-shot-of-a-small-blue-flower-7504260/ -->
+      <img class="img-fluid rounded-2" src="/static/blueflowers.jpg" width="450" alt="green island in the ocean"/>
+      </br>
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>If an account exists you'll receive a reset link</h4>
+        <div class="mb-3 container-fluid align-content-start">
+          <label for="email" class="form-label">Enter the email for your Carbon Tracker account:</label>
+          <input type="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com">
+        <button class="btn btn-dark m-2 p-3 col-2">Reset</button>
+      </div>
+  </div>
   </div>
 </form>
 {% endblock %}
