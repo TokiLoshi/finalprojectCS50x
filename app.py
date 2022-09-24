@@ -218,6 +218,7 @@ def register():
     # Check leaderboard name is unique
     leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
     count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
+    
     if len(leaderboard_check) != 0:
       return redirect("/usernamegenerator")
     
@@ -225,7 +226,7 @@ def register():
     elif len(email) == 0:
       return apology("Please enter your email")
 
-    elif (count > 1):
+    elif (len(count) > 1):
       return apology("An account already exists")
     
     else:
