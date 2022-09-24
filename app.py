@@ -129,33 +129,55 @@ def login():
   # Handle POST request
   if request.method == "POST":
 
-    # Check for username if no username render apology
-    if not request.form.get("username"):
-      return apology("Please provide username", 403)
+    useremail = request.form.get("email")
+    print(f"Email: ", useremail)
+    password = request.form.get("password")
+    print(f"Password: ", password)
+    # Check db for email
+
+    # Check for email render apology
+    if not request.form.get("email"):
+      return apology("Please enter your email", 403)
 
     # Check for password if no password render apology
     elif not request.form.get("password"):
       return apology("Please enter your password", 403)
     
-    # Check db for username
-    user_in_db = db.execute("SELECT * FROM users WHERE username=?", request.form.get("username"))
-
-      # Check username exists and password is correct
-    if len(user_in_db) !=1 or not check_password_hash(user_in_db[0]["hash"], request.form.get("password")):
+    email_in_db = db.execute("SELECT * FROM users WHERE email=?", request.form.get("email"))
+    if len(email_in_db) == 0:
+      return apology("No account is associated with that email")
+    
+    for detail in email_in_db:
+      emailadd = detail['email']
+      print("emailadd", emailadd)
+    len_email = len(email_in_db)
+    print("Lenth email in db", len_email)
+    password_hash = db.execute("SELECT * FROM users WHERE email=?", request.form.get("email"))
+    password_check = check_password_hash(password_hash[0]["hash"], password)
+    print(f"Password check: ", password_check)
+    
+    # Check email exists and password is correct
+    print("Email in database: ", email_in_db)
+    if useremail != emailadd:
+      return apology("No account for that email")
+    
+    elif len(email_in_db) != 1 or not check_password_hash(email_in_db[0]["hash"], password):
       return apology("Oops! Either your username or password are incorrect", 403)
 
     # Remember which user has logged in
-    session["user_id"] = user_in_db[0]["id"]
-    return redirect("/")
+    session["user_id"] = email_in_db[0]["id"]
+    return render_template("/homeuser.html")
+  
+  else:
+    return render_template("/login.html")
 
-  return render_template("/login.html")
-
-# Logout page
+# Logout page Adapted from Pset 9 Finance
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
   """Logs user out"""
-  return render_template("/logout.html")
+  session.clear()
+  return render_template("/login.html")
 
 # Registration page
 @app.route("/register", methods=["GET", "POST"])
@@ -195,12 +217,16 @@ def register():
     
     # Check leaderboard name is unique
     leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
+    count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
     if len(leaderboard_check) != 0:
-      return apology("Sorry that one has already been taken. Try again")
+      return redirect("/usernamegenerator")
     
     # Check email isn't blank an email
     elif len(email) == 0:
       return apology("Please enter your email")
+
+    elif (count > 1):
+      return apology("An account already exists")
     
     else:
       # INSERT new user and store a hash of the password:
@@ -227,8 +253,39 @@ def results():
   return render_template("/results.html")
 
 # Tracker page to track carbon footprint
-@app.route("/tracker", methods=["GET", "PASTE"])
+@app.route("/tracker", methods=["GET", "POST"])
 @login_required
 def tracker():
   """Allows user to track their progress"""
   return render_template("/tracker.hml")
+
+# Help user pick a leaderboard name by generating a random leaderboard name
+@app.route("/usernamegenerator", methods=["GET", "POST"])
+def usernamegenerator():
+  """Generates a random username"""
+  if request.method == "POST":
+    print("we're in post banana")
+    random1 = "random 1"
+    return render_template("/usernamegenerator.html", random1=random1)
+  else:
+    print("WE're in Get dummy")
+    # Count the number of words in a file to calculate the number of possible permutations
+    # based off of readability pset 6
+    words = []
+    with open("adjectives.txt", 'r') as file:
+      data = file.read()
+      word = (data.split(' '))
+      words.append(word)
+      print("Count: ", word)
+    # Resource for checking how to make a random choice https://www.geeksforgeeks.org/pulling-a-random-word-or-string-from-a-line-in-a-text-file-in-python/
+    print("List of words: ", words)
+    random_adjective = random.choice(data.split())
+    print(f"Random Adjective: ", random_adjective)
+    random2 = random_adjective
+    return render_template("/usernamegenerator.html", random2=random2)
+
+
+
+# References sourced to build random username generator:
+# https://grammar.yourdictionary.com/parts-of-speech/adjectives/list-of-adjective-words.html
+# https://www.grammarly.com/blog/adjective/

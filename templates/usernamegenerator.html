@@ -1,0 +1,21 @@
+{% extends "register.html" %}
+
+{% block title %}
+    usernamegenerator
+{% endblock %}
+
+{% block main %}
+<form action="/usernamegenerator" method="get">
+  <div>
+    <p>Having trouble selecting a leaderboard name?</p>
+    <p>Here are some randomly generated names, feel free to pick one, you can always change it later</p>
+    <ul>
+      <li>{{random1}}</li>
+      <li>{{random2}}</li>
+      <li>{{random3}}</li>
+      <li>{{random4}}</li>
+    </ul>
+  
+  </div>
+</form>
+{% endblock %}

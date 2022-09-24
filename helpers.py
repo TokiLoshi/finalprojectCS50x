@@ -2,6 +2,7 @@ import os
 import requests
 import urllib.parse
 import json
+import random
 from dotenv import load_dotenv
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -52,3 +53,17 @@ def lookup(footprint):
 def usd(value):
   """Format value as USD"""
   return f"${value:,.2f}"
+
+def random_leaderboardname():
+  words = []
+  with open("adjectives.txt", 'r') as file:
+      data = file.read()
+      word = (data.split(' '))
+      words.append(word)
+      print("Count: ", word)
+    # Resource for checking how to make a random choice https://www.geeksforgeeks.org/pulling-a-random-word-or-string-from-a-line-in-a-text-file-in-python/
+  print("List of words: ", words)
+  random_adjective = random.choice(data.split())
+  print(f"Random Adjective: ", random_adjective)
+  #
+  return random_adjective
