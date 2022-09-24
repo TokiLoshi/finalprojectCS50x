@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<form action="register" method="get">
+<form action="/register" method="post">
   <div>
     <div class="container p-3 shadow rounded-3 orange">
       <h2 class="whiteText">We can't wait to get you started</h2>
@@ -16,17 +16,17 @@
         <h4>Register</h4>
         <div class="mb-3 container-fluid align-content-start">
           <label for="name" class="form-label">Enter your Name:</label>
-          <input type="text" autofocus class="form-control mx-auto w-auto" id="name" placeholder="First Name, Last Name">
+          <input type="text" name="name" autofocus class="form-control mx-auto w-auto" id="name" placeholder="First Name, Last Name">
           <label for="email" class="form-label">Enter your email address:</label>
-          <input type="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com">
+          <input type="email" name="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com">
           <label for="leaderboardname" class="form-label">Choose a leaderboard name:</label>
           <p>(You can change this anytime)</p>
-          <input type="text" autofocus class="form-control mx-auto w-auto" id="leaderboardname" placeholder="e.g CarbonCrusher">
-          <label for="exampleFormControlInput1" class="form-label">Password (8 mixed characters):</label>
-          <input type="password" autofocus class="form-control mx-auto w-auto" id="password" placeholder="*****">
+          <input type="text" name="leaderboardname" autofocus class="form-control mx-auto w-auto" id="leaderboardname" placeholder="e.g CarbonCrusher">
+          <label for="exampleFormControlInput1" class="form-label">Password (8 characters):</label>
+          <input type="password" name="password" autofocus class="form-control mx-auto w-auto" id="password" placeholder="*****" >
           <label for="confirm password" class="form-label"> Confirm Password:</label>
-          <input type="password" autofocus class="form-control mx-auto w-auto" id="confirmpassword" placeholder="*****">
-        <button class="btn btn-dark m-2 p-3 col-2">Login</button>
+          <input type="password" name="confirmpassword" autofocus class="form-control mx-auto w-auto" id="confirmpassword" placeholder="*****">
+        <button class="btn btn-dark m-2 p-3 col-3">Register</button>
       </div>
   </div>
   </div>
