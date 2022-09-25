@@ -2,6 +2,7 @@ import os
 import requests
 import urllib.parse
 import json
+import requests
 import random
 from dotenv import load_dotenv
 from flask import redirect, render_template, request, session
@@ -57,13 +58,16 @@ def usd(value):
 def random_leaderboardname():
   words = []
   with open("adjectives.txt", 'r') as file:
-      data = file.read()
-      word = (data.split(' '))
-      words.append(word)
-      print("Count: ", word)
+    data = file.read()
+    word = (data.split(' '))
+    words.append(word)
     # Resource for checking how to make a random choice https://www.geeksforgeeks.org/pulling-a-random-word-or-string-from-a-line-in-a-text-file-in-python/
-  print("List of words: ", words)
-  random_adjective = random.choice(data.split())
-  print(f"Random Adjective: ", random_adjective)
-  #
-  return random_adjective
+    nouns = []
+    with open("nouns.txt", 'r') as file: 
+      info = file.read()
+      noun = (data.split(' '))
+      nouns.append(noun)
+    random_adjective = random.choice(data.split())
+    random_noun = random.choice(info.split())
+    random_name = random_adjective + "-" + random_noun  
+  return random_name

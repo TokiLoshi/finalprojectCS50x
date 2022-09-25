@@ -1,4 +1,4 @@
-{% extends "register.html" %}
+{% extends "layout.html" %}
 
 {% block title %}
     usernamegenerator
@@ -7,15 +7,24 @@
 {% block main %}
 <form action="/usernamegenerator" method="get">
   <div>
-    <p>Having trouble selecting a leaderboard name?</p>
-    <p>Here are some randomly generated names, feel free to pick one, you can always change it later</p>
-    <ul>
-      <li>{{random1}}</li>
-      <li>{{random2}}</li>
-      <li>{{random3}}</li>
-      <li>{{random4}}</li>
-    </ul>
-  
+    <div class="container p-3 shadow rounded-3 orange">
+      <h2 class="whiteText">Oops it looks like that leaderboard name has been taken</h2>
+      <!--Closeup of Cat by Henda Watani from Pexels https://www.pexels.com/photo/close-up-of-cat-320014/ -->
+      <img class="img-fluid rounded-2" src="/static/cat-close.jpg" width="250" alt="green island in the ocean"/>
+      </br>
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>Random Leaderboard Name Generator</h4>
+        <div class="mb-3 container-fluid align-content-start">
+        <p>We've generated a random leaderboard name for you if you like it please copy it head back to finish registering.</p>
+      </form>
+      <form action="/usernamegenerator" method="post">
+        <h5>{{random2}}</h5>
+        <button name="goback" class="btn btn-primary m-2 p-3 col-3">Let's Try Another</button>
+        <button class="btn btn-dark m-2 p-3 col-3">Back To Register</button>
+      </div>
+    </form>
   </div>
-</form>
-{% endblock %}
+  </div>
+  </div>
+
+{% endblock %}        
