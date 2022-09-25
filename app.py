@@ -13,7 +13,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, lookup, usd, random_leaderboardname
 
 # Configure application (adapted from CS50 PSET 9 and Stackoverflow https://stackoverflow.com/questions/31002890/how-to-reference-a-html-template-from-a-different-directory-in-python-flask)
 app = Flask(__name__, template_folder="./templates")
@@ -183,6 +183,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
   """Allows user to register so they can login"""
+  random_leaderboard = random_leaderboardname()
 
   # Handle post request
   if request.method == "POST":
@@ -192,9 +193,13 @@ def register():
     confirmation = request.form.get("confirmpassword")
     leaderboardname = request.form.get("leaderboardname")
     email = request.form.get("email")
+    goback = request.form.get("goback")
 
+    if goback is not None:
+      return render_template("/register.html", randomname=random_leaderboard) 
+    
     # Check name isn't blank
-    if len(name) == 0:
+    if name is None:
       return apology("Please enter your name", 403)
     
     # Check password isn't blank
@@ -220,7 +225,19 @@ def register():
     count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
     
     if len(leaderboard_check) != 0:
-      return redirect("/usernamegenerator")
+      flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
+      random_name = random_leaderboardname()
+      leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", random_name)
+      leaderboard_suggestion = ""
+      print(len(leaderboard_suggestion))
+      while len(leaderboard_check) !=0: 
+        leaderboard_suggestion = random_leaderboardname
+        print(leaderboard_suggestion)
+      if leaderboard_suggestion:
+        flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
+        return render_template("/register.html", randomname=leaderboard_suggestion)
+      else:
+        return render_template("/register.html", randomname=random_name)
     
     # Check email isn't blank an email
     elif len(email) == 0:
@@ -238,12 +255,18 @@ def register():
 
   # Handle GET request 
   else:
-    return render_template("/register.html")
+    return render_template("/register.html", randomname=random_leaderboard)
 
 # Reset password page
 @app.route("/reset", methods=["GET", "POST"])
 def reset():
   """Allows user to reset password"""
+  # Following this for mail extensions https://pythonbasics.org/flask-mail/
+  if request.method == "POST":
+    flash("Please Check Your Email, if you don't see it please check your spam folder and then add us to your address book")
+    return render_template("/login.html")
+  else: 
+    flash("Oopsie, it happens")
   return render_template("/reset.html")
 
 # Results page user sees after quiz
@@ -260,33 +283,10 @@ def tracker():
   """Allows user to track their progress"""
   return render_template("/tracker.hml")
 
-# Help user pick a leaderboard name by generating a random leaderboard name
-@app.route("/usernamegenerator", methods=["GET", "POST"])
-def usernamegenerator():
-  """Generates a random username"""
-  if request.method == "POST":
-    print("we're in post banana")
-    random1 = "random 1"
-    return render_template("/usernamegenerator.html", random1=random1)
-  else:
-    print("WE're in Get dummy")
-    # Count the number of words in a file to calculate the number of possible permutations
-    # based off of readability pset 6
-    words = []
-    with open("adjectives.txt", 'r') as file:
-      data = file.read()
-      word = (data.split(' '))
-      words.append(word)
-      print("Count: ", word)
-    # Resource for checking how to make a random choice https://www.geeksforgeeks.org/pulling-a-random-word-or-string-from-a-line-in-a-text-file-in-python/
-    print("List of words: ", words)
-    random_adjective = random.choice(data.split())
-    print(f"Random Adjective: ", random_adjective)
-    random2 = random_adjective
-    return render_template("/usernamegenerator.html", random2=random2)
-
 
 
 # References sourced to build random username generator:
 # https://grammar.yourdictionary.com/parts-of-speech/adjectives/list-of-adjective-words.html
 # https://www.grammarly.com/blog/adjective/
+# https://a-z-animals.com/animals/
+# https://stackoverflow.com/questions/4319236/remove-the-newline-character-in-a-list-read-from-a-file 

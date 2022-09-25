@@ -6,30 +6,39 @@
 
 {% block main %}
 <form action="/register" method="post">
-  <div>
-    <div class="container p-3 shadow rounded-3 orange">
+    <div class="container shadow rounded-3 orange mb-2">
       <h2 class="whiteText">We can't wait to get you started</h2>
-      <!--Areal photography of island at daytime by Sindre Strøm from Pexels https://www.pexels.com/photo/trees-and-soil-during-day-288093/ -->
-      <img class="img-fluid rounded-2" src="/static/island_at_daytime.jpg" width="400" alt="green island in the ocean"/>
-      </br>
-      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+      <!-- Areal photography of island at daytime by Sindre Strøm from Pexels https://www.pexels.com/photo/trees-and-soil-during-day-288093/
+      <img class="img-fluid rounded-2" src="/static/island_at_daytime.jpg" width="400" alt="green island in the ocean"/> -->
+      <div class="card body rounded-2 shadow p-1 mb-2 border-0 justify-content-center mx-auto w-75">
         <h4>Register</h4>
-        <div class="mb-3 container-fluid align-content-start">
+        <div class="mb-3 pb-2 container-fluid align-content-start">
           <label for="name" class="form-label">Enter your Name:</label>
-          <input type="text" name="name" autofocus class="form-control mx-auto w-auto" id="name" placeholder="First Name, Last Name">
+          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="First Name, Last Name">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" name="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com">
-          <label for="leaderboardname" class="form-label">Choose a leaderboard name:</label>
-          <p>(You can change this anytime)</p>
-          <input type="text" name="leaderboardname" autofocus class="form-control mx-auto w-auto" id="leaderboardname" placeholder="e.g CarbonCrusher">
-          <label for="exampleFormControlInput1" class="form-label">Password (8 characters):</label>
-          <input type="password" name="password" autofocus class="form-control mx-auto w-auto" id="password" placeholder="*****" >
-          <label for="confirm password" class="form-label"> Confirm Password:</label>
-          <input type="password" name="confirmpassword" autofocus class="form-control mx-auto w-auto" id="confirmpassword" placeholder="*****">
-        <button class="btn btn-dark m-2 p-3 col-3">Register</button>
+           <!--Closeup of Cat by Henda Watani from Pexels https://www.pexels.com/photo/close-up-of-cat-320014/ -->
+          <div class="card body rounded-2 mt-3 shadow border-0 justify-content-center mx-auto w-75">
+            <div class="mb-1 container-fluid align-content-start">
+              <p><i>Try out the random Leaderboard Name Generator for ideas</i></p>
+              <img class="img-fluid rounded-2" src="/static/cat-close.jpg" width="100" alt="green island in the ocean"/>
+          </br>
+            <form action="/register" method="post">
+            <h5>{{randomname}}</h5>
+            <button name="goback" class="btn btn-primary">Try Angain</button>
+          </form>
+        </div>
       </div>
+      <label for="leaderboardname" class="form-label pt-2">Choose a leaderboard name:</label>
+        <input type="text" name="leaderboardname" autofocus class="form-control mx-auto w-auto pt-1" id="leaderboardname" placeholder="e.g CarbonCrusher">
+            <label for="exampleFormControlInput1" class="form-label">Password (8 characters):</label>
+            <input type="password" name="password" autofocus class="form-control mx-auto w-auto" id="password" placeholder="*****" >
+            <label for="confirm password" class="form-label"> Confirm Password:</label>
+            <input type="password" name="confirmpassword" autofocus class="form-control mx-auto w-auto" id="confirmpassword" placeholder="*****">
+    </br>
+            <button class="btn btn-dark mb-2">Register</button>
   </div>
-  </div>
-  </div>
+</div>
+</br>
 </form>
 {% endblock %}
