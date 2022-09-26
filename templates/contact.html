@@ -14,16 +14,18 @@
         <!--What if this is all real by Aleksandar Pasaric from Pexels https://www.pexels.com/photo/trees-and-soil-during-day-288093/ -->
         <img class="img-fluid rounded-2" src="/static/real.jpg" width="450" alt="green island in the ocean"/>
         </br>
+      </form>       
         <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
           <h4>Leave a message:</h4>
+          <form action="/contact" method="post">
           <div class="mb-3 container-fluid align-content-start">
             <label for="name" class="form-label">What is your name?</label>
-            <input type="text" autofocus class="form-control mx-auto w-auto" id="name" placeholder="How may I address you?">
-            <label for="email" class="form-label">What email address should I respond to?</label>
-            <input type="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com">
+            <input name="name" type="text" autofocus class="form-control mx-auto w-auto" id="name" placeholder="How may I address you?" required>
+            <label for="email" name="email" class="form-label">What email address should I respond to?</label>
+            <input name="email" id="email" type="email" autofocus class="form-control mx-auto w-auto" id="email" placeholder="name@example.com" required>
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label mx-auto w-auto">Questions, comments, suggestions? Drop them here 👇</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="What's on your mind?" rows="4"></textarea>
+              <textarea name="message" class="form-control" id="exampleFormControlTextarea1" placeholder="What's on your mind?" rows="4" required></textarea>
             </div>
           <button class="btn btn-dark m-2 p-3 col-2">Login</button>
         </div>

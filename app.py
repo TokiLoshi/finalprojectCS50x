@@ -89,13 +89,20 @@ def account():
     print("We're in get")
   return render_template("/account.html", name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
 
+# Users activity page
+@app.route("/activity", methods=["GET", "POST"])
+@login_required
+def activity():
+  """Allows users to track their activities and see how that affects their carbon score"""
+  return render_template("/activity.html")
+
 @app.route("/changename", methods=["GET", "POST"])
 @login_required
 def changename():
   """Allows user to change their leaderbaord name"""
   randomname = random_leaderboardname()
   
-  # Check leaderboard name isn't blank
+  # Handle POST request
   if request.method == "POST":
 
     # Check to see if user has entered a leaderboard name
@@ -110,16 +117,16 @@ def changename():
 
     # Check that leaderboard name is unique 
     checkdb = db.execute("SELECT * FROM users WHERE leaderboardname=?", new_leaderboard_name)
-    print(checkdb)
     if len(checkdb) != 0:
       flash("It looks like that names been taken, please try again")
 
+    # Update leaderboard name in db and return to accoutns page
     else:
         flash("Update successful")
-        print("New leaderboard name:", new_leaderboard_name)
         updateleaderboardname = db.execute("UPDATE users SET leaderboardname=? WHERE id=?", new_leaderboard_name, session.get("user_id"))
         return redirect("/account")
   
+  # Handle GET request 
   else:
     print("We're in get")
     randomname = random_leaderboardname()
@@ -169,11 +176,6 @@ def changepassword():
   else:
     return render_template("/changepassword.html")
       
-# Users activity page
-@app.route("/activity", methods=["GET", "POST"])
-@login_required
-def activity():
-  """Allows users to track their activities and see how that affects their carbon score"""
 
 # Calculator page
 @app.route("/calculator", methods=["GET", "POST"])
@@ -193,7 +195,32 @@ def challenges():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
   """Allows the user to submit a request or feedback"""
-
+  if request.method == "POST":
+    visitor_name = request.form.get("name")
+    vistor_email = request.form.get("email")
+    visitor_message = request.form.get("message")
+    print("Visitor's name is: ", visitor_name)
+    print("Vistor's email is: ", vistor_email)
+    print("Vistor's message is: ", visitor_message)
+    # Use sendgrid to send an email with the temporary password
+    # https://pypi.org/project/Flask-Mail-SendGrid/
+    message = Mail(
+      from_email='{}'.format(vistor_email),
+      to_emails=os.environ.get('MAIL_USERNAME'),
+      subject='Carbon Tracker Password Reset',
+      html_content=('You received a message in the contact form: Name: {} Email: {} Message: {} ...Ends.'.format(visitor_name, vistor_email, visitor_message)))
+    try:
+      sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+      response = sg.send(message)
+      print(response.status_code)
+      print(response.body)
+      print(response.headers)
+    except Exception as e:
+      message = "oops"
+      print(e)
+      return render_template("/login.html") 
+  else:
+    print("The user did not try to post something")
   return render_template("/contact.html")
 
 # Footprint page
