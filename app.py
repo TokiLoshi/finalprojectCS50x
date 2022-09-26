@@ -82,24 +82,89 @@ def account():
     leaderboardname = info['leaderboardname']
     emailaddy = info['email']
     datejoined = info['datejoined']
-  print("The user's name is: ", name)
-  print("Their leaderboardname is: ", leaderboardname)
-  print("Their email is: ", emailaddy)
-  print("They joined on: ", datejoined)
   if request.method == "POST":
+    print("We're in post")
     return render_template("/changepassword.html")
+  else:
+    print("We're in get")
   return render_template("/account.html", name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
+
+@app.route("/changename", methods=["GET", "POST"])
+@login_required
+def changename():
+  """Allows user to change their leaderbaord name"""
+  randomname = random_leaderboardname()
+  
+  # Check leaderboard name isn't blank
+  if request.method == "POST":
+    new_leaderboard_name = request.form.get("leaderboardname")
+    if new_leaderboard_name is None:
+       flash("Enter your new name into the form below")
+       randomname = random_leaderboardname()
+       return render_template("/changename.html", randomname=randomname)
+     
+    elif len(new_leaderboard_name) == 0:
+      return apology("Please choose a leaderboard name", 403)
+    
+    # Check leaderboard name is unique
+    leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
+    count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
+    
+    if len(leaderboard_check) != 0:
+      flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
+      random_name = random_leaderboardname()
+      leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", random_name)
+      leaderboard_suggestion = ""
+      print(len(leaderboard_suggestion))
+      while len(leaderboard_check) !=0: 
+        leaderboard_suggestion = random_leaderboardname
+        print(leaderboard_suggestion)
+      if leaderboard_suggestion:
+        flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
+        
+      else:
+        return render_template("/changename.html", randomname=random_name)
+  
+  return render_template("/changename.html", randomname=randomname)
 
 @app.route("/changepassword", methods=["GET", "POST"])
 @login_required
 def changepassword():
   """Allow users to change their password"""
-  if request.method == "POST":
 
-    return render_template("/changepassword.html")
+  # Handle Post request
+  if request.method == "POST":
+    print("We're here in post")
+    
+    # Get password and confirmation from form
+    newpassword = request.form.get("password")
+    confirmpassword = request.form.get("confirmpassword")
+
+    # Check password and confirmation aren't blank 
+    if len(newpassword) == 0:
+      return apology("No password")
+    elif len(confirmpassword) == 0:
+      return apology("No confirmation")
+
+    # Check password meets minimum requirements
+    elif len(newpassword) < 8:
+      return apology("Password is less than 8 char")
+    
+    # Check password and confirmation match
+    elif newpassword != confirmpassword:
+      return apology("Passwords dn't match")
+    else:
+      
+      # Generate a hash of the temp password and add to DB
+      new_hash = generate_password_hash(newpassword, method="pbkdf2:sha256", salt_length=8) 
+      update_hash = db.execute("UPDATE users SET hash=? WHERE id=?", new_hash, session.get("user_id"))
+
+      flash("You password has been updated")
+    return redirect("/account")
+
   else:
     return render_template("/changepassword.html")
-
+      
 # Users activity page
 @app.route("/activity", methods=["GET", "POST"])
 @login_required
@@ -172,11 +237,11 @@ def login():
   # Handle POST request
   if request.method == "POST":
 
+    # Get user's email 
     useremail = request.form.get("email")
-    print(f"Email: ", useremail)
+    # Get user's password
     password = request.form.get("password")
     print(f"Password: ", password)
-    # Check db for email
 
     # Check for email render apology
     if not request.form.get("email"):

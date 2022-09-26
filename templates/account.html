@@ -7,7 +7,7 @@
 {% block main %}
 <form action="/account" method="get">
   <div class="container-fluid mt-2 p-2">
-    <div class="card-body shadow-lg rounded-2 mb-2">
+    <div class="card float-right p-2 border-0 shadow-sm rounded">
       <div class="card-body">
           <table class="table">
             <thead class="thead-dark">
@@ -36,10 +36,24 @@
             </tbody>
           </table>
           </form>
-          <form action="/changepassword" method="post">
-          <button class="btn btn-danger mb-2" type="submit">Change Password</button>
-        </div>
-      </div>
+         
+            <form action="/account" method="post" class="float-right">   
+            <button action="/changepassword" method="post" type="submit" id="password" name="password" class="btn btn-danger btn-xs float-right m-2">Change Password</button>
+          </form>
+            <form action="/changename" method="post" class="float-right">   
+            <button action="/changename" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-xs float-right m-2">Change Leaderboard Name</button>  
+          </form>
+        </form>
+              </div>
+            </div>
+          <!-- <form action="/changepassword" method="post">
+          <button name="password" class="btn btn-danger mb-2" type="submit">Change Password</button>
+          </form>
+          <form action="/changename" method="post">
+          <button name="leaderboardname" class="btn btn-dark mb-2" type="submit">Change Leaderboard Name</button>
+        </form> -->
+        <!-- </div>
+      </div> -->
     </div>
       {% endblock %}
     </form> 
