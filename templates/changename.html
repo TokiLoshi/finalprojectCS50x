@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Change Password
+{% endblock %}
+
+{% block main %}
+<form action="/changename" method="get">  
+    <div class="container shadow rounded-3 orange mb-3 mt-2">
+      <h2 class="whiteText">Alright! Let's find you a new Leaderboard Name</h2>
+  </form>
+      <div class="card body rounded-2 pt-2 shadow mt-3 pb-2 mx-auto m-3 border-0 justify-content-center mx-auto w-50">
+        <h4>Pick a New Name</h4>
+        <div class="m2-3 mt-2 pb-2 container-fluid align-content-start mx-auto">
+          <div class="mb-1 container-fluid align-content-start">
+            <p class="pt-1"><i>Need inspiration? Generate a random name</i></p>
+            <img class="img-fluid rounded-2" src="/static/cat-close.jpg" width="100" alt="green island in the ocean"/>
+              </br>
+                <form action="/changename" method="post">
+                  <h5>{{randomname}}</h5>
+                  <button name="changename" class="btn btn-primary">Find Another</button>
+                </form>
+            </div>
+        
+    <label for="leaderboardname" class="form-label pt-2">Choose a leaderboard name:</label>
+      <input type="text" name="leaderboardname" autofocus class="form-control mx-auto mt-2 w-auto pt-1" id="leaderboardname" placeholder="e.g CarbonCrusher">
+      <button class="btn btn-dark justify-content-center col-5 mx-auto mt-2 text-center mb-2" type="submit">Change Leaderboard Name</button>       
+
+    </br>
+</div>
+</div>
+
+</form>
+</br>
+{% endblock %}
