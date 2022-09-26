@@ -2,6 +2,7 @@ import os
 import requests
 import urllib.parse
 import json
+import string
 import requests
 import random
 from dotenv import load_dotenv
@@ -71,3 +72,29 @@ def random_leaderboardname():
     random_noun = random.choice(info.split())
     random_name = random_adjective + "-" + random_noun  
   return random_name
+
+# Generate a random temporary password 
+# https://geekflare.com/password-generator-python-code/    
+def generate_temp_password():
+  
+  # Establish password length
+  length = 8
+
+  # Define characters to use when generating a password
+  characters = list(string.ascii_letters + string.digits + "!@#$%^&*()")
+
+  # Shuffle characters 
+  random.shuffle(characters)
+  
+  # Choose random characters from the list
+  password = []
+  for i in range(length):
+    password.append(random.choice(characters))
+
+  # Shuffle password 
+  random.shuffle(password)
+
+  # Convert list to string and print
+  password = ((" ".join(password)).replace(",", " ")).replace(" ", "")
+  return password
+
