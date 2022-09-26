@@ -97,33 +97,37 @@ def changename():
   
   # Check leaderboard name isn't blank
   if request.method == "POST":
+
+    # Check to see if user has entered a leaderboard name
     new_leaderboard_name = request.form.get("leaderboardname")
+    if new_leaderboard_name is None:
+      return render_template("/changename.html", randomname=randomname)
+
+    # Check that field isn't blank
+    elif len(new_leaderboard_name) == 0:
+      flash("Please pick a leaderboard name")
+      return render_template("/changename.html", randomname=randomname)
+
+    # Check that leaderboard name is unique 
+    checkdb = db.execute("SELECT * FROM users WHERE leaderboardname=?", new_leaderboard_name)
+    print(checkdb)
+    if len(checkdb) != 0:
+      flash("It looks like that names been taken, please try again")
+
+    else:
+        flash("Update successful")
+        print("New leaderboard name:", new_leaderboard_name)
+        updateleaderboardname = db.execute("UPDATE users SET leaderboardname=? WHERE id=?", new_leaderboard_name, session.get("user_id"))
+        return redirect("/account")
+  
+  else:
+    print("We're in get")
+    randomname = random_leaderboardname()
+
     if new_leaderboard_name is None:
        flash("Enter your new name into the form below")
        randomname = random_leaderboardname()
-       return render_template("/changename.html", randomname=randomname)
-     
-    elif len(new_leaderboard_name) == 0:
-      return apology("Please choose a leaderboard name", 403)
-    
-    # Check leaderboard name is unique
-    leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
-    count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
-    
-    if len(leaderboard_check) != 0:
-      flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
-      random_name = random_leaderboardname()
-      leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", random_name)
-      leaderboard_suggestion = ""
-      print(len(leaderboard_suggestion))
-      while len(leaderboard_check) !=0: 
-        leaderboard_suggestion = random_leaderboardname
-        print(leaderboard_suggestion)
-      if leaderboard_suggestion:
-        flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
-        
-      else:
-        return render_template("/changename.html", randomname=random_name)
+    return render_template("/changename.html", randomname=randomname)
   
   return render_template("/changename.html", randomname=randomname)
 

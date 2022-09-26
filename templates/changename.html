@@ -21,11 +21,13 @@
                   <button name="changename" class="btn btn-primary">Find Another</button>
                 </form>
             </div>
-        
+    <form action="/changename" method="get">      
     <label for="leaderboardname" class="form-label pt-2">Choose a leaderboard name:</label>
-      <input type="text" name="leaderboardname" autofocus class="form-control mx-auto mt-2 w-auto pt-1" id="leaderboardname" placeholder="e.g CarbonCrusher">
-      <button class="btn btn-dark justify-content-center col-5 mx-auto mt-2 text-center mb-2" type="submit">Change Leaderboard Name</button>       
-
+    </form>
+    <form action="/changename" method="post">  
+    <input type="text" name="leaderboardname" autofocus class="form-control mx-auto mt-2 w-auto pt-1" id="leaderboardname" placeholder="e.g CarbonCrusher">
+      <button name="leaderboardname" id="leaderboardname" class="btn btn-dark justify-content-center col-5 mx-auto mt-2 text-center mb-2" type="submit">Change Leaderboard Name</button>       
+    </form>
     </br>
 </div>
 </div>
