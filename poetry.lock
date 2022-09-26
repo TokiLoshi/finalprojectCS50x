@@ -1,4 +1,12 @@
 [[package]]
+name = "blinker"
+version = "1.5"
+description = "Fast, simple object-to-object and broadcast signaling"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
 name = "cachelib"
 version = "0.9.0"
 description = "A collection of cache libraries in the same API interface."
@@ -76,6 +84,42 @@ Werkzeug = ">=2.2.2"
 [package.extras]
 async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
+
+[[package]]
+name = "Flask-Mail"
+version = "0.9.1"
+description = "Flask extension for sending email"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+blinker = "*"
+Flask = "*"
+
+[[package]]
+name = "Flask-Mail-SendGrid"
+version = "0.3"
+description = "Flask extension for sendgrid. It has same interface with Flask-Mail."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Flask-Mail = "*"
+SendGrid = ">=6.0.2"
+
+[[package]]
+name = "Flask-Redmail"
+version = "0.3.0"
+description = "Email sending for Flask"
+category = "main"
+optional = false
+python-versions = ">=3.6.0"
+
+[package.dependencies]
+Flask = "*"
+redmail = ">=0.4.0"
 
 [[package]]
 name = "Flask-Session"
@@ -175,6 +219,25 @@ python-versions = ">=3.7"
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-http-client"
+version = "3.3.7"
+description = "HTTP REST client, simplified for Python"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "redmail"
+version = "0.4.1"
+description = "Email sending library"
+category = "main"
+optional = false
+python-versions = ">=3.6.0"
+
+[package.dependencies]
+jinja2 = "*"
+
+[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -191,6 +254,18 @@ urllib3 = ">=1.21.1,<1.27"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
+
+[[package]]
+name = "sendgrid"
+version = "6.9.7"
+description = "Twilio SendGrid library for Python"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.dependencies]
+python-http-client = ">=3.2.1"
+starkbank-ecdsa = ">=2.0.1"
 
 [[package]]
 name = "setuptools"
@@ -246,6 +321,14 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "starkbank-ecdsa"
+version = "2.1.0"
+description = "A lightweight and fast pure python ECDSA library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "termcolor"
 version = "2.0.1"
 description = "ANSI color formatting for output in terminal"
@@ -297,9 +380,13 @@ test = ["pytest (>=3.0.0)", "pytest-cov"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.10.6"
-content-hash = "519012871e800f2b242368a0ab93a9703fa8e872dd4d5f8d368e507699d8a539"
+content-hash = "d55060a23448b3a2fc911745c0d4846def679271b60c851f3872f0b25cc9b27b"
 
 [metadata.files]
+blinker = [
+    {file = "blinker-1.5-py2.py3-none-any.whl", hash = "sha256:1eb563df6fdbc39eeddc177d953203f99f097e9bf0e2b8f9f3cf18b6ca425e36"},
+    {file = "blinker-1.5.tar.gz", hash = "sha256:923e5e2f69c155f2cc42dafbbd70e16e3fde24d2d4aa2ab72fbe386238892462"},
+]
 cachelib = [
     {file = "cachelib-0.9.0-py3-none-any.whl", hash = "sha256:811ceeb1209d2fe51cd2b62810bd1eccf70feba5c52641532498be5c675493b3"},
     {file = "cachelib-0.9.0.tar.gz", hash = "sha256:38222cc7c1b79a23606de5c2607f4925779e37cdcea1c2ad21b8bae94b5425a5"},
@@ -327,6 +414,16 @@ cs50 = [
 Flask = [
     {file = "Flask-2.2.2-py3-none-any.whl", hash = "sha256:b9c46cc36662a7949f34b52d8ec7bb59c0d74ba08ba6cb9ce9adc1d8676d9526"},
     {file = "Flask-2.2.2.tar.gz", hash = "sha256:642c450d19c4ad482f96729bd2a8f6d32554aa1e231f4f6b4e7e5264b16cca2b"},
+]
+Flask-Mail = [
+    {file = "Flask-Mail-0.9.1.tar.gz", hash = "sha256:22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"},
+]
+Flask-Mail-SendGrid = [
+    {file = "Flask-Mail-SendGrid-0.3.tar.gz", hash = "sha256:4dccaca8a18a8424d7cf99946e2a66f3c3db60eb17ae1b6d8bed02d5b3e36678"},
+]
+Flask-Redmail = [
+    {file = "Flask-Redmail-0.3.0.tar.gz", hash = "sha256:5869faec2c7355325d6fe08e0e6f2fb54f9bff88706706a4f9fa0bebb8276efe"},
+    {file = "Flask_Redmail-0.3.0-py3-none-any.whl", hash = "sha256:f888866b968264f7afd4329de3ed9d881686eb77ca4389dec7d861837a8477fe"},
 ]
 Flask-Session = [
     {file = "Flask-Session-0.4.0.tar.gz", hash = "sha256:c9ed54321fa8c4ca0132ffd3369582759eda7252fb4b3bee480e690d1ba41f46"},
@@ -463,9 +560,21 @@ python-dotenv = [
     {file = "python-dotenv-0.21.0.tar.gz", hash = "sha256:b77d08274639e3d34145dfa6c7008e66df0f04b7be7a75fd0d5292c191d79045"},
     {file = "python_dotenv-0.21.0-py3-none-any.whl", hash = "sha256:1684eb44636dd462b66c3ee016599815514527ad99965de77f43e0944634a7e5"},
 ]
+python-http-client = [
+    {file = "python_http_client-3.3.7-py3-none-any.whl", hash = "sha256:ad371d2bbedc6ea15c26179c6222a78bc9308d272435ddf1d5c84f068f249a36"},
+    {file = "python_http_client-3.3.7.tar.gz", hash = "sha256:bf841ee45262747e00dec7ee9971dfb8c7d83083f5713596488d67739170cea0"},
+]
+redmail = [
+    {file = "redmail-0.4.1-py3-none-any.whl", hash = "sha256:25dd6d169ee782ef88771a93c7f2203dbf8b75da2257540709c465323f6ca157"},
+    {file = "redmail-0.4.1.tar.gz", hash = "sha256:6532c26569ea9ab82038182858e66ab8871f93dbf43a53daaff7b1c8ae0ce2b1"},
+]
 requests = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
     {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
+]
+sendgrid = [
+    {file = "sendgrid-6.9.7-py3-none-any.whl", hash = "sha256:ba8d3d39e1f392b9434365d53983b2fc6a458ae0496d2d9e103c15e1743ab66b"},
+    {file = "sendgrid-6.9.7.tar.gz", hash = "sha256:fa30411c627690fecd0ef6b1d4e1783f2d0272aa14b5fffb133ebd1e31114f16"},
 ]
 setuptools = [
     {file = "setuptools-65.3.0-py3-none-any.whl", hash = "sha256:2e24e0bec025f035a2e72cdd1961119f557d78ad331bb00ff82efb2ab8da8e82"},
@@ -517,6 +626,9 @@ SQLAlchemy = [
 sqlparse = [
     {file = "sqlparse-0.4.2-py3-none-any.whl", hash = "sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d"},
     {file = "sqlparse-0.4.2.tar.gz", hash = "sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae"},
+]
+starkbank-ecdsa = [
+    {file = "starkbank-ecdsa-2.1.0.tar.gz", hash = "sha256:24422395e8682ac22a5b20ba3d7418d62e1a927aef29e8ddb5e678662be6b643"},
 ]
 termcolor = [
     {file = "termcolor-2.0.1-py3-none-any.whl", hash = "sha256:7e597f9de8e001a3208c4132938597413b9da45382b6f1d150cff8d062b7aaa3"},

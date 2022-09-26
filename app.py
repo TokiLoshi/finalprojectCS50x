@@ -3,6 +3,7 @@ from crypt import methods
 from curses import use_default_colors
 import email
 import os
+import string
 import random
 from dataclasses import is_dataclass
 from re import template
@@ -13,10 +14,15 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd, random_leaderboardname
+from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password
+from flask_mail import Mail, Message
+from flask_mail_sendgrid import MailSendGrid
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # Configure application (adapted from CS50 PSET 9 and Stackoverflow https://stackoverflow.com/questions/31002890/how-to-reference-a-html-template-from-a-different-directory-in-python-flask)
 app = Flask(__name__, template_folder="./templates")
+
 
 # Ensure templates are auto-reloaded (from CS50 PSET 9)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -28,6 +34,19 @@ app.jinja_env.filters["usd"] = usd
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+# Configure Email
+# https://cs50.harvard.edu/college/2022/spring/notes/9/
+# app.config["MAIL_DEFAULT_SENDER"] = os.environ["MAIL_DEFAULT_SENDER"]
+# app.config["MAIL_PASSWORD"] = os.environ["MAIL_PASSWORD"]
+# app.config["MAIL_PORT"] = 587
+# app.config["MAIL_SERVER"] = "smtp.gmail.com"
+# app.config["MAIL_USE_TLS"] = True
+# app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
+# mail = Mail(app)
+
+app.config['MAIL_SENDGRID_API_KEY'] = os.environ['SENDGRID_API']
+mail = MailSendGrid(app)
 
 # Configure CS50 Library to use SQLite and adapt to tranfer to PostGres for Heroku deployment
 # https://cs50.readthedocs.io/heroku/
@@ -56,7 +75,30 @@ def about():
 @login_required
 def account():
   """Users account page with their username information"""
-  return render_template("/account.html")
+  get_user_info = db.execute("SELECT name, leaderboardname, email, datejoined FROM users WHERE id=?", session.get("user_id"))
+  print("User's info: ", get_user_info)
+  for info in get_user_info:
+    name = info['name']
+    leaderboardname = info['leaderboardname']
+    emailaddy = info['email']
+    datejoined = info['datejoined']
+  print("The user's name is: ", name)
+  print("Their leaderboardname is: ", leaderboardname)
+  print("Their email is: ", emailaddy)
+  print("They joined on: ", datejoined)
+  if request.method == "POST":
+    return render_template("/changepassword.html")
+  return render_template("/account.html", name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
+
+@app.route("/changepassword", methods=["GET", "POST"])
+@login_required
+def changepassword():
+  """Allow users to change their password"""
+  if request.method == "POST":
+
+    return render_template("/changepassword.html")
+  else:
+    return render_template("/changepassword.html")
 
 # Users activity page
 @app.route("/activity", methods=["GET", "POST"])
@@ -82,6 +124,7 @@ def challenges():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
   """Allows the user to submit a request or feedback"""
+
   return render_template("/contact.html")
 
 # Footprint page
@@ -262,9 +305,47 @@ def register():
 def reset():
   """Allows user to reset password"""
   # Following this for mail extensions https://pythonbasics.org/flask-mail/
+  # https://www.youtube.com/watch?v=48Eb8JuFuUI
+  
   if request.method == "POST":
     flash("Please Check Your Email, if you don't see it please check your spam folder and then add us to your address book")
-    return render_template("/login.html")
+    email = request.form.get("email")
+    print("Person's email is ", email)
+    # Check that person is in fact in db
+    account_check = db.execute("SELECT * FROM users WHERE email=?", email)
+    print("Account check: ", account_check)
+    print(type(account_check))
+    if len(account_check) == 0:
+      return apology("We don't have an account with your name on it")
+    
+    # Handle reset password
+    else:
+      flash("Please check your email for a temporary password")
+      # Generate random password from helpers
+      temp_password = generate_temp_password()
+      print("Your temporary password is", temp_password)
+
+      # Generate a hash of the temp password and add to DB
+      temp_hash = generate_password_hash(temp_password, method="pbkdf2:sha256", salt_length=8) 
+      update_hash = db.execute("UPDATE users SET hash=? WHERE email=?", temp_hash, email)
+
+      # Use sendgrid to send an email with the temporary password
+      # https://pypi.org/project/Flask-Mail-SendGrid/
+      message = Mail(
+        from_email='beelineprograms@gmail.com',
+        to_emails=email,
+        subject='Carbon Tracker Password Reset',
+        html_content=('Hi there, We received a request to reset your password and have generated a random temporary one: {} Please use this to login and change your password. If you did not request this please let us know and update your password as soon as possible. Thank you.'.format(temp_password)))
+      try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+      except Exception as e:
+        message = "oops"
+        print(e)
+      return render_template("/login.html")
   else: 
     flash("Oopsie, it happens")
   return render_template("/reset.html")
