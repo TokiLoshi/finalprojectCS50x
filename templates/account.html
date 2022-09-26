@@ -6,8 +6,40 @@
 
 {% block main %}
 <form action="/account" method="get">
-  <div>
-
-  </div>
-</form>
-{% endblock %}
+  <div class="container-fluid mt-2 p-2">
+    <div class="card-body shadow-lg rounded-2 mb-2">
+      <div class="card-body">
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th class="mt-3 mb-2">Name</th>
+                <th>Leaderboard Name</th>
+                <th>Email Address</th>
+                <th>Date you Joined Carbon Tracker</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td>  
+                    {{name}}
+                  </td>
+                  <td>  
+                    {{leaderboardname}}
+                  </td>
+                  <td>  
+                    {{emailaddy}}
+                  </td>
+                  <td>  
+                    {{datejoined}}
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+          </form>
+          <form action="/changepassword" method="post">
+          <button class="btn btn-danger mb-2" type="submit">Change Password</button>
+        </div>
+      </div>
+    </div>
+      {% endblock %}
+    </form> 
