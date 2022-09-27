@@ -7,7 +7,33 @@
 {% block main %}
 <form action="/homeuser" method="post">
   <div>
-    <p>Hello</p>
+    <div class="container p-3 shadow rounded-3 orange">
+      <h2 class="whiteText">You are making the world a better place!</h2>
+      <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
+      <img class="img-fluid rounded-2" src="/static/world.jpg" width="300" alt="green island in the ocean"/>
+      </br>
+    </form>       
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>What shall we do today?</h4>
+        
+        <div class="mb-3 container-fluid align-content-start">
+          <form action="/calculator" method="post">
+            <button class="btn btn-dark m-2 p-3 col-8">Check my Carbon Footprint</button>
+          </form>
+          <form action="/tracker" method="post">
+            <button class="btn btn-dark m-2 p-3 col-8">Log an Activity</button>
+          </form>
+          <form action="/leaderboard" method="post">
+            <button class="btn btn-dark m-2 p-3 col-8">Check out the Leaderbaord</button>
+          </form>
+          <form action="/challenges" method="post">
+            <button class="btn btn-dark m-2 p-3 col-8">Start a new Challenge</button>
+          </form>
+          </div>
+        
+      </div>
+  </div>
+  </div>
   </div>
 </form>
 {% endblock %}

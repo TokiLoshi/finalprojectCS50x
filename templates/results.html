@@ -6,8 +6,35 @@
 
 {% block main %}
 <form action="/results" method="post">
-  <div>
-
-  </div>
+  <div class="container p-3 shadow rounded-3 orange">
+    <h2 class="whiteText">Your results are in</h2>
+    <!--Laughing male construction by by Andrea Piacquadio from Pexels https://www.pexels.com/photo/laughing-male-constructor-showing-thumb-up-at-working-desk-3760613/ -->
+    <img class="img-fluid rounded-2" src="/static/laughing_construction.jpg" width="300" alt="green island in the ocean"/>
+    </br>
+  </form>       
+    <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+      <h4>We believe things are only going to get better from here</h4>
+      <p>Good news! We've calculated your results.</p>
+      <div class="mb-3 container-fluid align-content-start">
+        <h5>Your Score is: </h5>
+        <h3>653</h3>
+      </br>
+      <h3>So where does that put you?</h3>
+      <p>Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and just how good that feels. Keep coming back to these numbers</p>
+        <h5>You rank x% higher than y% of users</h5>
+        <h5>You rank x% lower than y% of users</h5>
+        <h5>Your biggest contributor is x activity</h5>
+        <h5>You excel in x area of your activites, that's awesome!</h5>
+        <p>The easiest way to get involved with your commmunity and start a challenge</p>
+        <form action="/challenges" method="post">
+          <button class="btn btn-dark m-2 p-3 col-8">Start reducing my impact</button>
+        </form>
+        </div>
+      
+    </div>
+</div>
+</div>
+</div>
+</form>
 </form>
 {% endblock %}

@@ -96,6 +96,14 @@ def activity():
   """Allows users to track their activities and see how that affects their carbon score"""
   return render_template("/activity.html")
 
+# Calculator page
+@app.route("/calculator", methods=["GET", "POST"])
+@login_required
+def calculator():
+  """Quiz user takes to tally up their carbon score"""
+  return render_template("/calculator.html")
+
+
 @app.route("/changename", methods=["GET", "POST"])
 @login_required
 def changename():
@@ -177,13 +185,6 @@ def changepassword():
     return render_template("/changepassword.html")
       
 
-# Calculator page
-@app.route("/calculator", methods=["GET", "POST"])
-@login_required
-def calculator():
-  """Quiz user takes to tally up their carbon score"""
-  return render_template("/calculator.html")
-
 # Challenges page
 @app.route("/challenges", methods=["GET", "POST"])
 @login_required
@@ -230,18 +231,18 @@ def footprint():
   """Shows user their current footprint and which areas are impacting their score the most"""
   return render_template("/footprint.html")
 
+# History page
+@app.route("/history", methods=["GET", "POST"])
+@login_required
+def route():
+  """User can view all of their history on the app"""
+  return render_template("/history.html")
+
 # Main home page
 @app.route("/", methods=["GET"])
 def home():
   """Information about the web app and what it does"""
   return render_template("home.html")
-
-# Page user sees the first time after they register and login:
-@app.route("/homefirst", methods=["GET"])
-@login_required
-def homefirst():
-  """Welcome message"""
-  return render_template("homefirst.html")
 
 # Page user sees after they return
 @app.route("/homeuser", methods=["GET", "POST"])
@@ -251,7 +252,7 @@ def homeuser():
   return render_template("homeuser.html")
 
 # Leaderboard page
-@app.route("/leaderboard", methods=["GET"])
+@app.route("/leaderboard", methods=["GET", "POST"])
 @login_required
 def leaderboard():
   """Shows user how their consumption and actions rank compared to other users"""
@@ -458,7 +459,9 @@ def results():
 @login_required
 def tracker():
   """Allows user to track their progress"""
-  return render_template("/tracker.hml")
+  if request.method == "POST":
+    flash("You're amazing. Great work!")
+  return render_template("/tracker.html")
 
 
 

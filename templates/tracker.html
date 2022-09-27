@@ -6,8 +6,41 @@
 
 {% block main %}
 <form action="/tracker" method="get">
-  <div>
-
-  </div>
+  <div class="container p-3 shadow rounded-3 orange">
+    <h2 class="whiteText">You inspire us</h2>
+    <!--Reache for the stars by Designecologist from Pexels https://www.pexels.com/photo/reach-for-the-and-blue-moon-neon-signages-1510659/ -->
+    <img class="img-fluid rounded-2" src="/static/reach.jpg" width="300" alt="green island in the ocean"/>
+    </br>
+  </form>       
+    <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+      <h4>Log an activity and start racking up points</h4>
+      
+      <div class="mb-3 container-fluid align-content-start">
+        <form action="/calculator" method="post">
+          <label for="name" class="form-label">I reduced my energy bill:</label>
+          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Amazing! What is it now?">
+        </form>
+        <form action="/tracker" method="post">
+          <label for="name" class="form-label">I went flexitarian:</label>
+        <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="We love it. How many days did you do?">
+        </form>
+        <form action="/tracker" method="post">
+          <label for="name" class="form-label">I changed out my lightbulbs:</label>
+        <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="You rock! What percentage of your home is now LED?">
+        </form>
+        <form action="/leaderboard" method="post">
+          <label for="name" class="form-label">I walked instead of driving:</label>
+          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="You're the best. How many miles did you walk?">
+        </form>
+        <form action="/leaderboard" method="post">
+          <button class="btn btn-dark m-2 p-3 col-8">Log</button>
+        </form>
+        </div>
+      
+    </div>
+</div>
+</div>
+</div>
+</form>
 </form>
 {% endblock %}

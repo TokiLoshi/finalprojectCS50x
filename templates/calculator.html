@@ -7,7 +7,40 @@
 {% block main %}
 <form action="/calculator" method="get">
   <div>
-
+    <div class="container p-3 shadow rounded-3 orange">
+      <h2 class="whiteText">You can only improve what you measure</h2>
+      <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
+      <img class="img-fluid rounded-2" src="/static/plastic_world.jpg" width="300" alt="green island in the ocean"/>
+      </br>
+    </form>       
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>Let's cacluate your current carbon footprint</h4>
+        
+        <div class="mb-3 container-fluid align-content-start">
+          <form action="/calculator" method="post">
+            <label for="name" class="form-label">Let's talk about your energy usage:</label>
+            <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
+          </form>
+          <form action="/tracker" method="post">
+            <label for="name" class="form-label">Let's talk about your diet:</label>
+          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
+          </form>
+          <form action="/tracker" method="post">
+            <label for="name" class="form-label">Let's talk about your household:</label>
+          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
+          </form>
+          <form action="/leaderboard" method="post">
+            <label for="name" class="form-label">Let's talk about your transport:</label>
+            <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
+          </form>
+          <form action="/results" method="post">
+            <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+          </form>
+          </div>
+        
+      </div>
+  </div>
+  </div>
   </div>
 </form>
 {% endblock %}

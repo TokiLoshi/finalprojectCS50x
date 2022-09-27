@@ -6,8 +6,55 @@
 
 {% block main %}
 <form action="/leaderboard" method="get">
-  <div>
+  <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+    <h4>Hey there, champ!</h4> 
+    <h5>Check out what this amazing community has accomplished:</h5>
+    <hr>
+    <div class="mb-3 container-fluid align-content-start">
+      <table class="table">
+        <thead class="thead-dark mt-3 mb2 justify-content-center"><h5>Total Community Impact:</h5>
+        </thead>
+        <tbody>
+          <hr>
+          <tr>
+            <td>Total Carbon Offset:</td>
+            <td>x tonnes</td>
+          </tr>
+          <tr>
+            <td>Total $ Saved:</td>
+            <td>$1,0000,0000</td>
+          </tr>
+          <tr>
+            <td>Total miles walked:</td>
+            <td>900 miles</td>
+          </tr>
+          <tr>
+            <td>Total LED bulbs converted:</td>
+            <td>400 LED Bulbs</td>
+          </tr>
+          <tr>
+            <td>Cumulative Flexitarian Days:</td>
+            <td>700 Flexitarian Days</td>
+          </tr>
+          </tbody>
+      </table>
+      <!--High angle view of cyclists by Pixabay on Pexels https://www.pexels.com/photo/high-angle-view-of-people-on-bicycle-248547/-->
+      <img class="img-fluid rounded-2" src="/static/bike_race.jpg" width="600" alt="bike_race"/>
+      <p class="mt-2"><b>You are currently in 5th postition!</b></p>
+      <ol>
+        <li>Sacred-Mongoose has 500 points, 3 challenges and a total savings of 500</li>
+        <li>Happy-Chicken has 499 points, 3 challenges and a total savings of 499</li>
+        <li>Hungry-Hippo has 498 points, 3 challenges and a total savings of 499</li>
+        <li>Curious-Kiwi has 497 points, 3 challenges and a total savings of 499</li>
+        <li>Intelligent-Bottle-nose-Dolphin has 499 points, 3 challenges and a total savings of 499</li>
+        <li>Modern-Ferret 499 points, 3 challenges and a total savings of 499</li>
+        <li>Awesome-Alligator is coming in third with 499 points, 3 challenges and a total savings of 499</li>
+        <li>Glorious Goat is coming in third with 499 points, 3 challenges and a total savings of 499</li>
+      </ol>
+    </form>
+      <form action="/challenges" method="post">
+        <button class="btn btn-dark m-2 p-3 col-6">Start a new challenge</button>
+      </form>
+      </div>
 
-  </div>
-</form>
 {% endblock %}
