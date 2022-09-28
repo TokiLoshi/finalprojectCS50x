@@ -14,7 +14,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password
+from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password, estimate, accomodation, air_travel
 from flask_mail import Mail, Message
 from flask_mail_sendgrid import MailSendGrid
 from sendgrid import SendGridAPIClient
@@ -101,6 +101,8 @@ def activity():
 @login_required
 def calculator():
   """Quiz user takes to tally up their carbon score"""
+  search = air_travel()
+  print("Search returns: ", search)
   return render_template("/calculator.html")
 
 
@@ -206,8 +208,8 @@ def contact():
     # Use sendgrid to send an email with the temporary password
     # https://pypi.org/project/Flask-Mail-SendGrid/
     message = Mail(
-      from_email='{}'.format(vistor_email),
-      to_emails=os.environ.get('MAIL_USERNAME'),
+      from_email='beelineprograms@gmail.com',
+      to_emails='beelineprograms@gmail.com',
       subject='Carbon Tracker Password Reset',
       html_content=('You received a message in the contact form: Name: {} Email: {} Message: {} ...Ends.'.format(visitor_name, vistor_email, visitor_message)))
     try:
@@ -219,16 +221,17 @@ def contact():
     except Exception as e:
       message = "oops"
       print(e)
-      return render_template("/login.html") 
-  else:
-    print("The user did not try to post something")
-  return render_template("/contact.html")
+    return render_template("/contact.html")
+  else: 
+    flash("Oopsie, it happens")
+    return render_template("/contact.html")
 
 # Footprint page
 @app.route("/footprint", methods=["GET", "POST"])
 @login_required
 def footprint():
   """Shows user their current footprint and which areas are impacting their score the most"""
+
   return render_template("/footprint.html")
 
 # History page
