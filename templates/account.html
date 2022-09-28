@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block main %}
-<form action="/account" method="get">
+<!-- Forest by Tyler Lastovich from Pexels https://www.pexels.com/photo/green-leafed-trees-572688/ */ -->
+ <div class="bg-image" style="background-image: url('/static/forest.jpg'); height:100vh;" >
+<form action="/account" method="get" class="account-background">
   <div class="container-fluid mt-2 p-2">
     <div class="card float-right p-2 border-0 shadow-sm rounded">
       <div class="card-body">
@@ -61,3 +63,4 @@
     </div>
       {% endblock %}
     </form> 
+  </div>
