@@ -15,7 +15,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password
-from helpers import impact_by_weight
+from helpers import impact_by_weight, impact_by_energy, estimate, impact_by_volume, impact_by_money, impact_by_distance, impact_by_number
 from flask_mail import Mail, Message
 from flask_mail_sendgrid import MailSendGrid
 from sendgrid import SendGridAPIClient
@@ -102,8 +102,11 @@ def activity():
 @login_required
 def calculator():
   """Quiz user takes to tally up their carbon score"""
-  search = impact_by_weight("waste_type_mixed_plastics-disposal_method_landfilled")
-  print("Search returns: ", search)
+  region = "US"
+  number = 3
+  activity_id = "accommodation_type_hotel_stay"
+  
+
   return render_template("/calculator.html")
 
 

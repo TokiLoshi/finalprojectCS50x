@@ -9,13 +9,57 @@
   <div>
     <div class="container p-3 shadow rounded-3 orange">
       <h2 class="whiteText">You can only improve what you measure</h2>
-      <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
-      <img class="img-fluid rounded-2" src="/static/plastic_world.jpg" width="300" alt="green island in the ocean"/>
+      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <h4>Let's cacluate your current carbon footprint</h4>
+        <h5>How it works</h5>
+        <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
+        <img class="img-fluid rounded-2 mx-auto" src="/static/plastic_world.jpg" width="300" alt="green island in the ocean"/>
+        
+        <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors (how quickly greenhouse gases (GHGs) are released into the atmosphere) from 5 key areas of your life. </p>
+        <ol class="calculator">
+          <li class="justify-content-lg-start">Your household</li>
+          <li>Your electricity usage and the fuels (renewable vs fossil) your state uses to generate electricity</li>
+          <li>Your modes of transport for moving around the world</li>
+          <li>And lastly, your diet and shopping habits</li>
+        </ol>
+        <p>We've chosen the Climatiq API for the most accurate and industry standard estimations. You can find out more about these calculations in how it works.</p>
+        <p>Once you've complete the quiz hit submit and we'll show you to the results page and breakdown your score and how you're doing compared to the current average.</p>
+        <p>We will provide you with quick and easy options to reduce your carbon footprint that will also increase your savings, improve your life and make you proud.</p>
+      </div>
       </br>
     </form>       
       <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-        <h4>Let's cacluate your current carbon footprint</h4>
-        
+        <h4>Your household</h4>  
+         <!--Assorted color walls by Jessica Bryant from Pexels https://www.pexels.com/photo/assorted-color-wall-paint-house-photo-1370704/ -->
+     <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
+        <div class="mb-3 container-fluid align-content-start">
+            <form action="/calculator" method="post">
+              <label for="name" class="form-label">Let's talk about your energy usage:</label>
+              <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
+            </form>
+            <form action="/tracker" method="post">
+              <label for="name" class="form-label">Let's talk about your diet:</label>
+            <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
+            </form>
+            <form action="/tracker" method="post">
+              <label for="name" class="form-label">Let's talk about your household:</label>
+            <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
+            </form>
+            <form action="/leaderboard" method="post">
+              <label for="name" class="form-label">Let's talk about your transport:</label>
+              <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
+            </form>
+            <form action="/results" method="post">
+              <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+            </form>
+          </div>
+      </div>
+    </br>
+    <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+      <h4>Your electrical usage</h4>
+      <!--Shallow Focus Photography of lights by Joy Sing from Pexels https://www.pexels.com/photo/shallow-focus-photography-of-light-bulbs-2764942/ -->
+     <img class="img-fluid rounded-2 mx-auto" src="/static/lights.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
+      
         <div class="mb-3 container-fluid align-content-start">
           <form action="/calculator" method="post">
             <label for="name" class="form-label">Let's talk about your energy usage:</label>
@@ -36,10 +80,68 @@
           <form action="/results" method="post">
             <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
           </form>
-          </div>
-        
-      </div>
-  </div>
+        </div>
+    </div>
+  </br>
+    <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+      <h4>Transport, how you move around the world</h4> 
+      <!--Forced perspective by Matheus Bertelli from Pexels https://www.pexels.com/photo/forced-perspective-photography-of-cars-running-on-road-below-smartphone-799443/ -->
+    <img class="img-fluid rounded-2 mx-auto" src="/static/transport.jpg" width="300" alt="green island in the ocean"/>
+    
+       <div class="mb-3 container-fluid align-content-start">
+         <form action="/calculator" method="post">
+           <label for="name" class="form-label">Let's talk about your energy usage:</label>
+           <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
+         </form>
+         <form action="/tracker" method="post">
+           <label for="name" class="form-label">Let's talk about your diet:</label>
+         <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
+         </form>
+         <form action="/tracker" method="post">
+           <label for="name" class="form-label">Let's talk about your household:</label>
+         <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
+         </form>
+         <form action="/leaderboard" method="post">
+           <label for="name" class="form-label">Let's talk about your transport:</label>
+           <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
+         </form>
+         <form action="/results" method="post">
+           <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+         </form>
+       </div>
+   </div>
+  </br>
+   <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+    <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
+  <img class="img-fluid rounded-2 mx-auto" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
+   <h4>Your diet and shopping habits</h4>
+     <div class="mb-3 container-fluid align-content-start">
+       <form action="/calculator" method="post">
+         <label for="name" class="form-label">Let's talk about your energy usage:</label>
+         <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
+       </form>
+       <form action="/tracker" method="post">
+         <label for="name" class="form-label">Let's talk about your diet:</label>
+       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
+       </form>
+       <form action="/tracker" method="post">
+         <label for="name" class="form-label">Let's talk about your household:</label>
+       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
+       </form>
+       <form action="/leaderboard" method="post">
+         <label for="name" class="form-label">Let's talk about your transport:</label>
+         <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
+       </form>
+       <form action="/results" method="post">
+         <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+       </form>
+     </div>
+ </div>
+
+  
+  
+  
+  
   </div>
   </div>
 </form>

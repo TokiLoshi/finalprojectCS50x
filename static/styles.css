@@ -38,3 +38,7 @@ nav .navbar-brand
 .orangeText {
   color: #FF9551
 }
+.calculator {
+  text-align: left;
+  font-weight: 600;
+}
