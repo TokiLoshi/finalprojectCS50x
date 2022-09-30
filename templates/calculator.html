@@ -34,10 +34,15 @@
      <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
         <div class="mb-3 container-fluid align-content-start">
             <form action="/calculator" method="post">
-              <label for="name" class="form-label">Let's talk about your energy usage:</label>
-              <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
-            </form>
-            <form action="/tracker" method="post">
+           
+
+              <label for="name" class="form-label">What kind of building do you live in?</label>
+         <select class="form-select" aria-label="Default select example">
+          <option selected>Please select the type of building you live in</option>
+          <option value="apartment">Multi-family_residential or an apartment</option>
+          <option value="single_family">Single-family resdiential</option>
+          <option value="commercial">Commerical</option>
+        </select>
               <label for="name" class="form-label">Let's talk about your diet:</label>
             <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
             </form>
@@ -117,7 +122,7 @@
    <h4>Your diet and shopping habits</h4>
      <div class="mb-3 container-fluid align-content-start">
        <form action="/calculator" method="post">
-         <label for="name" class="form-label">Let's talk about your energy usage:</label>
+         
          <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
        </form>
        <form action="/tracker" method="post">
