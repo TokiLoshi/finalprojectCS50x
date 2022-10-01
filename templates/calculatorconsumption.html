@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Calculatorconsumption
+{% endblock %}
+
+{% block main %}
+<form action="/calculatorconsumption" method="get"></form>
+<div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+  <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
+<img class="img-fluid rounded-2 mx-auto" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
+ <h4>Your diet and shopping habits</h4>
+   <div class="mb-3 container-fluid align-content-start">
+     <form action="/calculator" method="post">
+       
+       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
+     </form>
+     <form action="/tracker" method="post">
+       <label for="name" class="form-label">Let's talk about your diet:</label>
+     <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
+     </form>
+     <form action="/tracker" method="post">
+       <label for="name" class="form-label">Let's talk about your household:</label>
+     <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
+     </form>
+     <form action="/leaderboard" method="post">
+       <label for="name" class="form-label">Let's talk about your transport:</label>
+       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
+     </form>
+     <form action="/results" method="post">
+       <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+     </form>
+   </div>
+</div>
+</form>
+
+
+{% endblock %}

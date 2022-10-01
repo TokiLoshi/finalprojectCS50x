@@ -97,17 +97,58 @@ def activity():
   """Allows users to track their activities and see how that affects their carbon score"""
   return render_template("/activity.html")
 
-# Calculator page
+# Calculator page for instructions and household calculations
 @app.route("/calculator", methods=["GET", "POST"])
 @login_required
 def calculator():
+  """Quiz user takes to tally up their carbon score"""
+  print("hi")
+  if request.method == "POST":
+    # Get information from form
+    building = request.form.get("building")
+    state = request.form.get("state")
+    household_occupants = request.form.get("household_occupants")
+    recycling = request.form.get("recycling")
+    utility_bill = request.form.get("utilitybill")
+    drycleaning = request.form.get("drycleaning")
+
+    # Print Statements to test
+    print("Building is a: ", building)
+    print("State is: ", state)
+    print("There are household occupants: ", household_occupants)
+    print("Recycling: ", recycling)
+    print("Utility Bill: ", utility_bill)
+    print("Dry cleaning: ", drycleaning)
+    return render_template("/calculatortransport.html")
+  else:
+    return render_template("/calculator.html")
+
+# Calculator page for transport
+@app.route("/calculatortransport", methods=["GET", "POST"])
+@login_required
+def calculatortransport():
+  """Quiz user takes to tally up their carbon score"""
+  if request.method == "POST":
+    print("Yay post")
+    name = request.form.get("name")
+    print("Name: ", name)
+  else: 
+    print("Nope")
+  
+
+  return render_template("/calculatortransport.html")
+
+# Calculator page for consumption
+@app.route("/calculatorconsumption", methods=["GET", "POST"])
+@login_required
+def calculatorconsumption():
   """Quiz user takes to tally up their carbon score"""
   region = "US"
   number = 3
   activity_id = "accommodation_type_hotel_stay"
   
 
-  return render_template("/calculator.html")
+  return render_template("/calculatortransport.html")
 
 
 @app.route("/changename", methods=["GET", "POST"])
