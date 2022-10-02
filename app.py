@@ -1,4 +1,5 @@
 
+from audioop import avg
 from crypt import methods
 from curses import use_default_colors
 import email
@@ -163,6 +164,8 @@ def calculatorconsumption():
   if request.method == "POST":
     print("Wahoo post")
     beef = request.form.get("beef")
+    pork = request.form.get("pork")
+    chicken = request.form.get("chicken")
     flexitarian = request.form.get("flexitarian")
     new_clothes = request.form.get("new_clothes")
     restaurants = request.form.get("restaurants")
@@ -171,6 +174,8 @@ def calculatorconsumption():
     electronics = request.form.get("electronics")
     hotels = request.form.get("hotels")
     print("Beef: ", beef)
+    print("Pork", pork)
+    print("Chicken", chicken)
     print("flexitarian: ", flexitarian)
     print("new clothes: ", new_clothes)
     print("restaurants: ", restaurants)
@@ -246,13 +251,31 @@ def calculatorconsumption():
 
     # Impact by beef consumption 2021 3.7609kg/EUR 
     # We might need to look further into this 
-    beef_activit_id = "consumer_goods-type_meat_products_beef"
+    beef_activity_id = "consumer_goods-type_meat_products_beef"
+    beef_frequency = int(beef)
+    
+    # Average obtained from: 
+    beef_price = 5.12
+    beef_spend = beef_price * beef_frequency
+    # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
+    beef_impact = impact_by_money(beef_activity_id, region, beef_spend)
 
     # We might want to look at port as well which is 2021 and higher 0.4543 kg/USD
     pork_activity_id = "consumer_goods-type_meat_products_pork"
-
-    # Chicken is 2021 at 0.6325
+    pork_frequency = int(pork)
+    # Average price obtained from USDA https://www.ams.usda.gov/mnreports/lsmnprpork.pdf
+    pork_price = avg(11.21 + 11.21 + 9.64 + 11.26 + 8.89 + 9.04 + 16.22 + 9.56 + 8.20 + 7.92 + 8.83 + 9.04 + 8.79 + 8.76 + 11.25)
+    print(pork_price)
+    # We might want to weight this by popularity 
+    # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
+    pork_spend = pork_frequency * pork_price
+    pork_impact = impact_by_money(pork_activity_id, region, pork_spend)
+    
+    # Chicken is 2021 at 0.6325 USD/kg
     chicken_activity_id = "consumer_goods-type_meat_products_poultry"
+    # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
+    chicken_frequency = int(chicken)
+
 
     return render_template("/results.html")
   else: 
