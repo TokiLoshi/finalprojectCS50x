@@ -5,33 +5,59 @@
 {% endblock %}
 
 {% block main %}
-<form action="/calculatortransport" method="get">
+<form action="/calculatortransport" method="post">
 <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+  <p>Page 2 of 3</p>
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">33%</div>
+  </div>
+</br>
   <h4>Transport, how you move around the world</h4> 
   <!--Forced perspective by Matheus Bertelli from Pexels https://www.pexels.com/photo/forced-perspective-photography-of-cars-running-on-road-below-smartphone-799443/ -->
 <img class="img-fluid rounded-2 mx-auto" src="/static/transport.jpg" width="300" alt="green island in the ocean"/>
+</br>
+<label for="work_situation" class="form-label"><b>What best describes your work/study situation?</b></label>
+  <select name="work_situation" class="form-select w-auto mx-auto" aria-label="Default select example" required>
+    <option selected value="defalut">Which best describes you?</option>
+    <option value="Home">Work/study from home</option>
+    <option value="Hybrid">Hyrbid (from home and in person)</option>
+    <option value="Person">Only in person</option>
+</select>
+<label for="commuter_days" class="form-label mx-auto"><b>How many days a week do you commute?</b></label>
+<input type="number" name="commuter_days" class="form-control mx-auto w-50" id="short-haul" placeholder="# days" min="0" max="7" required>
+<label for="home_days" class="form-label mx-auto w-auto"><b>How many days a week do you stay home</b></label>
+<input type="number" name="home_days" class="form-control mx-auto w-50" id="short-haul" placeholder="# days" min="0" max="7" required>
+<label for="commuter_distance" class="form-label mx-auto w-auto"><b>How far is your commute?</b></label>
+<input type="number" name="commuter_distance" class="form-control mx-auto w-50" id="short-haul" placeholder="miles" min="0" required>
+<label for="transport_mode" class="form-label"><b>Which mode of transport do you mostly take?</b></label>
+  <select name="transport_mode" class="form-select w-auto mx-auto" aria-label="Default select example" required>
+    <option selected value="defalut">Select your typical mode of transport</option>
+    <option value="gas_no_carpool">Gas Vehicle (no carpool)</option>
+    <option value="gas_carpool">Gas Vehicle (carpool)</option>
+    <option value="hybrid">Hybrid Electric Vehicle</option>
+    <option value="electric">Electric Vehicle</option>
+    <option value="subway">Subway/ Tram</option>
+    <option value="amtrack">Intercity Amtrack</option>
+    <option value="bus">Bus</option>
+    <option value="bike">Bicycle</option>
+    <option value="ferry">Ferry</option>
+    <option value="motorbike">Motorcycle</option>
+</select>
+<hr>
+      <p><b>On average, per year:</b></p>
+       <label for="short_haul" class="form-label mx-auto w-auto"><b>How many short-haul flights do you take?</b></label>
+       <label><i>Any flight under 300 miles e.g New York to Washington D.C.</i></label>
+       <input type="number" name="short_haul" class="form-control mx-auto w-auto" id="short-haul" placeholder="# short-haul flights" min="0" required>
 
-   <div class="mb-3 container-fluid align-content-start">
-     <form action="/calculator" method="post">
-       <label for="name" class="form-label">Let's talk about your energy usage:</label>
-       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
-     </form>
-     <form action="/tracker" method="post">
-       <label for="name1" class="form-label">Let's talk about your diet:</label>
-     <input type="text" name="name1" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
-     </form>
-     <form action="/tracker" method="post">
-       <label for="name2" class="form-label">Let's talk about your household:</label>
-     <input type="text" name="name2" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
-     </form>
-     <form action="/leaderboard" method="post">
-       <label for="name" class="form-label">Let's talk about your transport:</label>
-       <input type="text" name="name3" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
-     </form>
-     <form action="/calculatortransport" method="post">
-       <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
-     </form>
-   </div>
-</div>
+       <label for="medium_haul" class="pt-2 form-label mx-auto w-auto"><b>How many medium-haul flights do you take?</b></label>
+       <label><i>Between 300 and 2300 miles e.g New York to Las Vegas</i></label>
+       <input type="number" name="medium_haul" class="form-control mx-auto w-auto" id="short-haul" placeholder="# medium-haul flights" min="0" required>
+
+       <label for="long_haul" class="form-label mx-auto w-auto"><b>How many long-haul flights do you take?</b></label>
+       <label><i>Long flights e.g New York to San Francisco or London and beyond</i></label>
+       <input type="number" name="long_haul" class="form-control mx-auto w-auto mb-2" id="short-haul" placeholder="# long-haul flights" min="0" required>
+   <button type="submit" class="btn btn-dark m-2 mt-2 p-3 mx-auto w-auto">Save my answers</button>
+  </div>
+  </div>
 </form>  
 {% endblock %}

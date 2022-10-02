@@ -250,10 +250,11 @@ restaurant_activity_ids_by_money = {"full_restaurant":"consumer_services-type_fu
 # Transport 
 transport_activity_ids_by_money = {"consumer_goods-type_clothing": "consumer_goods-type_clothing",
 "passenger_ground_transport":"passenger_vehicle-vehicle_type_passenger_ground_transport-fuel_source_na-distance_na-engine_size_na",
-# Short haul is under 300 miles
+# Short haul is under 300 miles e.g New York to Washington DC
 "air_travel_short_haul":"passenger_flight-route_type_na-aircraft_type_na-distance_lt_300mi-class_na-rf_na",
-# Medium haul is between 30 and 2300 miles 
+# Medium haul is between 30 and 2300 miles e.g New York to Atlanta or Denver
 "air_travel_medium_haul":"passenger_flight-route_type_na-aircraft_type_na-distance_gt_300mi_lt_2300mi-class_na-rf_na",  
+# Long haul is 2300 miles plus so New York to London or New York to San Francisco
 "air_travel_long_haul":"passenger_flight-route_type_na-aircraft_type_na-distance_gt_2300mi-class_na-rf_na",
 "subway_tram":"passenger_train-route_type_urban-fuel_source_na",
 "intercity_rail":"passenger_train-route_type_intercity_other_routes-fuel_source_na",
@@ -267,6 +268,7 @@ transport_activity_ids_by_money = {"consumer_goods-type_clothing": "consumer_goo
 transport_activity_ids_by_distance = {"passenger_bus":"passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na"}
 
 # Impact by number
+# 16.1.7kg/room-night based of 2022 AR4
 accomodation_activity_ids_by_number = {"hotels":"accommodation_type_hotel_stay"}
 
 def lookup():

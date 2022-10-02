@@ -2,6 +2,7 @@
 from crypt import methods
 from curses import use_default_colors
 import email
+from hashlib import new
 import os
 import string
 import random
@@ -130,25 +131,133 @@ def calculatortransport():
   """Quiz user takes to tally up their carbon score"""
   if request.method == "POST":
     print("Yay post")
-    name = request.form.get("name")
-    print("Name: ", name)
+    work_situation = request.form.get("work_situation")
+    commuter_days = request.form.get("commuter_days")
+    home_days = request.form.get("home_days")
+    commuter_distance = request.form.get("commuter_distance")
+    transport_mode = request.form.get("transport_mode")
+    short_haul = request.form.get("short_haul")
+    medium_haul = request.form.get("medium_haul")
+    long_haul = request.form.get("long_haul")
+    
+    # Print statements to test
+    print("Work situation: ", work_situation)
+    print("Home days: ", home_days)
+    print("commuter days: ", commuter_days)
+    print("commuter distance: ", commuter_distance)
+    print("transport_mode: ", transport_mode)
+    print("short haul: ", short_haul)
+    print("medium haul: ", medium_haul)
+    print("long haul: ", long_haul)
+    return render_template("/calculatorconsumption.html")
   else: 
     print("Nope")
-  
-
-  return render_template("/calculatortransport.html")
+    return render_template("/calculatortransport.html")
 
 # Calculator page for consumption
 @app.route("/calculatorconsumption", methods=["GET", "POST"])
 @login_required
 def calculatorconsumption():
   """Quiz user takes to tally up their carbon score"""
-  region = "US"
-  number = 3
-  activity_id = "accommodation_type_hotel_stay"
-  
+  print("hi we're here")
+  if request.method == "POST":
+    print("Wahoo post")
+    beef = request.form.get("beef")
+    flexitarian = request.form.get("flexitarian")
+    new_clothes = request.form.get("new_clothes")
+    restaurants = request.form.get("restaurants")
+    accessories = request.form.get("accessories")
+    appliances = request.form.get("appliances")
+    electronics = request.form.get("electronics")
+    hotels = request.form.get("hotels")
+    print("Beef: ", beef)
+    print("flexitarian: ", flexitarian)
+    print("new clothes: ", new_clothes)
+    print("restaurants: ", restaurants)
+    print("accessories: ", accessories)
+    print("appliances: ", appliances)
+    print("electronics: ", electronics)
+    print("hotels: ", hotels)
+    region = "US"
+    
+    # Hotel impact at 16.1kg (default 2022) per night 
+    hotel_activity_id = "accommodation_type_hotel_stay"
+    hotel_number = int(hotels)
+    hotel_impact = impact_by_number(hotel_activity_id, hotel_number, region)
+    print("Hotel impact: ", hotel_impact)
+    print(type(hotel_impact))
+    for impact in hotel_impact:
+      hotel_carbon = hotel_impact['Carbon_emissions']
+      hotel_unit = hotel_impact['Carbon_unit']
+    print("Hotel carbon: ", hotel_carbon)
+    print("Hotel unit: ", hotel_unit)
 
-  return render_template("/calculatortransport.html")
+    # Impact by clothes 2020 - 1.947kg/usd 
+    clothing_activity_id = "consumer_goods-type_clothing"
+    clothing_spend = new_clothes
+    clothing_impact = impact_by_money(clothing_activity_id, region, clothing_spend)
+    print("Clothing Impact: ", clothing_impact)
+    for impact in clothing_impact:
+      clothing_carbon = clothing_impact['Carbon_emissions']
+      clothing_unit = clothing_impact['Carbon_unit']
+    print("Clothing carbon: ", clothing_carbon)
+    print("Clothing unit: ", clothing_unit)
+    
+    # Impact by accessories 2020 - 0.215kg/USD
+    accessories_activity_id = "consumer_goods-type_clothing_clothing_accessories_stores"
+    accessories_spend = accessories
+    accessories_impact = impact_by_money(accessories_activity_id, region, accessories_spend)
+    print("Accessories impact: ", accessories_impact)
+    for impact in accessories_impact:
+      accessories_carbon = accessories_impact['Carbon_emissions']
+      accessories_unit = accessories_unit['Carbon_unit']
+    print("Accessories Carbon: ", accessories_carbon)
+    print("Accessories unit: ", accessories_unit)
+
+    # Impact by electronics 2020 - 1.083kg/USD
+    electronics_activity_id = "electrical_equipment-type_small_electrical_appliances"
+    electronics_spend = electronics
+    electronics_impact = impact_by_money(electronics_activity_id, region, electronics_spend)
+    for impact in electronics_impact:
+      electronics_carbon = electronics_impact['Carbon_emissions']
+      electronics_unit = electronics_impact['Carbon_unit']
+    print("Electronics carbon: ", electronics_carbon)
+    print("Electronics unit: ", electronics_unit)
+
+    # Impact by appliances (cooking) 2020 - 0.524kg/USD
+    appliances_activity_id = "electrical_equipment-type_home_cooking_appliances"
+    appliances_spend = appliances 
+    appliances_impact = impact_by_money(appliances_activity_id, region, appliances_spend)
+    for impact in appliances_impact:
+      appliances_carbon = appliances_impact['Carbon_emissions']
+      appliances_unit = appliances_unit['Carbon_unit']
+    print("Appliances Carbon: ", appliances_carbon)
+    print("Appliances unit: ", appliances_unit)
+
+    # Impact by restaurants 2020 - 0.261kg/USD
+    restaurants_activity_id = "consumer_services-type_full_service_restaurants"
+    restaurants_spend = restaurants
+    restaurants_impact = impact_by_money(restaurants_activity_id, region, restaurants_spend)
+    for impact in restaurants_impact:
+      restaruant_carbon = restaurants_impact['Carbon_emissions']
+      restaurants_unit = restaurants_impact['Carbon_unit']
+    print("Restaurants carbon: ", restaruant_carbon)
+    print("Restaurants unit: ", restaurants_unit)
+
+    # Impact by beef consumption 2021 3.7609kg/EUR 
+    # We might need to look further into this 
+    beef_activit_id = "consumer_goods-type_meat_products_beef"
+
+    # We might want to look at port as well which is 2021 and higher 0.4543 kg/USD
+    pork_activity_id = "consumer_goods-type_meat_products_pork"
+
+    # Chicken is 2021 at 0.6325
+    chicken_activity_id = "consumer_goods-type_meat_products_poultry"
+
+    return render_template("/results.html")
+  else: 
+    print("Reliable old get")
+    return render_template("/calculatorconsumption.html")
 
 
 @app.route("/changename", methods=["GET", "POST"])

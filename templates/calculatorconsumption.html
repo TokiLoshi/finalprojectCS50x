@@ -5,30 +5,51 @@
 {% endblock %}
 
 {% block main %}
-<form action="/calculatorconsumption" method="get"></form>
+<form action="/calculatorconsumption" method="post">
 <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
   <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
 <img class="img-fluid rounded-2 mx-auto" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
- <h4>Your diet and shopping habits</h4>
+ <h4>Your Diet and Shopping Habits</h4>
    <div class="mb-3 container-fluid align-content-start">
      <form action="/calculator" method="post">
-       
-       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="What's your average electrical bill">
-     </form>
-     <form action="/tracker" method="post">
-       <label for="name" class="form-label">Let's talk about your diet:</label>
-     <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Are you a carnivore, vegetarian, vegan?">
-     </form>
-     <form action="/tracker" method="post">
-       <label for="name" class="form-label">Let's talk about your household:</label>
-     <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="How large is your househld?">
-     </form>
-     <form action="/leaderboard" method="post">
-       <label for="name" class="form-label">Let's talk about your transport:</label>
-       <input type="text" name="name" class="form-control mx-auto w-auto" id="name" placeholder="Do you carpool?">
-     </form>
-     <form action="/results" method="post">
-       <button class="btn btn-dark m-2 p-3 col-8">Calculate my Carbon Footprint</button>
+      <label for="beef" class="form-label"><b>How many times a week do you eat beef?</b></label>
+                <select name="beef" class="form-select mx-auto w-auto" aria-label="Default select example">
+                  <option selected value="default">On average...</option>
+                  <option value="0">I don't eat beef</option>
+                  <option value="1">Once a week</option>
+                  <option value="2">Twice a week</option>
+                  <option value="3">Three times a week</option>
+                  <option value="4">Four times a week</option>
+                  <option value="5">Five times a week</option>
+                  <option value="6">Six times a week</option>
+                  <option value="6">Every day</option>
+                </select>
+                <label for="flexitarian" class="form-label mx-auto w-auto"><b>How do you feel about making dietary changes?</b></label>
+                <select name="flexitarian" class="form-select mx-auto w-auto" aria-label="Default select example">
+                  <option selected value="default">Select</option>
+                  <option value="Not_a_chance">Not a chance</option>
+                  <option value="Nothing_major">As long as it's nothing major</option>
+                  <option value="Clear_benefits">If the benefits are clear</option>
+                  <option value="Open">I'm open to it</option>
+                  <option value="Actively_looking">I'm actively looking to make a change</option>
+                </select>
+                <hr>
+                <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on average spending. If you're curious please go ahead.</i></p>
+                <p><i>If you'd rather not say, don't worry we can still get you a decent bench mark. And you can recalculate your footprint any time.</i></p>
+                <p><b>How much would you say you...</b></p>
+                <label for="new_clothes" class="form-label"><b>spend each year on new clothes each year?</b></label>
+            <input type="text" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
+            <label for="restaurants" class="form-label"><b>spend on restaurants in a month?</b></label>
+            <input type="text" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
+            <label for="accessories" class="form-label"><b>spend on new accessories each year?</b></label>
+            <input type="text" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
+            <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
+            <input type="text" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
+            <label for="electronics" class="form-label"><b>spend on new electronics each year?</b></label>
+            <input type="text" name="electronics" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on electronics" min="0">
+            <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels?</b></label>
+            <input type="text" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
+       <button class="btn btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
      </form>
    </div>
 </div>
