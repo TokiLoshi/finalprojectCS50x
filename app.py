@@ -17,7 +17,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password
-from helpers import impact_by_weight, impact_by_energy, estimate, impact_by_volume, impact_by_money, impact_by_distance, impact_by_number
+from helpers import impact_by_weight, impact_by_energy, estimate, impact_by_volume, impact_by_money, impact_by_distance, impact_by_number, impact_by_flights, impact_by_road
 from flask_mail import Mail, Message
 from flask_mail_sendgrid import MailSendGrid
 from sendgrid import SendGridAPIClient
@@ -104,15 +104,16 @@ def activity():
 @login_required
 def calculator():
   """Quiz user takes to tally up their carbon score"""
-  print("hi")
   if request.method == "POST":
     # Get information from form
     building = request.form.get("building")
     state = request.form.get("state")
     household_occupants = request.form.get("household_occupants")
-    recycling = request.form.get("recycling")
-    utility_bill = request.form.get("utilitybill")
-    drycleaning = request.form.get("drycleaning")
+    recycling = int(request.form.get("recycling"))
+    waste_frequency = request.form.get("rubbish")
+    utility_bill = float(request.form.get("utilitybill"))
+    drycleaning = float(request.form.get("drycleaning"))
+    region = "US"
 
     # Print Statements to test
     print("Building is a: ", building)
@@ -121,6 +122,76 @@ def calculator():
     print("Recycling: ", recycling)
     print("Utility Bill: ", utility_bill)
     print("Dry cleaning: ", drycleaning)
+
+    # HACK: 
+    # Buildings multifamily is 0.113kg/USD median cost per unit is $64,500 0 $86,000 https://www.multifamily.loans/apartment-finance-blog/multifamily-construction-costs-an-investor-guide#:~:text=According%20to%20the%20most%20recent,%2464%2C500%20to%20%2486%2C000%20per%20unit. 
+    multifamily_median = (64500 + 86000)/2
+    singlefamily_median = 428700
+    # Single family home is 0.226kgs/USD according to a service by the Motley Fool https://www.fool.com/the-ascent/research/average-house-price-state/#:~:text=Average%20home%20price%20in%20the%20United%20States%3A%20%24428%2C700&text=That's%20a%2030%25%20increase%20from,when%20the%20median%20was%20%24329%2C000.&text=Median%20sales%20price%20of%20homes,of%20homes%20in%20the%20U.S.&text=Data%20source%3A%20Federal%20Reserve%20Bank%20of%20St
+    
+    if building is None: 
+      building = "Info not provided"
+      building_impact = "Need more info to calculate"
+    elif building == "construction-type_multifamily_residential_structures":
+      print("We've got a multi")
+      building_impact = impact_by_money(building, region, multifamily_median)
+      print("Impact of multi family home: ", building_impact)
+    elif building == "construction-type_single_family_residential_structures":
+      print("We've got a single family home")
+      building_impact = impact_by_money(building, region, singlefamily_median)
+      print("Impact of Single family home: ", building_impact)
+    else:
+      print("Dunno what happend but they got something through")
+
+    # Work out impact by electricity
+    electricity_activity_id = "electricity-energy_source_grid_mix"
+    if state is None:
+      state = "Info not provided"
+      impact_electricity = "Need more info to calculate"
+    else:  
+      region = state
+      energy = utility_bill
+      impact_electricity = impact_by_energy(electricity_activity_id, region, energy)
+      print("Impact by electricity: ", impact_electricity)
+
+    # HACK:
+    # Impact by waste typical kitchen bag can hold up to 15lbs so we will estimate with 12lbs https://westerndisposalservices.com/how-much-does-it-weigh-household-trash/ 
+    landfill_id = "waste_type_mixed_msw-disposal_method_landfilled"
+    recycling_id = "waste_type_mixed_recyclables-disposal_method_recycled"
+    if waste_frequency is None:
+      waste_frequency = "Info not provided"
+      impact_landfill = "Need more info to calculate"
+      impact_recycling = "Need more info to calculate"
+    else:
+      total_weight_pounds =  12 * int(waste_frequency)
+      # Convert to kg by dividing pounds by 2.2045 https://www.wikihow.com/Convert-Pounds-to-Kilograms
+      print("Weight in pounds", total_weight_pounds)
+      weight_kg = total_weight_pounds / 2.2046
+      print("Weight in KG", weight_kg)
+      # Convert to percentage
+      percentage_recycled = recycling / 100
+      percentage_landfil = (100 - recycling)
+      print("Percentage recycled", percentage_recycled)
+      weight_recycled = weight_kg * percentage_recycled
+      weight_landfill = float((weight_kg - weight_recycled) * percentage_landfil)
+      print("Weight recycled: ", weight_recycled)
+      print("Weight landfill", weight_landfill)
+      impact_landfill = impact_by_weight(landfill_id, weight_landfill)
+      impact_recycling = impact_by_weight(recycling_id, weight_recycled)
+      print("Impact of landfill: ", impact_landfill)
+      print("Impact of recycling: ", impact_recycling)
+
+    # Impact of drycleaning per person in house:
+    if household_occupants is None: 
+      household_occupants = "Info not provided"
+      drycleaning_impact = "Need number of houshold occupants to " 
+    drycleaning_cost_per_person = int(drycleaning / int(household_occupants))
+    drycleaning_region = "US"
+    print("drycleaning cost per person: ", drycleaning_cost_per_person)
+    drycleaning_activity_id = "consumer_goods-type_dry_cleaning_laundry"
+    drycleaning_impact = impact_by_money(drycleaning_activity_id, drycleaning_region, drycleaning_cost_per_person)
+    print("Drycleaning impact: ", drycleaning_impact)
+
     return render_template("/calculatortransport.html")
   else:
     return render_template("/calculator.html")
@@ -134,22 +205,49 @@ def calculatortransport():
     print("Yay post")
     work_situation = request.form.get("work_situation")
     commuter_days = request.form.get("commuter_days")
-    home_days = request.form.get("home_days")
     commuter_distance = request.form.get("commuter_distance")
     transport_mode = request.form.get("transport_mode")
     short_haul = request.form.get("short_haul")
     medium_haul = request.form.get("medium_haul")
     long_haul = request.form.get("long_haul")
+    transport_cost = int(request.form.get("transport_cost"))
     
     # Print statements to test
     print("Work situation: ", work_situation)
-    print("Home days: ", home_days)
     print("commuter days: ", commuter_days)
     print("commuter distance: ", commuter_distance)
     print("transport_mode: ", transport_mode)
     print("short haul: ", short_haul)
     print("medium haul: ", medium_haul)
     print("long haul: ", long_haul)
+    print("Transport Cost: ", transport_cost)
+
+    region = "US"
+
+    # HACK:
+    # Impact of total number of short_haul_flights 0.22701067kg/passengermile
+    short_haul_id = "passenger_flight-route_type_na-aircraft_type_na-distance_lt_300mi-class_na-rf_na"
+    short_distance = 300
+    short_haul_impact = impact_by_flights(short_haul_id, short_distance)
+    print("short haul impact: ", short_haul_impact)
+    # Impact of total_number of long haul flights
+    medium_haul_id = "passenger_flight-route_type_na-aircraft_type_na-distance_gt_300mi_lt_2300mi-class_na-rf_na" 
+    medium_distance = 2300
+    medium_haul_impact = impact_by_flights(medium_haul_id, medium_distance)
+    print("Medium Haul Flight Impact: ", medium_haul_impact)
+    # Impact of total number of long haul flights
+    long_haul_id = "passenger_flight-route_type_na-aircraft_type_na-distance_gt_2300mi-class_na-rf_na"
+    long_distance = 3500
+    long_distance_impact = impact_by_flights(long_haul_id, long_distance)
+    print("Long Haul impact: ", long_distance_impact)
+    
+    # Work out total commuter distance per week
+    distance_commute = (float(commuter_distance) * 2) * int(commuter_days)
+    impact_driving = impact_by_road("passenger_vehicle-vehicle_type_passenger_ground_transport-fuel_source_na-distance_na-engine_size_na", transport_cost)
+    print("Commuter total distance: ", distance_commute)
+    print("Impact of road transport: ", impact_driving)
+    if transport_mode == "passenger_vehicle-vehicle_type_pickup_trucks_vans_suvs-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
+      print("We've got ourselves an SUV")
     return render_template("/calculatorconsumption.html")
   else: 
     print("Nope")
@@ -173,109 +271,144 @@ def calculatorconsumption():
     appliances = request.form.get("appliances")
     electronics = request.form.get("electronics")
     hotels = request.form.get("hotels")
-    print("Beef: ", beef)
-    print("Pork", pork)
-    print("Chicken", chicken)
-    print("flexitarian: ", flexitarian)
-    print("new clothes: ", new_clothes)
-    print("restaurants: ", restaurants)
-    print("accessories: ", accessories)
-    print("appliances: ", appliances)
-    print("electronics: ", electronics)
-    print("hotels: ", hotels)
+    # print("Beef: ", beef)
+    # print("Pork", pork)
+    # print("Chicken", chicken)
+    # print("flexitarian: ", flexitarian)
+    # print("new clothes: ", new_clothes)
+    # print("restaurants: ", restaurants)
+    # print("accessories: ", accessories)
+    # print("appliances: ", appliances)
+    # print("electronics: ", electronics)
+    # print("hotels: ", hotels)
     region = "US"
     
     # Hotel impact at 16.1kg (default 2022) per night 
     hotel_activity_id = "accommodation_type_hotel_stay"
-    hotel_number = int(hotels)
-    hotel_impact = impact_by_number(hotel_activity_id, hotel_number, region)
-    print("Hotel impact: ", hotel_impact)
-    print(type(hotel_impact))
-    for impact in hotel_impact:
-      hotel_carbon = hotel_impact['Carbon_emissions']
-      hotel_unit = hotel_impact['Carbon_unit']
-    print("Hotel carbon: ", hotel_carbon)
-    print("Hotel unit: ", hotel_unit)
+    if hotels is None: 
+      hotels = "No info given"
+      hotel_impact = "Need more information to calculate"
+    else:
+      hotel_number = int(hotels)
+      hotel_impact = impact_by_number(hotel_activity_id, hotel_number, region)
+      print("Hotel impact: ", hotel_impact)
+      print(type(hotel_impact))
+      for impact in hotel_impact:
+        hotel_carbon = hotel_impact['Carbon_emissions']
+        hotel_unit = hotel_impact['Carbon_unit']
+      print("Hotel carbon: ", hotel_carbon)
+      print("Hotel unit: ", hotel_unit)
 
     # Impact by clothes 2020 - 1.947kg/usd 
     clothing_activity_id = "consumer_goods-type_clothing"
-    clothing_spend = new_clothes
-    clothing_impact = impact_by_money(clothing_activity_id, region, clothing_spend)
-    print("Clothing Impact: ", clothing_impact)
-    for impact in clothing_impact:
-      clothing_carbon = clothing_impact['Carbon_emissions']
-      clothing_unit = clothing_impact['Carbon_unit']
-    print("Clothing carbon: ", clothing_carbon)
-    print("Clothing unit: ", clothing_unit)
+    if clothing_spend is None:
+      clothing_spend = "No info given"
+      clothing_impact = "Need more information to calculate"
+    else:
+      clothing_spend = int(new_clothes)
+      clothing_impact = impact_by_money(clothing_activity_id, region, clothing_spend)
+      print("Clothing Impact: ", clothing_impact)
+      for impact in clothing_impact:
+        clothing_carbon = clothing_impact['Carbon_emissions']
+        clothing_unit = clothing_impact['Carbon_unit']
+        print("Clothing carbon: ", clothing_carbon)
+      print("Clothing unit: ", clothing_unit)
     
     # Impact by accessories 2020 - 0.215kg/USD
     accessories_activity_id = "consumer_goods-type_clothing_clothing_accessories_stores"
-    accessories_spend = accessories
-    accessories_impact = impact_by_money(accessories_activity_id, region, accessories_spend)
-    print("Accessories impact: ", accessories_impact)
-    for impact in accessories_impact:
-      accessories_carbon = accessories_impact['Carbon_emissions']
-      accessories_unit = accessories_unit['Carbon_unit']
-    print("Accessories Carbon: ", accessories_carbon)
-    print("Accessories unit: ", accessories_unit)
+    if accessories_spend is None:
+      accessories_spend = "No info given"
+      accessories_impact = "Need more information to calculate"
+    else:
+      accessories_spend = int(accessories)
+      accessories_impact = impact_by_money(accessories_activity_id, region, accessories_spend)
+      print("Accessories impact: ", accessories_impact)
+      for impact in accessories_impact:
+        accessories_carbon = accessories_impact['Carbon_emissions']
+        accessories_unit = accessories_impact['Carbon_unit']
+        print("Accessories Carbon: ", accessories_carbon)
+        print("Accessories unit: ", accessories_unit)
 
     # Impact by electronics 2020 - 1.083kg/USD
     electronics_activity_id = "electrical_equipment-type_small_electrical_appliances"
-    electronics_spend = electronics
-    electronics_impact = impact_by_money(electronics_activity_id, region, electronics_spend)
-    for impact in electronics_impact:
-      electronics_carbon = electronics_impact['Carbon_emissions']
-      electronics_unit = electronics_impact['Carbon_unit']
-    print("Electronics carbon: ", electronics_carbon)
-    print("Electronics unit: ", electronics_unit)
+    if electronics_impact is None:
+      electronics_spend = "No info given"
+      electronics_impact = "Need more information to calculate"
+    else:
+      electronics_spend = int(electronics)
+      electronics_impact = impact_by_money(electronics_activity_id, region, electronics_spend)
+      for impact in electronics_impact:
+        electronics_carbon = electronics_impact['Carbon_emissions']
+        electronics_unit = electronics_impact['Carbon_unit']
+        print("Electronics carbon: ", electronics_carbon)
+        print("Electronics unit: ", electronics_unit)
 
     # Impact by appliances (cooking) 2020 - 0.524kg/USD
     appliances_activity_id = "electrical_equipment-type_home_cooking_appliances"
-    appliances_spend = appliances 
-    appliances_impact = impact_by_money(appliances_activity_id, region, appliances_spend)
-    for impact in appliances_impact:
-      appliances_carbon = appliances_impact['Carbon_emissions']
-      appliances_unit = appliances_unit['Carbon_unit']
-    print("Appliances Carbon: ", appliances_carbon)
-    print("Appliances unit: ", appliances_unit)
+    if appliances_spend is None: 
+      appliances_spend = "No info given"
+      appliances_impact = "Need more information to calculate"
+    else:
+      appliances_spend = int(appliances)
+      appliances_impact = impact_by_money(appliances_activity_id, region, appliances_spend)
+      for impact in appliances_impact:
+        appliances_carbon = appliances_impact['Carbon_emissions']
+        appliances_unit = appliances_impact['Carbon_unit']
+        print("Appliances Carbon: ", appliances_carbon)
+        print("Appliances unit: ", appliances_unit)
 
     # Impact by restaurants 2020 - 0.261kg/USD
     restaurants_activity_id = "consumer_services-type_full_service_restaurants"
-    restaurants_spend = restaurants
-    restaurants_impact = impact_by_money(restaurants_activity_id, region, restaurants_spend)
-    for impact in restaurants_impact:
-      restaruant_carbon = restaurants_impact['Carbon_emissions']
-      restaurants_unit = restaurants_impact['Carbon_unit']
-    print("Restaurants carbon: ", restaruant_carbon)
-    print("Restaurants unit: ", restaurants_unit)
+    if restaurants_spend is None:
+      restaurants_spend = "No info given"
+      restaurants_impact = "Need more information to calculate"
+    else:
+      restaurants_spend = int(restaurants)
+      restaurants_impact = impact_by_money(restaurants_activity_id, region, restaurants_spend)
+      for impact in restaurants_impact:
+        restaruant_carbon = restaurants_impact['Carbon_emissions']
+        restaurants_unit = restaurants_impact['Carbon_unit']
+        print("Restaurants carbon: ", restaruant_carbon)
+        print("Restaurants unit: ", restaurants_unit)
 
     # Impact by beef consumption 2021 3.7609kg/EUR 
-    # We might need to look further into this 
+    # We might need to look further into this guessing each person eats half a pound per adult
     beef_activity_id = "consumer_goods-type_meat_products_beef"
     beef_frequency = int(beef)
-    
-    # Average obtained from: 
-    beef_price = 5.12
+    beef_price = (5.12 / 2)
     beef_spend = beef_price * beef_frequency
     # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
     beef_impact = impact_by_money(beef_activity_id, region, beef_spend)
-
+    print("Beef impact: ", beef_impact)
+    
     # We might want to look at port as well which is 2021 and higher 0.4543 kg/USD
     pork_activity_id = "consumer_goods-type_meat_products_pork"
     pork_frequency = int(pork)
     # Average price obtained from USDA https://www.ams.usda.gov/mnreports/lsmnprpork.pdf
-    pork_price = avg(11.21 + 11.21 + 9.64 + 11.26 + 8.89 + 9.04 + 16.22 + 9.56 + 8.20 + 7.92 + 8.83 + 9.04 + 8.79 + 8.76 + 11.25)
-    print(pork_price)
+    pork_prices = [1.21, 11.21, 9.64, 11.26, 8.89, 9.04, 16.22, 9.56, 8.20, 7.92, 8.83, 9.04, 8.79, 8.76, 11.25]
+    sum_pork_prices = sum(pork_prices)
+    print("Pork_prices sum", sum_pork_prices)
+    print(type(sum_pork_prices))
+
+    average_pork_prices = sum(pork_prices) / len(pork_prices)
+    print("Pork Price", average_pork_prices)
+    print(type(average_pork_prices))
     # We might want to weight this by popularity 
     # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
-    pork_spend = pork_frequency * pork_price
+    pork_spend = int(pork_frequency) * average_pork_prices
+    print("Pork spend", pork_spend)
+    print(type(pork_spend))
     pork_impact = impact_by_money(pork_activity_id, region, pork_spend)
+    print("Pork impact: ", pork_impact)
     
     # Chicken is 2021 at 0.6325 USD/kg
     chicken_activity_id = "consumer_goods-type_meat_products_poultry"
     # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving
     chicken_frequency = int(chicken)
-
+    # Stats for chicken spend https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm
+    chicken_spend = (1.87 / 2)
+    chicken_impact = impact_by_money(chicken_activity_id, region, chicken_spend)
+    print("Chicken impact: ", chicken_impact)
 
     return render_template("/results.html")
   else: 

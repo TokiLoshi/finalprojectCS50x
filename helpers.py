@@ -1,3 +1,4 @@
+from audioop import avg
 import os
 from urllib import response
 import requests
@@ -401,7 +402,7 @@ def impact_by_distance(activity_id, distance, region):
   }    
 
 # Calculate the impact by energy
-def impact_by_energy(activity_id, region):
+def impact_by_energy(activity_id, region, energy):
   """Calculate the impact of not recycling"""
   api_key = os.getenv('CLIMATIQ_API')
   
@@ -413,7 +414,7 @@ def impact_by_energy(activity_id, region):
   region = region
   
   parameters = {
-    "energy": 100, 
+    "energy": energy, 
     "energy_unit": "kWh"
   }
   json_body = {
@@ -425,7 +426,62 @@ def impact_by_energy(activity_id, region):
     # Specifically how much we are estimating for 
     "parameters": parameters
   }
+  authorization_headers = {"Authorization": f"Bearer: {api_key}"}
+  response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
+  print(response)
+  return {
+    "Carbon_emissions": response['co2e'],
+    "Carbon_unit": response['co2e_unit'],
+    "C02_calculation_source": response['co2e_calculation_origin'],
+    "Emission id": response['emission_factor']['id'],
+    "Source": response['emission_factor']['source'],
+    "Year": response['emission_factor']['year'],
+    "Region": response['emission_factor']['region'],
+    "Categor": response['emission_factor']['category'],
+    "LCA": response['emission_factor']['lca_activity'],
+    "Data Quality": response['emission_factor']['data_quality_flags']
+  }
+
+# Flights
+def impact_by_flights(activity_id, distance):
+  """Calculate the impact of flights"""
   # Activities by money $usd
+  api_key = os.getenv('CLIMATIQ_API')
+  
+  # Get estimate URL
+  estimate_url = "https://beta3.api.climatiq.io/estimate"
+  
+  # Activity ID from Data Explorer 
+  activity = activity_id
+  
+  parameters = {
+    "distance": distance, 
+  }
+  json_body = {
+    "emission_factor": {
+      "activity_id": activity,
+    },
+
+    # Specifically how much we are estimating for 
+    "parameters": parameters
+  } 
+  # You must always specify your AUTH token in the "Authorization header like this."
+  authorization_headers = {"Authorization": f"Bearer: {api_key}"}
+  response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
+  print(response)
+  return {
+    "Carbon_emissions": response['co2e'],
+    "Carbon_unit": response['co2e_unit'],
+    "C02_calculation_source": response['co2e_calculation_origin'],
+    "Emission id": response['emission_factor']['id'],
+    "Source": response['emission_factor']['source'],
+    "Year": response['emission_factor']['year'],
+    "Region": response['emission_factor']['region'],
+    "Categor": response['emission_factor']['category'],
+    "LCA": response['emission_factor']['lca_activity'],
+    "Data Quality": response['emission_factor']['data_quality_flags']
+  }
+
 def impact_by_money(activity_id, region, value):
   """Calculate the impact of not recycling"""
   api_key = os.getenv('CLIMATIQ_API')
@@ -510,27 +566,68 @@ def impact_by_number(activity_id, number, region):
     "Data Quality": response['emission_factor']['data_quality_flags']
   }
 
-
-# Calculate the impact by weight
-# We can also add weight over distance if needed
-def impact_by_weight(activity_id):
-  """Calculate the impact of not recycling"""
+def impact_by_road(activity_id, transport_cost):
+  """Calculate the impact of road travel"""
+  # Activities by money $usd
   api_key = os.getenv('CLIMATIQ_API')
   
   # Get estimate URL
   estimate_url = "https://beta3.api.climatiq.io/estimate"
   
   # Activity ID from Data Explorer 
+  activity = activity_id
+  region = "US"
+  
+  parameters = {
+    "money": transport_cost, 
+    "money_unit": "usd",
+  }
+  json_body = {
+    "emission_factor": {
+      "activity_id": activity,
+    },
+
+    # Specifically how much we are estimating for 
+    "parameters": parameters
+  } 
+  # You must always specify your AUTH token in the "Authorization header like this."
+  authorization_headers = {"Authorization": f"Bearer: {api_key}"}
+  response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
+  print(response)
+  return {
+    "Carbon_emissions": response['co2e'],
+    "Carbon_unit": response['co2e_unit'],
+    "C02_calculation_source": response['co2e_calculation_origin'],
+    "Emission id": response['emission_factor']['id'],
+    "Source": response['emission_factor']['source'],
+    "Year": response['emission_factor']['year'],
+    "Region": response['emission_factor']['region'],
+    "Categor": response['emission_factor']['category'],
+    "LCA": response['emission_factor']['lca_activity'],
+    "Data Quality": response['emission_factor']['data_quality_flags']
+  }
+
+# Calculate the impact by weight
+# We can also add weight over distance if needed
+def impact_by_weight(activity_id, weight):
+  """Calculate the impact of not recycling"""
+  api_key = os.getenv('CLIMATIQ_API')
+  
+  # Get estimate URL
+  estimate_url = "https://beta3.api.climatiq.io/estimate"
+
+  # Activity ID from Data Explorer 
   # activity_id = "waste_type_mixed_plastics-disposal_method_recycled"
   
   # Set region and parameters
   parameters = {
-    "weight": 100,
+    "weight": weight,
     "weight_unit": "t",
   }
   json_body = {
     "emission_factor": {
       "activity_id": activity_id,
+
     },
     # Specifically how much we are estimating for 
     "parameters": parameters
@@ -595,7 +692,6 @@ def impact_by_volume(activity_id, region):
     "Data Quality": response['emission_factor']['data_quality_flags']
   }
 
-
 # Convert kg to tonnes? 
 # An estimated 80% of indirect GHG emissions come from households (5.43 gigatons) - 82.3% are produced domestically (https://www.pbs.org/newshour/science/5-charts-show-how-your-household-drives-up-global-greenhouse-gas-emissions)
 # Housing accounts for 33.5%, Transportation 29.8%, Services 19.3% and Food 16.7% (Domestic)
@@ -605,37 +701,7 @@ def impact_by_volume(activity_id, region):
 # Fuel
 # Look into the impact of financial institutions and how they invest in fossil fuels
 
-
-# Testing out Carbon Interface
-# def electricity(electricity_value):
-#   """Calculate carbon impact of electrity usage"""
-#   api_key = os.getenv('CARBON_INTERFACE_API')
+# Add Animal products consumption costs https://www.ers.usda.gov/data-products/meat-price-spreads/
+# Taking the average price for each cut of beef, pork, and chicken and coming up with an average price for each
+# Average taken from Aug 2021 - Aug 2022 - might go more granular later
   
-  # Get estimate URL
-  # estimate_url = "https://www.carboninterface.com/api/v1/estimates"
-  # parameters = {
-  #     "type": "electricity",
-  #     "electricity_unit": "mwh",
-  #     "country": "us",
-  #     "state": "fl"
-  # }
-  
-  # Set region and parameters
-  # json_body = {
-  #     "type": "electricity"
-  #   }
-  # authorization_headers = {"Authorization": f"Bearer: {api_key}"}
-  # response = requests.post(estimate_url, json=parameters, headers=authorization_headers).json()
-  # print(response)
-  # return {
-  #   "Carbon_emissions": response['co2e'],
-  #   "Carbon_unit": response['co2e_unit'],
-  #   "C02_calculation_source": response['co2e_calculation_origin'],
-  #   "Emission id": response['emission_factor']['id'],
-  #   "Source": response['emission_factor']['source'],
-  #   "Year": response['emission_factor']['year'],
-  #   "Region": response['emission_factor']['region'],
-  #   "Categor": response['emission_factor']['category'],
-  #   "LCA": response['emission_factor']['lca_activity'],
-  #   "Data Quality": response['emission_factor']['data_quality_flags']
-  # }

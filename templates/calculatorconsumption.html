@@ -14,7 +14,7 @@
      <form action="/calculator" method="post">
       <label for="beef" class="form-label"><b>How many times a week do you eat beef?</b></label>
                 <select name="beef" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="default">On average...</option>
+                  <option selected value="" disabled>On average...</option>
                   <option value="0">I don't eat beef</option>
                   <option value="1">Once a week</option>
                   <option value="2">Twice a week</option>
@@ -25,9 +25,9 @@
                   <option value="6">Every day</option>
                 </select>
       <label for="pork" class="form-label"><b>How many times a week do you eat pork?</b></label>
-                <select name="pork" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="default">On average...</option>
-                  <option value="0">I don't eat beef</option>
+                <select name="pork" class="form-select mx-auto w-auto" aria-label="Default select example" required>
+                  <option selected value="" disabled>On average...</option>
+                  <option value="0">I don't eat pork</option>
                   <option value="1">Once a week</option>
                   <option value="2">Twice a week</option>
                   <option value="3">Three times a week</option>
@@ -37,9 +37,9 @@
                   <option value="6">Every day</option>
                 </select>
                 <label for="chicken" class="form-label"><b>How many times a week do you eat chicken?</b></label>
-                <select name="chicken" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="default">On average...</option>
-                  <option value="0">I don't eat beef</option>
+                <select name="chicken" class="form-select mx-auto w-auto" aria-label="Default select example" required>
+                  <option selected value="" disabled>On average...</option>
+                  <option value="0">I don't eat chicken</option>
                   <option value="1">Once a week</option>
                   <option value="2">Twice a week</option>
                   <option value="3">Three times a week</option>
@@ -50,7 +50,7 @@
                 </select>
                 <label for="flexitarian" class="form-label mx-auto w-auto"><b>How do you feel about making dietary changes?</b></label>
                 <select name="flexitarian" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="default">Select</option>
+                  <option selected value="" disabled>Select</option>
                   <option value="Not_a_chance">Not a chance</option>
                   <option value="Nothing_major">As long as it's nothing major</option>
                   <option value="Clear_benefits">If the benefits are clear</option>
@@ -69,8 +69,6 @@
             <input type="text" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
             <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
             <input type="text" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
-            <label for="electronics" class="form-label"><b>spend on new electronics each year?</b></label>
-            <input type="text" name="electronics" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on electronics" min="0">
             <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels?</b></label>
             <input type="text" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
        <button class="btn btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>

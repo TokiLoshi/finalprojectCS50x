@@ -18,41 +18,37 @@
 </br>
 <label for="work_situation" class="form-label"><b>What best describes your work/study situation?</b></label>
   <select name="work_situation" class="form-select w-auto mx-auto" aria-label="Default select example" required>
-    <option selected value="defalut">Which best describes you?</option>
+    <option selected value="" disabled>Which best describes you?</option>
     <option value="Home">Work/study from home</option>
-    <option value="Hybrid">Hyrbid (from home and in person)</option>
+    <option value="Hybrid">Hybrid (from home and in person)</option>
     <option value="Person">Only in person</option>
 </select>
 <label for="commuter_days" class="form-label mx-auto"><b>How many days a week do you commute?</b></label>
-<input type="number" name="commuter_days" class="form-control mx-auto w-50" id="short-haul" placeholder="# days" min="0" max="7" required>
-<label for="home_days" class="form-label mx-auto w-auto"><b>How many days a week do you stay home</b></label>
-<input type="number" name="home_days" class="form-control mx-auto w-50" id="short-haul" placeholder="# days" min="0" max="7" required>
+<input type="number" name="commuter_days" class="form-control mx-auto w-50" id="short-haul" placeholder="# days" min="0" max="7" aria-required="true">
 <label for="commuter_distance" class="form-label mx-auto w-auto"><b>How far is your commute?</b></label>
-<input type="number" name="commuter_distance" class="form-control mx-auto w-50" id="short-haul" placeholder="miles" min="0" required>
+<input type="number" name="commuter_distance" class="form-control mx-auto w-50" id="short-haul" placeholder="miles" min="0" aria-required="true">
 <label for="transport_mode" class="form-label"><b>Which mode of transport do you mostly take?</b></label>
-  <select name="transport_mode" class="form-select w-auto mx-auto" aria-label="Default select example" required>
-    <option selected value="defalut">Select your typical mode of transport</option>
-    <option value="gas_no_carpool">Gas Vehicle (no carpool)</option>
-    <option value="gas_carpool">Gas Vehicle (carpool)</option>
-    <option value="hybrid">Hybrid Electric Vehicle</option>
-    <option value="electric">Electric Vehicle</option>
-    <option value="subway">Subway/ Tram</option>
-    <option value="amtrack">Intercity Amtrack</option>
-    <option value="bus">Bus</option>
-    <option value="bike">Bicycle</option>
-    <option value="ferry">Ferry</option>
-    <option value="motorbike">Motorcycle</option>
+
+  <select required name="transport_mode" class="form-select w-auto mx-auto" aria-label="Default select example" aria-required="true">
+    <option selected value="" disabled>Select your typical mode of transport</option>
+    <option value="passenger_vehicle-vehicle_type_pickup_trucks_vans_suvs-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na">SUV or Pickup truck/van</option>
+    <option value="passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na">Gas Vehicle</option>
+    <option value="passenger_train-route_type_urban-fuel_source_na">Subway/ Tram</option>
+    <option value="passenger_train-route_type_intercity-fuel_source_na">Intercity Amtrack</option>
+    <option value="passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na">Bus</option>
+    <option value="passenger_vehicle-vehicle_type_motorcycle_bicycle_parts-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na">Bicycle</option>
+    <option value="passenger_vehicle-vehicle_type_boat-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na">Ferry</option>
+    <option value="passenger_vehicle-vehicle_type_motorcycle-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na">Motorcycle</option>
 </select>
-<hr>
+<label for="transport_cost" class="form-label mx-auto w-auto"><b>How much does your commute cost on you average per month</b></label>
+<input type="number" name="transport_cost" class="form-control mx-auto w-auto" id="transport_cost" placeholder="$ per month" min="0" required>
       <p><b>On average, per year:</b></p>
        <label for="short_haul" class="form-label mx-auto w-auto"><b>How many short-haul flights do you take?</b></label>
        <label><i>Any flight under 300 miles e.g New York to Washington D.C.</i></label>
        <input type="number" name="short_haul" class="form-control mx-auto w-auto" id="short-haul" placeholder="# short-haul flights" min="0" required>
-
        <label for="medium_haul" class="pt-2 form-label mx-auto w-auto"><b>How many medium-haul flights do you take?</b></label>
        <label><i>Between 300 and 2300 miles e.g New York to Las Vegas</i></label>
        <input type="number" name="medium_haul" class="form-control mx-auto w-auto" id="short-haul" placeholder="# medium-haul flights" min="0" required>
-
        <label for="long_haul" class="form-label mx-auto w-auto"><b>How many long-haul flights do you take?</b></label>
        <label><i>Long flights e.g New York to San Francisco or London and beyond</i></label>
        <input type="number" name="long_haul" class="form-control mx-auto w-auto mb-2" id="short-haul" placeholder="# long-haul flights" min="0" required>
