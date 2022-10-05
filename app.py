@@ -114,6 +114,7 @@ def calculator():
     utility_bill = float(request.form.get("utilitybill"))
     drycleaning = float(request.form.get("drycleaning"))
     region = "US"
+    check_user = db.execute("INSERT INTO footprint (user_id) VALUES(?)", session.get("user_id"))
 
     # Print Statements to test
     print("Building is a: ", building)
@@ -132,13 +133,14 @@ def calculator():
     if building is None: 
       building = "Info not provided"
       building_impact = "Need more info to calculate"
+      building_update = db.execute("INSERT INTO footprint (building, building_impact) VALUES(?, ?) WHERE user_id=?", building, building_impact, session.get("user_id"))
     elif building == "construction-type_multifamily_residential_structures":
-      print("We've got a multi")
       building_impact = impact_by_money(building, region, multifamily_median)
+      building_update = db.execute("INSERT INTO footprint (building, building_impact) VALUES(?, ?) WHERE user_id=?", building, building_impact, session.get("user_id"))
       print("Impact of multi family home: ", building_impact)
     elif building == "construction-type_single_family_residential_structures":
-      print("We've got a single family home")
       building_impact = impact_by_money(building, region, singlefamily_median)
+      building_update = db.execute("INSERT INTO footprint (building, building_impact) VALUES(?, ?) WHERE user_id=?", building, building_impact, session.get("user_id"))
       print("Impact of Single family home: ", building_impact)
     else:
       print("Dunno what happend but they got something through")
@@ -148,10 +150,12 @@ def calculator():
     if state is None:
       state = "Info not provided"
       impact_electricity = "Need more info to calculate"
+      electricity_update = db.execute("INSERT INTO footprint (state, electricity, electricity_impact) VALUES(?, ?, ?) WHERE user_id=?", state, utility_bill, impact_electricity, session.get("user_id"))
     else:  
       region = state
       energy = utility_bill
       impact_electricity = impact_by_energy(electricity_activity_id, region, energy)
+      electricity_update = db.execute("INSERT INTO footprint (state, electricity, electricity_impact) VALUES(?, ?, ?) WHERE user_id=?", state, utility_bill, impact_electricity, session.get("user_id"))
       print("Impact by electricity: ", impact_electricity)
 
     # HACK:
@@ -162,6 +166,7 @@ def calculator():
       waste_frequency = "Info not provided"
       impact_landfill = "Need more info to calculate"
       impact_recycling = "Need more info to calculate"
+      waste_update = db.execute("INSERT INTO footprint (waste_frequency, landfill_impact, recycling_impact) VALUES(?, ?, ?) WHERE user_id=?", waste_frequency, impact_landfill, impact_recycling, session.get("user_id"))
     else:
       total_weight_pounds =  12 * int(waste_frequency)
       # Convert to kg by dividing pounds by 2.2045 https://www.wikihow.com/Convert-Pounds-to-Kilograms
@@ -180,17 +185,22 @@ def calculator():
       impact_recycling = impact_by_weight(recycling_id, weight_recycled)
       print("Impact of landfill: ", impact_landfill)
       print("Impact of recycling: ", impact_recycling)
+      waste_update = db.execute("INSERT INTO footprint (waste_frequency, landfill_impact, recycling_impact) VALUES(?, ?, ?) WHERE user_id=?", waste_frequency, impact_landfill, impact_recycling, session.get("user_id"))
 
     # Impact of drycleaning per person in house:
     if household_occupants is None: 
       household_occupants = "Info not provided"
-      drycleaning_impact = "Need number of houshold occupants to " 
+      drycleaning_impact = "Need more info to calculate"
+      drycleaning_update = db.execute("INSERT INTO footprint (household_occupants, drycleaning_impact) VALUES(?, ?) WHERE user_id=?", household_occupants, drycleaning_impact, session.get("user_id")) 
     drycleaning_cost_per_person = int(drycleaning / int(household_occupants))
     drycleaning_region = "US"
     print("drycleaning cost per person: ", drycleaning_cost_per_person)
     drycleaning_activity_id = "consumer_goods-type_dry_cleaning_laundry"
     drycleaning_impact = impact_by_money(drycleaning_activity_id, drycleaning_region, drycleaning_cost_per_person)
     print("Drycleaning impact: ", drycleaning_impact)
+    drycleaning_update = db.execute("INSERT INTO footprint (household_occupants, drycleaning_impact) VALUES(?, ?) WHERE user_id=?", household_occupants, drycleaning_impact, session.get("user_id")) 
+
+    # Calculate Total General Footprint and update DB
 
     return render_template("/calculatortransport.html")
   else:
@@ -211,6 +221,7 @@ def calculatortransport():
     medium_haul = request.form.get("medium_haul")
     long_haul = request.form.get("long_haul")
     transport_cost = int(request.form.get("transport_cost"))
+    check_user = db.execute("INSERT INTO transport_footprint (user_id) VALUES(?)", session.get("user_id"))
     
     # Print statements to test
     print("Work situation: ", work_situation)
@@ -238,16 +249,18 @@ def calculatortransport():
     # Impact of total number of long haul flights
     long_haul_id = "passenger_flight-route_type_na-aircraft_type_na-distance_gt_2300mi-class_na-rf_na"
     long_distance = 3500
-    long_distance_impact = impact_by_flights(long_haul_id, long_distance)
-    print("Long Haul impact: ", long_distance_impact)
+    long_haul_impact = impact_by_flights(long_haul_id, long_distance)
+    print("Long Haul impact: ", long_haul_impact)
     
     # Work out total commuter distance per week
     distance_commute = (float(commuter_distance) * 2) * int(commuter_days)
-    impact_driving = impact_by_road("passenger_vehicle-vehicle_type_passenger_ground_transport-fuel_source_na-distance_na-engine_size_na", transport_cost)
+    commuter_impact = impact_by_road("passenger_vehicle-vehicle_type_passenger_ground_transport-fuel_source_na-distance_na-engine_size_na", transport_cost)
     print("Commuter total distance: ", distance_commute)
-    print("Impact of road transport: ", impact_driving)
-    if transport_mode == "passenger_vehicle-vehicle_type_pickup_trucks_vans_suvs-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
-      print("We've got ourselves an SUV")
+    print("Impact of road transport: ", commuter_impact)
+    update_transport_footprint = db.execute("INSERT into transport_footprint (work_situation, commuter_days, commuter_distance, transport_mode, transport_cost, commuter_impact, short_haul, short_haul_impact, medium_haul, medium_haul_impact, long_haul, long_haul_impact) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) WHERE user_id=?", work_situation, commuter_days, commuter_distance, transport_mode, transport_cost, commuter_impact, short_haul, short_haul_impact, medium_haul, medium_haul_impact, long_haul, long_haul_impact, session.get("user_id"))
+    
+    # Calculate transport footprint total and insert into DB
+
     return render_template("/calculatorconsumption.html")
   else: 
     print("Nope")
@@ -282,6 +295,7 @@ def calculatorconsumption():
     # print("electronics: ", electronics)
     # print("hotels: ", hotels)
     region = "US"
+    check_userid = db.execute("INSERT INTO consumption_footprint (user_id) VALUES(?)", session.get("user_id"))
     
     # Hotel impact at 16.1kg (default 2022) per night 
     hotel_activity_id = "accommodation_type_hotel_stay"
@@ -410,6 +424,10 @@ def calculatorconsumption():
     chicken_impact = impact_by_money(chicken_activity_id, region, chicken_spend)
     print("Chicken impact: ", chicken_impact)
 
+    # Update database
+    update_consumption_footprint = db.execute("INSERT INTO consumption_footprint(beef_consumption, beef_impact, pork_consumption, pork_impact, chicken_consumption, chicken_impact, dietary_attitude, new_clothes, new_clothes_impact, restaurants, restaurants_impact, accessories, accessories_impact, electronics, electronics_impact, hotels, hotels_impact) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,) WHERE user_id=?", beef_frequency, beef_impact, pork_frequency, pork_impact, chicken_frequency, chicken_impact, flexitarian, clothing_spend, clothing_impact, restaurants_spend, restaurants_impact, accessories_spend, accessories_impact, electronics_spend, electronics_impact, hotels, hotel_impact, check_userid)
+
+    # Calculate total and update DB
     return render_template("/results.html")
   else: 
     print("Reliable old get")
