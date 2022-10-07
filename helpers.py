@@ -46,6 +46,11 @@ def usd(value):
   """Format value as USD"""
   return f"${value:,.2f}"
 
+def co2(value):
+  """Format value as co2/kg"""
+  tons = value / 1000
+  return f"{tons:,.2f} ton(s) / year"
+
 def random_leaderboardname():
   words = []
   with open("adjectives.txt", 'r') as file:
@@ -288,12 +293,9 @@ def lookup():
   }
   # You must always specify your AUTH token in the "Authorization" header like this.
   authorization_headers = {'Authorization': f"Bearer: {api_key}"}
-
   # This performs the request and returns the result as JSON
   response = requests.get(search_url, params=query_params, headers=authorization_headers).json()
-
-  # And here you can do whatever you want with the results
-  print(response)
+  # And then you can do whatever you want with the results
 
 def estimate(activity_id):
   """Calls on the API for and estimate"""
@@ -340,7 +342,6 @@ def estimate(activity_id):
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
   
   # You can now do anything you want with the response
-  print(response)
   return {
     "Carbon_emissions" : response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -387,7 +388,6 @@ def impact_by_distance(activity_id, distance, region):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -428,7 +428,6 @@ def impact_by_energy(activity_id, region, energy):
   }
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -468,7 +467,6 @@ def impact_by_flights(activity_id, distance):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -510,7 +508,6 @@ def impact_by_money(activity_id, region, value):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -552,7 +549,6 @@ def impact_by_number(activity_id, number, region):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -593,7 +589,6 @@ def impact_by_road(activity_id, transport_cost):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -622,7 +617,7 @@ def impact_by_weight(activity_id, weight):
   # Set region and parameters
   parameters = {
     "weight": weight,
-    "weight_unit": "t",
+    "weight_unit": "kg",
   }
   json_body = {
     "emission_factor": {
@@ -635,7 +630,6 @@ def impact_by_weight(activity_id, weight):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -678,7 +672,6 @@ def impact_by_volume(activity_id, region):
   # You must always specify your AUTH token in the "Authorization header like this."
   authorization_headers = {"Authorization": f"Bearer: {api_key}"}
   response = requests.post(estimate_url, json=json_body, headers=authorization_headers).json()
-  print(response)
   return {
     "Carbon_emissions": response['co2e'],
     "Carbon_unit": response['co2e_unit'],
@@ -692,13 +685,11 @@ def impact_by_volume(activity_id, region):
     "Data Quality": response['emission_factor']['data_quality_flags']
   }
 
-# Convert kg to tonnes? 
 # An estimated 80% of indirect GHG emissions come from households (5.43 gigatons) - 82.3% are produced domestically (https://www.pbs.org/newshour/science/5-charts-show-how-your-household-drives-up-global-greenhouse-gas-emissions)
 # Housing accounts for 33.5%, Transportation 29.8%, Services 19.3% and Food 16.7% (Domestic)
 # Housing - the biggest contributor is Utilities (25%)
 # Transporation - the biggest contributor is Fuels (23%)
 # Food - the biggest contributors are not buying locally and sourcing foods from overseas (17.4%)
-# Fuel
 # Look into the impact of financial institutions and how they invest in fossil fuels
 
 # Add Animal products consumption costs https://www.ers.usda.gov/data-products/meat-price-spreads/

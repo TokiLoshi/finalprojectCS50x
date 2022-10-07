@@ -28,7 +28,7 @@ erDiagram
         landfill_impact TEXT_NOT_NULL
         recycling_impact TEXT_NOT_NULL
         drycleaning TEXT
-        drycleaning TEXT 
+        drycleaning_impact TEXT 
         total_footprint_general TEXT
     }
     TRANSPORT_FOOTPRINT ||--|{ CONSUMPTION_FOOTPRINT : part_3

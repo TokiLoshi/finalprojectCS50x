@@ -38,8 +38,8 @@
               <label for="building" class="form-label"><b>What kind of building do you live in?</b></label>
                   <select name="building" class="form-select" aria-label="Default select example" required>
                     <option value="" selected disabled>Please select the type of building you live in</option>
-                    <option value="construction-type_multifamily_residential_structures">Multi-family_residential or an apartment</option>
-                    <option value="construction-type_single_family_residential_structures">Single-family resdiential</option>
+                    <option value="construction-type_multifamily_residential_structures">Multi-family building / an apartment</option>
+                    <option value="construction-type_single_family_residential_structures">Single-family home</option>
                   </select>
               <label for="state" name="state" class="form-label"><b>Which State do you live in?:</b></label>
                 <select required name="state" class="form-select" aria-label="Default select example" required >
@@ -101,19 +101,19 @@
                 <select name="household_occupants" class="form-select" aria-label="Default select example" required>
                   <option selected value="" disabled>Please select how many people in your household</option>
                   <option value="1">Just Me</option>
-                  <option value="2">Just the 2 of us</option>
-                  <option value="3">Three of us</option>
-                  <option value="4">Four of us</option>
-                  <option value="5">Five +</option>
+                  <option value="2">2 of us</option>
+                  <option value="3">3 of us</option>
+                  <option value="4">5 of us</option>
+                  <option value="5">5+</option>
                 </select>
               <label for="rubbish" class="form-label"><b>How often do you have to take out the trash?</b></label>
                 <select name="rubbish" class="form-select" aria-label="Default select example" required>
                   <option selected value="" disabled>How many full gallon bags do you throw out per week?</option>
-                  <option value="1">1 - 2 full gallon bags</option>
-                  <option value="2">2 - 3 full gallon bags</option>
-                  <option value="3">3 - 4 full gallon bags</option>
-                  <option value="4">4 - 5 full gallon bags</option>
-                  <option value="5">5 - 6 full gallon bags</option>
+                  <option value="1">1 full gallon bag</option>
+                  <option value="2">2 full gallon bags</option>
+                  <option value="3">3 full gallon bags</option>
+                  <option value="4">4 full gallon bags</option>
+                  <option value="5">5 full gallon bags</option>
                   <option value="5">6+ full gallon bags</option>
                 </select>
             <label for="recycling" class="form-label"><b>How much for your rubbish do you recycle?</b></label>
@@ -128,10 +128,10 @@
                 <option value="70">70% recycling</option>
                 <option value="75">More than 75% recycling and compost</option>
             </select>
-            <label for="utilitybill" class="form-label"><b>How many KWH do you use on average each month?</b></label>
-            <input type="text" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="$ utility bill on average" required>
-            <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning?</b></label>
-            <input type="text" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
+            <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month?</b></label>
+            <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="KWh on average" required>
+            <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month?</b></label>
+            <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
             <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>
             </div>
     </div>
