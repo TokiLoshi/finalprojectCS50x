@@ -16,7 +16,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd, random_leaderboardname, generate_temp_password, co2
+from helpers import apology, formatfloat, login_required, lookup, usd, random_leaderboardname, generate_temp_password, co2, co2lifetime, formatfloat
 from helpers import impact_by_weight, impact_by_energy, estimate, impact_by_volume, impact_by_money, impact_by_distance, impact_by_number, impact_by_flights, impact_by_road
 from flask_mail import Mail, Message
 from flask_mail_sendgrid import MailSendGrid
@@ -183,7 +183,7 @@ def calculator():
       drycleaning_impact = 0
       print("Drycleaning impact: ", drycleaning_impact)
     else:
-      drycleaning_cost_per_person = int(drycleaning) * 12
+      drycleaning_cost_per_person = float(drycleaning) * 12
       drycleaning_region = "US"
       drycleaning_activity_id = "consumer_goods-type_dry_cleaning_laundry"
       drycleaning_emissions = impact_by_money(drycleaning_activity_id, drycleaning_region, drycleaning_cost_per_person)
@@ -890,8 +890,8 @@ def results():
     for score in db_footprint: 
       building = score['building']
       # TO DO: 
-      # Tell user this is not part of their final score and why
-      impact_of_construction = score['building_impact']
+      # Tell user this is not part of their final score and why - create a hover question mark with more information and implement JS for this
+      impact_of_construction = float(score['building_impact'])
       # TO DO: 
       # Tell user why their state matters: 
       state = score['state']
@@ -902,29 +902,17 @@ def results():
       household_occupants = score['household_occupants']
       waste_frequency = score['waste_frequency']
       recycling = score['recycling']
-      landfill_impact = score['landfill_impact']
-      recycling_impact = score['recycling_impact']
-      drycleaning_spend = score['drycleaning']
-      drycleaning_impact = score['drycleaning_impact']
+      landfill_impact = co2(float(score['landfill_impact']))
+      recycling_impact = co2(float(score['recycling_impact']))
+      drycleaning_spend = ((float(score['drycleaning']) * 12))
+      drycleaning_impact = co2(float(score['drycleaning_impact']))
       total_footprint_general = score['total_footprint_general']
-    individual_score = float(total_footprint_general.replace(" ton(s) / year", "")) / (int(household_occupants))
-    
-    print("Building: ", building)
-    print("Impact of construction: ", impact_of_construction)
-    print("state: ", state)
-    print("Electricity usage: ", electricity)
-    print("Electricity impact: ", electricity_impact)
-    print("household occupants: ", household_occupants)
-    print("Waste frequency: ", waste_frequency)
-    print("Recycling: ", recycling)
-    print("Impact of landfill: ", landfill_impact)
-    print("Impact from recycling: ", recycling_impact)
-    print("Drycleaning spend: ", drycleaning_spend)
-    print("Drycleaning impact: ", drycleaning_impact)
-    print("total footprint general: ")
-    print("Individual Score: ", individual_score)
-    
-    
+    individual_score = (float(total_footprint_general.replace(" ton(s) / year", "")) / (int(household_occupants)))
+    individual_score_formatted = co2(individual_score * 1000)
+    total_footprint_general_formatted = co2(float(total_footprint_general.replace(" ton(s) / year", "")))
+    impact_of_construction_formatted = co2lifetime(impact_of_construction)
+    drycleaning_formatted = "{:.2f}".format(drycleaning_spend)
+
     # Get transport footprint scores from db
     db_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", user)
     print("DB transport footprint: ", db_transport)
@@ -936,58 +924,61 @@ def results():
       # Translate all the transport modes back into normal language maybe a key of tables in db
       transport_mode = score['transport_mode']
       transport_cost = score['transport_cost']
-      impact_of_commute = score['commuter_impact']
+      impact_of_commute = co2(float(score['commuter_impact']))
       short_haul_flights = score['short_haul']
-      short_haul_flights_impact = score['short_haul_impact']
-      medium_haul_flights = score['medium_haul_impact']
-      medium_haul_flights_impact = score['medium_haul_impact']
+      short_haul_flights_impact = co2(float(score['short_haul_impact']))
+      medium_haul_flights = score['medium_haul']
+      medium_haul_flights_impact = co2(float(score['medium_haul_impact']))
       long_haul_flights = score['long_haul']
-      long_haul_flights_impact = score['long_haul_impact']
+      long_haul_flights_impact = co2(float(score['long_haul_impact']))
       total_footprint_transport = score['transport_footprint_total']
-    
-    # print statements to check:
-    print("Worker_situation: ", work_situation)
-    print("Commuter distance: ", commuter_distance)
-    print("Commuter_days: ", commuter_days)
-    print("Transport mode: ", transport_mode)
-    print("Transport cost: ", transport_cost)
-    print("Impact of commute ", impact_of_commute)
-    print("Short Haul Flights: ", short_haul_flights)
-    print("Impact of Short Haul Flights: ", short_haul_flights_impact)
-    print("Medium Haul FlightS: ", medium_haul_flights)
-    print("Impact of Medium Haul Flights: ", medium_haul_flights_impact)
-    print("Long Haul Flights: ", long_haul_flights)
-    print("Impact of long haul flights: ", long_haul_flights_impact)
+      total_footprint_transport_formatted = co2(float(total_footprint_transport.replace(" ton(s) / year", "")))
+    if int(commuter_days) > 1:
+      commuter_days = str(commuter_days) + "days of the week"
+    else:
+      commuter_days = str(commuter_days) + "day of the week"
 
     # Get consumption footprint scores from db 
     db_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", user)
     print("DB consumption footprint", db_consumption)
     for score in db_consumption:
-      beef_consumption = score['beef_consumption']
-      beef_impact = score['beef_impact']
-      pork_consumption = score['pork_consumption']
-      pork_impact = score['pork_impact']
-      chicken_consumption = score['chicken_consumption']
-      chicken_impact = score['chicken_impact']
+      beef_consumption = int(score['beef_consumption'])
+      if beef_consumption > 1:
+        beef_consumption = str(beef_consumption) + " times"
+      else:
+        beef_consumption = str(beef_consumption) + " time"
+      beef_impact = co2(float(score['beef_impact']))
+      pork_consumption = int(score['pork_consumption'])
+      if pork_consumption > 1:
+        pork_consumption = str(pork_consumption) + " times"
+      else:
+        pork_consumption = str(pork_consumption) + " times"
+      pork_impact = co2(float(score['pork_impact']))
+      chicken_consumption = int(score['chicken_consumption'])
+      if chicken_consumption > 1:
+        chicken_consumption = str(chicken_consumption) + " times"
+      else:
+        chicken_consumption= str(chicken_consumption) + "time"
+      chicken_impact = co2(float(score['chicken_impact']))
       # TO DO:
       # Tell user why we asked this 
-      willingness_to_adjust_diet = score['dietary_attitude']
-      new_clothing_spend = score['new_clothes']
+      willingness_to_adjust_diet = (score['dietary_attitude']).replace("_", " ")
+      new_clothing_spend = formatfloat(float(score['new_clothes']))
       if score['new_clothes_impact'] != "Need more info to calculate":
         new_clothing_impact = score['new_clothes_impact']
       else:
         new_clothing_impact = "Unknown, we need more information from you to calculate this."
-      restaurants_spend = score['restaurants']
+      restaurants_spend = formatfloat(float(score['restaurants']))
       if score['restaurants_impact'] != "Need more info to calculate":
         restaurants_impact = score['restaurants_impact']
       else: 
         restaurants_impact = "Unknown, we need more information from you to calculate this."
-      accessories_spend = score['accessories']
+      accessories_spend = formatfloat(float(score['accessories']))
       if score['accessories_impact'] != "Need more info to calculate":
         accessories_impact = score['accessories_impact']
       else: 
         accessories_impact = "Unknown, we need more information from you to calculate this."
-      appliances_spend = score['appliances']
+      appliances_spend = formatfloat(float(score['appliances']))
       if score['appliances_impact'] != "Need more info to calculate":
         appliances_impact = score['appliances_impact']
       else: 
@@ -1000,40 +991,19 @@ def results():
       total_footprint_consumption = score['consumption_footprint_total']
       date_completed = score['datetime']
 
-    # Print Statements to check: 
-    print("Beef consumption: ", beef_consumption)
-    print("Impact of beef consumption: ", beef_impact)
-    print("Pork consumption: ", pork_consumption)
-    print("Pork impact: ", pork_impact)
-    print("Chicken consumption: ", chicken_consumption)
-    print("Chicken Impact: ", chicken_impact)
-    print("Willingness to change diet: ", willingness_to_adjust_diet)
-    print("New clothes spend: ", new_clothing_spend)
-    print("Impact of buying new clothes: ", new_clothing_impact)
-    print("Spend on restaurants: ", restaurants_spend)
-    print("Impact of restaurants: ", restaurants_impact)
-    print("Accessories spend: ", accessories_spend)
-    print("Impact of accessoreis: ", accessories_impact)
-    print("Appliances spend: ", appliances_spend)
-    print("Appliances ImpacT: ", appliances_impact)
-    print("Nights in hotels: ", hotels)
-    print("Impact of hotels: ", hotels_impact)
-    print("Total footprint for consumption: ", total_footprint_consumption)
-    print("Date quiz completed: ", date_completed)
-
     # Sum total of three scores
     print("General footprint total: ", total_footprint_general)
     print("Transport footprint total: ", total_footprint_transport) 
     print("Consumption footprint: ", total_footprint_consumption)
-    grand_total = (float(total_footprint_general.replace(" ton(s) / year", ""))) + (float(total_footprint_transport.replace(" ton(s) / year", "")) + (float(total_footprint_consumption.replace(" ton(s) / year", ""))))
-    
+    grand_total = co2(((float(total_footprint_general.replace(" ton(s) / year", ""))) * 1000)+ ((float(total_footprint_transport.replace(" ton(s) / year", "")) * 1000) + ((float(total_footprint_consumption.replace(" ton(s) / year", "")) * 1000 ))))
+    print("GRAND TOTAL: ", grand_total)
     # Create three seperate cards to go in depth on all of them 
     # Sort out how to display them 
     # Get stats for averagage american to show how they compare 
     # Get stats from how much this translates to in forests
     # Create table in for leaderboard that stores benchmark scores for users
     # Update total score into leaderboard score
-    return render_template("/results.html")
+    return render_template("/results.html", total=grand_total, datetime=date_completed, household=total_footprint_general, transport=total_footprint_transport, consumption=total_footprint_consumption, building=building, buildingimpact=impact_of_construction_formatted, state=state, electricity=electricity, electrictyimpact=electricity_impact, wastefrequency=waste_frequency, landfill=landfill_impact, recycling=recycling, recyclingimpact=recycling_impact, drycleaning=drycleaning_formatted, drycleaningimpact=drycleaning_impact, totalfootprint=total_footprint_general_formatted, individualfootprint=individual_score_formatted, worksituation=work_situation, commuterdays=commuter_days, commuterdistance=commuter_distance, transportmode=transport_mode, transportcost=transport_cost, commuterimpact=impact_of_commute, shorthaul=short_haul_flights, shorthaulimpact=short_haul_flights_impact, mediumhaul=medium_haul_flights, mediumhaulimpact=medium_haul_flights_impact, longhaul=long_haul_flights, longhaulimpact=long_haul_flights_impact, totaltransportfootprint=total_footprint_transport_formatted, beef=beef_consumption, beefimpact=beef_impact, pork=pork_consumption, porkimpact=pork_impact, chicken=chicken_consumption, chickenimpact=chicken_impact, willingness=willingness_to_adjust_diet, newclothing=new_clothing_spend, newclothingimpact=new_clothing_impact, restaurants=restaurants_spend, restaurantsimpact=restaurants_impact, accesories=accessories_spend, accessories=accessories_spend, accessoriesimpact=accessories_impact, appliances=appliances_spend, appliancesimpact=appliances_impact, hotels=hotels, hotelsimpact=hotels_impact, totalconsumptionfootprint=total_footprint_consumption)
 
 # Tracker page to track carbon footprint
 @app.route("/tracker", methods=["GET", "POST"])

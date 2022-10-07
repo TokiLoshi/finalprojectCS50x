@@ -49,7 +49,22 @@ def usd(value):
 def co2(value):
   """Format value as co2/kg"""
   tons = value / 1000
-  return f"{tons:,.2f} ton(s) / year"
+  if tons > 1:
+    return f"{tons:,.2f} tons of cO2 per year"
+  else:
+    return f"{tons:,.2f} ton of cO2 per year"
+
+def co2lifetime(value):
+  """Format value as co2/kg"""
+  tons = value / 1000
+  if tons > 1:
+    return f"{tons:,.2f} tons of cO2 per lifecycle"
+  else:
+    return f"{tons:,.2f} ton of cO2 per lifecycle"
+
+def formatfloat(value):
+  """Formats given value to 2 decimal places"""
+  return f"{value:,.2f}"
 
 def random_leaderboardname():
   words = []
