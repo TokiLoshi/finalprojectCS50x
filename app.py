@@ -909,7 +909,7 @@ def results():
       total_footprint_general = score['total_footprint_general']
     individual_score = (float(total_footprint_general.replace(" ton(s) / year", "")) / (int(household_occupants)))
     individual_score_formatted = co2(individual_score * 1000)
-    total_footprint_general_formatted = co2(float(total_footprint_general.replace(" ton(s) / year", "")))
+    total_footprint_general_formatted = co2(float(total_footprint_general.replace(" ton(s) / year", "")) * 1000)
     impact_of_construction_formatted = co2lifetime(impact_of_construction)
     drycleaning_formatted = "{:.2f}".format(drycleaning_spend)
 
