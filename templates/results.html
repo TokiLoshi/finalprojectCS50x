@@ -16,7 +16,7 @@
       <h4>We believe things are only going to get better from here</h4>
       <p>Good news! We've calculated your results.</p>
       <div class="mb-3 container-fluid align-content-start">
-        <h5>as of,Your Total Carbon Footprint is: </h5>
+        <h5>Your Total Carbon Footprint is: </h5>
         <h3>{{total}}</h3>
         <h1>👣</h1>
         <p><b>This is made up of an estimate from three sectors of your life:</b></p>
@@ -130,7 +130,7 @@
         </tr>
         <tr>
           <th scope="row">Your cost of transportation:</th>
-          <td>{{transportcost}}</td>
+          <td>${{transportcost}} per month</td>
         </tr>
         <tr>
           <th scope="row">The impact of your commute:</th>
@@ -209,7 +209,7 @@
         </tr>
         <tr>
           <th scope="row">Your estimated spend on new clothing:</th>
-          <td>${{newclothing}} per year</td>
+          <td>{{newclothing}} per year</td>
         </tr>
         <tr>
           <th scope="row">Estimated impact:</th>
@@ -217,7 +217,7 @@
         </tr>
         <tr>
           <th scope="row">Your estimated spend on restaurants:</th>
-          <td>${{restaurants}} per month</td>
+          <td>{{restaurants}} per month</td>
         </tr>
         <tr>
           <th scope="row">Estimated impact:</th>
@@ -225,7 +225,7 @@
         </tr>
         <tr>
           <th scope="row">Your estimated spend on accessories</th>
-          <td>${{accessories}} per year</td>
+          <td>{{accessories}} per year</td>
         </tr>
         <tr>
           <th scope="row">Estimated impact:</th>
@@ -233,19 +233,19 @@
         </tr>
         <tr>
           <th scope="row">Your estimated spend on appliances:</th>
-          <td>${{appliances}} per year</td>
+          <td>{{appliances}} per year</td>
         </tr>
         <tr>
           <th scope="row">Estimated impact:</th>
-          <td>${{appliancesimpact}} per year</td>
+          <td>{{appliancesimpact}} per year</td>
         </tr>
         <tr>
           <th scope="row">You spend approximately:</th>
-          <td>${{hotels}} nights in hotels per year</td>
+          <td>{{hotels}} nights in hotels per year</td>
         </tr>
         <tr>
-          <th scope="row">You spend approximately:</th>
-          <td>${{hotelsimpact}} nights in hotels per year</td>
+          <th scope="row">Estimated impact:</th>
+          <td>{{hotelsimpact}}</td>
         </tr>
         <tr>
           <th scope="row">Total consumption impact:</th>
