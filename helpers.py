@@ -41,10 +41,15 @@ def login_required(f):
       return f(*args, **kwargs)
     return decorated_function
 
-# Adopted from CS50 Pset9 - Finance:
-def usd(value):
-  """Format value as USD"""
-  return f"${value:,.2f}"
+def customicon(animal, color):
+  """Customize look of icon from font awesome"""
+  base_class = "fa-solid"
+  animal_name = "fa-" + animal
+  color = "fa-" + color
+  size = "fa-4x"
+  full_class = base_class + " " + animal_name + " " + color + " " + size
+  print("Full class: ", full_class)
+  return full_class
 
 def co2(value):
   """Format value as co2/kg"""
@@ -61,6 +66,11 @@ def co2lifetime(value):
     return f"{tons:,.2f} tons of cO2 per lifecycle"
   else:
     return f"{tons:,.2f} ton of cO2 per lifecycle"
+
+# Adopted from Cs50 finance (pset9)
+def usd(value):
+  """formats to usd"""
+  return f"${value:,.2f}"
 
 def formatfloat(value):
   """Formats given value to 2 decimal places"""

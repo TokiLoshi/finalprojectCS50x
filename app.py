@@ -17,7 +17,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, formatfloat, login_required, lookup, usd, random_leaderboardname, generate_temp_password, co2, co2lifetime, formatfloat
+from helpers import apology, formatfloat, login_required, lookup, usd, random_leaderboardname, generate_temp_password, co2, co2lifetime, formatfloat, customicon
 from helpers import impact_by_weight, impact_by_energy, estimate, impact_by_volume, impact_by_money, impact_by_distance, impact_by_number, impact_by_flights, impact_by_road
 from flask_mail import Mail, Message
 from flask_mail_sendgrid import MailSendGrid
@@ -391,11 +391,37 @@ def calculatorconsumption():
     print("I know this is confusing but we're here")
     return render_template("/calculatorconsumption.html")
 
+@app.route("/iconcolor", methods=["GET", "POST"])
+@login_required
+def iconcolor():
+  """Allows user to change colors"""
+  if request.method == "POST":
+    animal = "horse"
+    color = "fade"
+    display_icon = customicon(animal, color)
+    print("We're in post in icon color")
+    icon = request.form.get("value")
+    print("Icon: ", icon)
+    if "pepper" in request.form:
+      print("Finally!")
+    elif request.form.get("honey") == "honey":
+      print("Oh sugar sugar")
+    return render_template("/iconcolor.html", displayicon=display_icon)
+  else: 
+    print("Hello get")
+    return render_template("/iconcolor.html")
+
 @app.route("/leaderboardicon", methods=["GET", "POST"])
 @login_required
 def leaderboardicon():
   """Update Leadearboard and user icons"""
   if request.method == "POST":
+    if "pepper" in request.form:
+      print("It's pepper")
+    else:
+      print("why doesn't this work?")
+    icon = request.form.get("name")
+    print("name of icon is: ", icon)
     print("We're here in post")
     return render_template("leaderboardicon.html")
   else:
