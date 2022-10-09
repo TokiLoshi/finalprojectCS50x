@@ -1115,7 +1115,10 @@ def results():
 def tracker():
   """Allows user to track their progress"""
   if request.method == "POST":
-    flash("You're amazing. Great work!")
+    flash("You're amazing. Thanks for showing up!")
+    print("We're in post")
+  else:
+    print("We're here in get")
   return render_template("/tracker.html")
 
 
