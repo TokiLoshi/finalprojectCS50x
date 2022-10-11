@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    tracker
+    trackershopping
 {% endblock %}
 
 {% block main %}
-<form action="/tracker" method="post">
+<form action="/trackershopping" method="post">
   <div class="container p-3 shadow rounded-3 orange">
     <h2 class="whiteText">You inspire us</h2>
     <!--Reach for the stars by Designecologist from Pexels https://www.pexels.com/photo/reach-for-the-and-blue-moon-neon-signages-1510659/ -->
@@ -57,7 +57,7 @@
                       <h5 class="card-title"><b>I made sure my new clothes were made from high-quality sustainable materials:</b></h5>
                       <p class="card-text">Amazing! They more likely to last longer, which makes your purchase a better investment.</p>
                       <form action="/trackershopping" method="post">
-                        <input type="number" name="sustainable_clothes" class="form-control mx-auto w-auto mb-2" id="sustainable_clothes" placeholder="What did you get?">
+                        <input type="text" name="sustainable_clothes" class="form-control mx-auto w-auto mb-2" id="sustainable_clothes" placeholder="What did you get?">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>
                     </div>
@@ -72,7 +72,7 @@
                       <form action="/trackershopping" method="post">
                         <h5 class="card-title"><b>I used paper bags at the grocery store:</b></h5>
                         <p>Paper bags are compostable, this is a great alternative to plastic! How many plastic bags did you save by using paper bags?</p>
-                        <input type="number" name="paperbags" class="form-control mx-auto w-auto mb-2" id="paperbags" placeholder="How many?">
+                        <input type="number" name="paper_bags" class="form-control mx-auto w-auto mb-2" id="paper_bags" placeholder="How many?">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>
                     </div>

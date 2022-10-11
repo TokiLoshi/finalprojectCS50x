@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<form action="/trackeryear" method="post">
+<form action="/trackercommunity" method="get">
   <div class="container p-3 shadow rounded-3 orange">
     <h2 class="whiteText">You inspire us</h2>
     <!--Reach for the stars by Designecologist from Pexels https://www.pexels.com/photo/reach-for-the-and-blue-moon-neon-signages-1510659/ -->
@@ -30,6 +30,7 @@
           </li>
         </ul>
       </div>
+    </form>
 <div class="card-body">
   <h5 class="card-title">Log an activity to start wracking up points</h5>
     <div class="container text-center mb-3">
@@ -40,10 +41,10 @@
               <div class="card shadow rounded-3" style="width: 18rem;">
                 <div class="card-body">
                   <h3>👯‍♂️</h3>
-                  <form action="/trackershopping" method="post">
+                  <form action="/trackercommunity" method="post">
                     <h5 class="card-title"><b>I helped a friend get on carbon tracker:</b></h5>
                     <p>We appreciate you! It's always better with friends. How many new friends can we thank you for?</p>
-                    <input type="text" name="added_friend" class="form-control mx-auto w-auto mb-2" id="added_friend" placeholder="What did you get?">
+                    <input type="number" name="added_friend" class="form-control mx-auto w-auto mb-2" id="added_friend" placeholder="How many?">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>     
                 </div>
@@ -55,10 +56,10 @@
               <div class="card shadow rounded-3" style="width: 18rem;">
                 <div class="card-body">
                   <h3>🌳</h3>
-                  <form action="/trackershopping" method="post">
+                  <form action="/trackercommunity" method="post">
                     <h5 class="card-title"><b>I planted trees:</b></h5>
                     <p>Thanks for making the world a greener place for all of us, and helping to improve the air quality and generate more carbon sinks.</p>
-                    <input type="text" name="planted_trees" class="form-control mx-auto w-auto mb-2" id="planted_trees" placeholder="What did you get?">
+                    <input type="number" name="planted_trees" class="form-control mx-auto w-auto mb-2" id="planted_trees" placeholder="How many">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>     
                 </div>
@@ -70,10 +71,10 @@
               <div class="card shadow rounded-3" style="width: 18rem;">
                 <div class="card-body">
                   <h3>🪴</h3>
-                  <form action="/trackershopping" method="post">
+                  <form action="/trackercommunity" method="post">
                     <h5 class="card-title"><b>Helped out at a local community garden:</b></h5>
                     <p>We appreciate you! Your time is so valuable, investing some of it in your community, ensuring they have access to healthy, local foods, will pay off. You're helping build a brighter future, hows that for food for thought? Double points for you!</p>
-                    <input type="text" name="community_garden" class="form-control mx-auto w-auto mb-2" id="community_garden" placeholder="What did you get?">
+                    <input type="text" name="community_garden" class="form-control mx-auto w-auto mb-2" id="community_garden" placeholder="What did you do?">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>     
                 </div>
@@ -85,10 +86,10 @@
               <div class="card shadow rounded-3" style="width: 18rem;">
                 <div class="card-body">
                   <h3>🎓</h3>
-                  <form action="/trackershopping" method="post">
+                  <form action="/trackercommunity" method="post">
                     <h5 class="card-title"><b>Introduced someone to the concepts of carbon footprints, and sustainability:</b></h5>
                     <p>Each one, teach one! You showed up as a mentor and we appreciate you! By sharing knowledge you empowered someone to build a more sustainable life, which impacts us all. We thank you!</p>
-                    <input type="text" name="mentor" class="form-control mx-auto w-auto mb-2" id="mentor" placeholder="How many people?">
+                    <input type="text" name="mentor" class="form-control mx-auto w-auto mb-2" id="mentor" placeholder="What did you do?">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>     
                 </div>

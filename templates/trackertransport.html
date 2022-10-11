@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<form action="/trackeryear" method="post">
+<form action="/trackertransport" method="post">
   <div class="container p-2 shadow rounded-3 orange">
     <h2 class="whiteText">You inspire us</h2>
     <!--Reach for the stars by Designecologist from Pexels https://www.pexels.com/photo/reach-for-the-and-blue-moon-neon-signages-1510659/ -->
@@ -134,7 +134,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I saved money on my transport:</b></h5>
                     <p>Amazing! That translates to cO2 savings and monetary savings! Double win, double points! Tell us how much you saved so we can add it to your points and savings scores.</p>
-                    <input type="number" name="transport_savings" class="form-control mx-auto w-auto mb-2" id="transport_savings" placeholder="$ How much?">
+                    <input type="number" name="transport_savings" class="form-control mx-auto w-auto mb-2" id="transport_savings" placeholder="$">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -149,7 +149,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took my airline up on the offer to offest my carbon:</b></h5>
                     <p>Congratulations on seizing the opportunity! Some offset programs are better than others. So it's always good to double check. How much carbon did you offset?</p>
-                    <input type="number" name="local_vacation" class="form-control mx-auto w-auto mb-2" id="local_vacation" placeholder="How many days?">
+                    <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How many days?">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>

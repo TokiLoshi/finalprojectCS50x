@@ -1115,8 +1115,27 @@ def results():
 def trackercommunity():
   """Allows user to track their progress"""
   if request.method == "POST":
-    flash("You're amazing. Thanks for showing up!")
     print("We're in post")
+    friends = request.form.get("added_friend")
+    trees = request.form.get("planted_trees")
+    community_garden = request.form.get("community_garden")
+    mentor = request.form.get("mentor")
+    if friends is None:
+      print("They didn't bring any friends")
+    else:
+      print("They brought friends: ", friends)
+    if trees is None:
+      print("They didn't plant any trees")
+    else:
+      print("They planted trees: ", trees)
+    if community_garden is None:
+      print("They didn't help at their community garden")
+    else: 
+      print("They helped at their community garden:", community_garden)
+    if mentor is None: 
+      print("They didn't mentor")
+    else: 
+      print("They mentored and did: ", mentor)
     return render_template("/trackercommunity.html")
   else:
     print("We're here in get")
@@ -1127,8 +1146,52 @@ def trackercommunity():
 def trackerelectricity():
   """Allows user to track their progress"""
   if request.method == "POST":
-    flash("You're amazing. Thanks for showing up!")
     print("We're in post")
+    reduced_utility_bill = request.form.get("reduced_utility_bill")
+    composting = request.form.get("composting")
+    green_tariff = request.form.get("green_tariff")
+    solar_panels = request.form.get("solar_panels")
+    short_shower = request.form.get("short_shower")
+    saved_electricity = request.form.get("saved_electricity")
+    less_plastic = request.form.get("less_plastic")
+    less_waste = request.form.get("less_waste")
+    more_recycling = request.form.get("more_recycling")
+    if reduced_utility_bill is None:
+      print("We don't know their electricity bill")
+    else:
+      print("They reduced their electricity bill:", reduced_utility_bill)
+    if composting is None:
+      print("No composting")
+    else:
+      print("They composted:", composting)
+    if green_tariff is None: 
+      print("No green tariff: ")
+    else:
+      print("Green tariff: ", green_tariff)
+    if solar_panels is None:
+      print("No solar panels")
+    else: 
+      print("Solar panels: ", solar_panels)
+    if short_shower is None:
+      print("No short shower")
+    else: 
+      print("Short shower: ", short_shower)
+    if saved_electricity is None: 
+      print("No electricity: ")
+    else:
+      print("Saved electricity", saved_electricity)
+    if less_plastic is None:
+      print("No less plastic")
+    else:
+      print("less plastic", less_plastic)
+    if less_waste is None: 
+      print("No lsess waste")
+    else: 
+      print("Less wasted: ", less_waste)
+    if more_recycling is None:
+      print("No more recycling", more_recycling)
+    else: 
+      print("More recycling: ", more_recycling)
     return render_template("/trackerelectricity.html")
   else:
     print("We're here in get")
@@ -1139,8 +1202,52 @@ def trackerelectricity():
 def trackershopping():
   """Allows user to track their progress"""
   if request.method == "POST":
-    flash("You're amazing. Thanks for showing up!")
     print("We're in post")
+    vintage_clothes = request.form.get("vintage_clothes")
+    sustainable_clothes = request.form.get("sustainable_clothes")
+    paper_bags = request.form.get("paper_bags")
+    own_bags = request.form.get("own_bags")
+    water_bottle = request.form.get("water_bottle")
+    local_groceries = request.form.get("local_groceries")
+    beef = request.form.get("beef")
+    chicken = request.form.get("chicken")
+    pork = request.form.get("pork")
+    if vintage_clothes is None:
+      print("No vintage clothes")
+    else:
+      print("Vintage clothes: ", vintage_clothes)
+    if sustainable_clothes is None: 
+      print("No sustainable clothes")
+    else: 
+      print("Sustainable clothes", sustainable_clothes)
+    if paper_bags is None: 
+      print("No paper bags")
+    else: 
+      print("Paper bags", paper_bags)
+    if own_bags is None:
+      print("No own bags")
+    else:
+      print("No own bags: ", own_bags)
+    if water_bottle is None:
+      print("no water bottle")
+    else: 
+      print("Water bottle:", water_bottle)
+    if local_groceries is None:
+      print("No local groceries")
+    else: 
+      print("Local groceries", local_groceries)
+    if beef is None:
+      print("No beef")
+    else:
+      print("Beef: ", beef)
+    if chicken is None:
+      print("No chicken")
+    else:
+      print("Chicken: ", chicken)
+    if pork is None:
+      print("No pork")
+    else: 
+      print("Pork: ", pork)
     return render_template("/trackershopping.html")
   else:
     print("We're here in get")
@@ -1151,8 +1258,48 @@ def trackershopping():
 def trackertransport():
   """Allows user to track their progress"""
   if request.method == "POST":
-    flash("You're amazing. Thanks for showing up!")
     print("We're in post")
+    fewer_flights = request.form.get("fewer_flights")
+    fewer_hotels = request.form.get("fewer_hotels")
+    direct_flights = request.form.get("direct_flights")
+    train_over_plane = request.form.get("train_over_plane")
+    local_vacation = request.form.get("local_vacation")
+    bike_walk = request.form.get("bike_walk")
+    transport_savings = request.form.get("transport_savings")
+    local_vacation = request.form.get("local_vacation")
+    carbon_offset = request.form.get("carbon_offset")
+    if fewer_flights is None:
+      print("no fewer flights")
+    else: 
+      print("Took fewer flights; ", fewer_flights)
+    if fewer_hotels is None:
+      print("no fewer nights in hotels")
+    else: 
+      print("Fewer nights in hotels:", fewer_hotels)
+    if direct_flights is None:
+      print("No more direct flights")
+    else: 
+      print("More direct flights: ", direct_flights)
+    if train_over_plane is None:
+      print("Didn't choose trains over planes")
+    else: 
+      print("Chose train over plane", train_over_plane)
+    if local_vacation is None:
+      print("No local vacations: ", local_vacation)
+    else: 
+      print("Took local vacation: ", local_vacation)
+    if bike_walk is None: 
+      print("No bike or walk over car")
+    else: 
+      print("Chose to bike or walk: ", bike_walk)
+    if transport_savings is None:
+      print("No transport savings")
+    else: 
+      print("Transport Savings: ", transport_savings)
+    if carbon_offset is None:
+      print("No offsets")
+    else:
+      print("Offsets: ", carbon_offset)
     return render_template("/trackertransport.html")
   else:
     print("We're here in get")
