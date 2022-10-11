@@ -5,6 +5,7 @@ Overview of Carbon Tracker
 ```mermaid
 erDiagram
     USER ||--o{ FOOTPRINT : calculator
+    USER ||--o{ TRACKERS : score_points
     USER {
         user_id INTEGER_PRIMARY_KEY_AUTOINCREMENT_NOT_NULL
         name TEXT_NOT_NULL
@@ -12,6 +13,36 @@ erDiagram
         leaderboardname TEXT_NOT_NULL
         hash TEXT_NOT_NULL
         datejoined TEXT_NOT_NULL
+    }
+    TRACKERS {
+      id INTEGER_PRIMARY_KEY_AUTOINCREMENT_NOT_NULL
+      user_id INTEGER_NOT_NULL
+      added_friends INTEGER
+      planted_trees INTEGER
+      helped_community INTEGER
+      vintage_clothing INTEGER
+      sustainable_clothing INTEGER
+      saved_plastic INTEGER
+      saved_money NUMERIC
+      saved_energy NUMERIC
+      bought_local INTEGER
+      vacationed_local INTEGER
+      less_beef INTEGER 
+      less_chicken INTEGER
+      less_pork INTEGER
+      more_compost INTEGER 
+      green_tariff TEXT 
+      solar_panels TEXT
+      saved_water NUMERIC
+      less_waste NUMERIC
+      more_recycling NUMERIC
+      fewer_flights NUMERIC 
+      fewer_hotels NUMERIC
+      more_direct_flights NUMERIC
+      miles_walk_bike NUMERIC
+      carbon_offset NUMERIC
+      carbon_savings NUMERIC
+      total_score NUMERIC
     }
     FOOTPRINT ||--|{ TRANSPORT_FOOTPRINT : part_2
     FOOTPRINT {
