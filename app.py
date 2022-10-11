@@ -81,11 +81,18 @@ def account():
   """Users account page with their username information"""
   get_user_info = db.execute("SELECT name, leaderboardname, email, datejoined FROM users WHERE id=?", session.get("user_id"))
   print("User's info: ", get_user_info)
-  for info in get_user_info:
-    name = info['name']
-    leaderboardname = info['leaderboardname']
-    emailaddy = info['email']
-    datejoined = info['datejoined']
+  if len(get_user_info) == 0:
+      name = "unknown"
+      leaderboardname = "unknown"
+      emailaddy =  "unknown"
+      datejoined = "unknown"
+  else:
+    for info in get_user_info:
+      name = info['name']
+      leaderboardname = info['leaderboardname']
+      emailaddy = info['email']
+      datejoined = info['datejoined']
+  print("USER INFO: ", get_user_info)
   if request.method == "POST":
     print("We're in post")
     return render_template("/changepassword.html")
@@ -849,15 +856,25 @@ def register():
     # Check email isn't blank an email
     elif len(email) == 0:
       return apology("Please enter your email")
-
+    # TO DO: 
+    # FIX ISSUE WITH EMAILS being the same - need to check for that email and issue apology that an account already exists 
+    # BUG HERE
     elif (len(count) > 1):
       return apology("An account already exists")
     
     else:
-      # INSERT new user and store a hash of the password:
+      # TO DO: 
+      # FIND OUT WHY AUTOINCREMENT DOESN'T GO FROM THE LAST USER BUT THE LAST NUMBER, AND IS THERE A WAY TO RESET IT
+      # INSERT new user and store a hash of the password, update tracker_scores:
       # **** Should look at ways to make this password more secure
       hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
       new_user = db.execute("INSERT INTO users (name, email, leaderboardname, hash) VALUES(?, ?, ?, ?)", name, email, leaderboardname, hash)
+      find_id = db.execute("SELECT id FROM users WHERE leaderboardname=?", leaderboardname)
+      print("find id: ", find_id)
+      for id in find_id:
+        get_id = id['id']
+      print("get id: ", get_id)
+      set_tracker_scores_db = db.execute("INSERT INTO trackers (user_id, added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score) VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, No, No, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) WHERE leaderboardname=?", get_id, leaderboardname)
       return render_template("/login.html")
 
   # Handle GET request 
@@ -1116,6 +1133,8 @@ def trackercommunity():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
+    get_db = db.execute("SELECT added_friends, planted_trees, helped_community, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET DB: ", get_db)
     friends = request.form.get("added_friend")
     trees = request.form.get("planted_trees")
     community_garden = request.form.get("community_garden")
@@ -1147,6 +1166,8 @@ def trackerelectricity():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
+    get_db = db.execute("SELECT saved_money, saved_energy, more_compost, green_tariff, solar_panels, less_waste, more_recycling, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET DB: ", get_db)
     reduced_utility_bill = request.form.get("reduced_utility_bill")
     composting = request.form.get("composting")
     green_tariff = request.form.get("green_tariff")
@@ -1161,11 +1182,13 @@ def trackerelectricity():
     else:
       print("They reduced their electricity bill:", reduced_utility_bill)
     if composting is None:
+      composting_add = 0
       print("No composting")
     else:
       print("They composted:", composting)
     if green_tariff is None: 
       print("No green tariff: ")
+
     else:
       print("Green tariff: ", green_tariff)
     if solar_panels is None:
@@ -1203,6 +1226,8 @@ def trackershopping():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
+    get_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET DB: ", get_db)
     vintage_clothes = request.form.get("vintage_clothes")
     sustainable_clothes = request.form.get("sustainable_clothes")
     paper_bags = request.form.get("paper_bags")
@@ -1259,6 +1284,8 @@ def trackertransport():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
+    get_db = db.execute("SELECT saved_money, saved_energy, vacationed_local, green_tariff, solar_panels, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET DB: ", get_db)
     fewer_flights = request.form.get("fewer_flights")
     fewer_hotels = request.form.get("fewer_hotels")
     direct_flights = request.form.get("direct_flights")
