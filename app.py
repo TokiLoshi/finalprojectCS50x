@@ -1110,16 +1110,53 @@ def results():
     return render_template("/results.html", total=grand_total, datetime=date_completed, household=total_footprint_general, transport=total_footprint_transport, consumption=total_footprint_consumption, building=building, buildingimpact=impact_of_construction_formatted, state=state, electricity=electricity, electrictyimpact=electricity_impact, wastefrequency=waste_frequency, landfill=landfill_impact, recycling=recycling, recyclingimpact=recycling_impact, drycleaning=drycleaning_formatted, drycleaningimpact=drycleaning_impact, totalfootprint=total_footprint_general_formatted, individualfootprint=individual_score_formatted, worksituation=work_situation, commuterdays=commuter_days, commuterdistance=commuter_distance, transportmode=transport_mode, transportcost=transport_cost, commuterimpact=impact_of_commute, shorthaul=short_haul_flights, shorthaulimpact=short_haul_flights_impact, mediumhaul=medium_haul_flights, mediumhaulimpact=medium_haul_flights_impact, longhaul=long_haul_flights, longhaulimpact=long_haul_flights_impact, totaltransportfootprint=total_footprint_transport_formatted, beef=beef_consumption, beefimpact=beef_impact, pork=pork_consumption, porkimpact=pork_impact, chicken=chicken_consumption, chickenimpact=chicken_impact, willingness=willingness_to_adjust_diet, newclothing=new_clothing_spend, newclothingimpact=new_clothing_impact, restaurants=restaurants_spend, restaurantsimpact=restaurants_impact, accesories=accessories_spend, accessories=accessories_spend, accessoriesimpact=accessories_impact, appliances=appliances_spend, appliancesimpact=appliances_impact, hotels=hotels, hotelsimpact=hotels_impact, totalconsumptionfootprint=total_footprint_consumption)
 
 # Tracker page to track carbon footprint
-@app.route("/tracker", methods=["GET", "POST"])
+@app.route("/trackercommunity", methods=["GET", "POST"])
 @login_required
-def tracker():
+def trackercommunity():
   """Allows user to track their progress"""
   if request.method == "POST":
     flash("You're amazing. Thanks for showing up!")
     print("We're in post")
+    return render_template("/trackercommunity.html")
   else:
     print("We're here in get")
-  return render_template("/tracker.html")
+  return render_template("/trackercommunity.html")
+
+@app.route("/trackerelectricity", methods=["GET", "POST"])
+@login_required
+def trackerelectricity():
+  """Allows user to track their progress"""
+  if request.method == "POST":
+    flash("You're amazing. Thanks for showing up!")
+    print("We're in post")
+    return render_template("/trackerelectricity.html")
+  else:
+    print("We're here in get")
+  return render_template("/trackerelectricity.html")
+
+@app.route("/trackershopping", methods=["GET", "POST"])
+@login_required
+def trackershopping():
+  """Allows user to track their progress"""
+  if request.method == "POST":
+    flash("You're amazing. Thanks for showing up!")
+    print("We're in post")
+    return render_template("/trackershopping.html")
+  else:
+    print("We're here in get")
+  return render_template("/trackershopping.html")
+
+@app.route("/trackertransport", methods=["GET", "POST"])
+@login_required
+def trackertransport():
+  """Allows user to track their progress"""
+  if request.method == "POST":
+    flash("You're amazing. Thanks for showing up!")
+    print("We're in post")
+    return render_template("/trackertransport.html")
+  else:
+    print("We're here in get")
+  return render_template("/trackertransport.html")
 
 
 
