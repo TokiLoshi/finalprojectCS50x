@@ -40,10 +40,10 @@
                     <div class="card-body">
                       <h3>💡</h3>
                       <form action="/trackerelectricity" method="post">
-                        <h5 class="card-title"><b>I reduced my energy bill this month:</b></h5>
+                        <h5 class="card-title"><b>I reduced my energy usage this month:</b></h5>
                         <p>This is awesome! Not only have you saved money, but the planet thanks you too. Electricity from fossil fuels is one of the greatest contributors to carbon emissions.</p>
-                      <p>When you got started you were spending {amount} each month. What was your bill this month?</p>
-                        <input type="number" name="reduced_utility_bill" class="form-control mx-auto w-auto mb-2" id="reduced_utility_bill" placeholder="$">
+                        <p>When you got started you were spending {{kwh}} kWh each month. How much energy did you use this month?</p>
+                        <input type="number" name="reduced_utility_bill" class="form-control mx-auto w-auto mb-2" id="reduced_utility_bill" placeholder="kWh" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -56,10 +56,10 @@
                     <div class="card-body">
                       <h3>🥦</h3>
                       <form action="/trackerelectricity" method="post">
-                        <h5 class="card-title"><b>I composted more at home this month:</b></h5>
+                        <h5 class="card-title"><b>I composted more at home:</b></h5>
                         <p>If you have a garden we bet it will be happy! This makes it easier for recology services to manage waste better. More benefits about composting.</p>
-                        <p>Tell us much more composting do you think you did than usual so we can give you kudos</p>
-                        <input type="number" name="composting" class="form-control mx-auto w-auto mb-2" id="composting" placeholder="How much?">
+                        <p>Tell us how many more times you composted than usual so we can give you kudos</p>
+                        <input type="number" name="composting" class="form-control mx-auto w-auto mb-2" id="composting" placeholder="How many times?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -90,8 +90,8 @@
                       <form action="/trackerelectricity" method="post">
                         <h5 class="card-title"><b>I installed solar panels on my roof:</b></h5>
                         <p>Solid investment! Getting your electricity renewable energy like the sun helps reduce your carbon, and saves money!</p> 
-                        <p>How much will it save you each month?</p>
-                        <input type="number" name="solar_panels" class="form-control mx-auto w-auto mb-2" id="solar_panels" placeholder="$">
+                        <p>Which ones did you get?</p>
+                        <input type="text" name="solar_panels" class="form-control mx-auto w-auto mb-2" id="solar_panels" placeholder="Which ones?">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -106,7 +106,7 @@
                       <form action="/trackerelectricity" method="post">
                         <h5 class="card-title"><b>I had a shorter shower and saved water:</b></h5>
                         <p class="card-text">Great! Shorter showers can help reduce energy bills as you need to heat less water, it also helps your community if you're in an area prone to drought. How much shorter was your shower than usual?</p>
-                        <input type="number" name="short_shower" class="form-control mx-auto w-auto mb-2" id="short_shower" placeholder="minutes">
+                        <input type="number" name="short_shower" class="form-control mx-auto w-auto mb-2" id="short_shower" placeholder="minutes" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -119,9 +119,10 @@
                     <div class="card-body">
                       <h3>🕯</h3>
                       <form action="/trackerelectricity" method="post">
-                        <h5 class="card-title"><b>I turned off the lights in rooms that weren't being used:</b></h5>
-                        <p class="card-text">Electricity is a major source of cO2 emissions, being energy efficient is good for the planet and your wallet. Double points! How many hours of electricity do you think you saved?</p>
-                        <input type="number" name="saved_electricity" class="form-control mx-auto w-auto mb-2" id="saved_electricity" placeholder="How many hours?">
+                        <h5 class="card-title"><b>I swapped out incandescent light bulbs for LED light bulbs:</b></h5>
+                        <!--LEDs last longer https://www.energy.gov/energysaver/led-lighting-->
+                        <p class="card-text">Electricity is a major source of cO2 emissions, LED lights are more efficient, lasting 25 x longer and help save you money. Double points! How many light bulbs did you change out?</p>
+                        <input type="number" name="saved_electricity" class="form-control mx-auto w-auto mb-2" id="saved_electricity" placeholder="How many lightbulbs?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -136,7 +137,7 @@
                       <form action="/trackerelectricity" method="post">
                         <h5 class="card-title"><b>I didn't use any one use plastic products today:</b></h5>
                         <p class="card-text">We're huge fans! Plastic is hard to break down, and microplastics in our water are a big problem for sea life, and it gets into our drinking water. How many plastic items do you think you avoided today?</p>
-                        <input type="number" name="less_plastic" class="form-control mx-auto w-auto mb-2" id="less_plastic" placeholder="How much less?">
+                        <input type="number" name="less_plastic" class="form-control mx-auto w-auto mb-2" id="less_plastic" placeholder="How much less?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -150,8 +151,8 @@
                       <h3>🗑</h3>
                       <form action="/trackerelectricity" method="post">
                         <h5 class="card-title"><b>I needed to throw out less garbage:</b></h5>
-                        <p class="card-text">When you started you reported throwing out {value} each week. Any reduction in waste is a huge win! Tell us much you threw out this week so we can give you kudos.</p>
-                        <input type="number" name="less_waste" class="form-control mx-auto w-auto mb-2" id="less_waste" placeholder="How much?">
+                        <p class="card-text">When you started you reported throwing out {{garbage}} gallons each week. Any reduction in waste is a huge win! Tell us much you threw out this week so we can give you kudos.</p>
+                        <input type="number" name="less_waste" class="form-control mx-auto w-auto mb-2" id="less_waste" placeholder="How much?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -164,9 +165,9 @@
                     <div class="card-body">
                       <h3>♻️</h3>
                       <form action="/trackerelectricity" method="post">
-                        <h5 class="card-title"><b>I recycled more of my garbage::</b></h5>
-                        <p class="card-text">When you started you were recycling {value} how much did you recyle this week?</p>
-                        <input type="number" name="more_recycling" class="form-control mx-auto w-auto mb-2" id="more_recycling" placeholder="How much?">
+                        <h5 class="card-title"><b>I recycled more of my garbage:</b></h5>
+                        <p class="card-text">When you started you were recycling {{recycling}}% of your garbage how much did you recyle this week?</p>
+                        <input type="number" name="more_recycling" class="form-control mx-auto w-auto mb-2" id="more_recycling" placeholder="How much?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>

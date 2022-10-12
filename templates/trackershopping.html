@@ -72,7 +72,7 @@
                       <form action="/trackershopping" method="post">
                         <h5 class="card-title"><b>I used paper bags at the grocery store:</b></h5>
                         <p>Paper bags are compostable, this is a great alternative to plastic! How many plastic bags did you save by using paper bags?</p>
-                        <input type="number" name="paper_bags" class="form-control mx-auto w-auto mb-2" id="paper_bags" placeholder="How many?">
+                        <input type="number" name="paper_bags" class="form-control mx-auto w-auto mb-2" id="paper_bags" placeholder="How many?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>
                     </div>
@@ -87,7 +87,7 @@
                       <form action="/trackershopping" method="post">
                         <h5 class="card-title"><b>I brought my own reusable bags to the grocery store:</b></h5>
                         <p>Excellent for the environment and an efficient way to shop! Double points! How many plastic bags do you think you saved?</p>
-                        <input type="number" name="own_bags" class="form-control mx-auto w-auto mb-2" id="own_bags" placeholder="How many?">
+                        <input type="number" name="own_bags" class="form-control mx-auto w-auto mb-2" id="own_bags" placeholder="How many?" min="0">
                         <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                       </form>     
                     </div>
@@ -102,7 +102,7 @@
                 <form action="/trackershopping" method="post">
                   <h5 class="card-title"><b>I used my own water bottle, instead of buying water:</b></h5>
                   <p>Amazing, you just made the oceans a cleaner place and this smart choice save you money. Tell us how much you normally spend on bottled water if you forget your own water bottle, so we can give you points and savings.</p>
-                  <input type="number" name="water_bottle" class="form-control mx-auto w-auto mb-2" id="water_bottle" placeholder="$">
+                  <input type="number" name="water_bottle" class="form-control mx-auto w-auto mb-2" id="water_bottle" placeholder="$" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>     
               </div>
@@ -117,7 +117,7 @@
               <form action="/trackershopping" method="post">
                 <h5 class="card-title"><b>My groceries were mostly local this week:</b></h5>
                 <p>You supported local farmers and small business owners. Shopping locally also shows the stores there is a demand for it, and can impact how they choose inventory in the future, closer suppliers means fewer carbon emissions from transport.</p>
-                <input type="number" name="local_groceries" class="form-control mx-auto w-auto mb-2" id="local_groceries" placeholder="What percentage?">
+                <input type="number" name="local_groceries" class="form-control mx-auto w-auto mb-2" id="local_groceries" placeholder="What percentage?" min="0">
                 <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
               </form>     
             </div>
@@ -133,9 +133,24 @@
                 <h5 class="card-title"><b>I went flexitarian:</b></h5>
                 <p>Even one day with less meat can make a big differences. Thank you for being flexible with your diet.</p>
                 <p>When you started with carbon tracker you were eating {values} each week, how many times was it this week?</p>
-                <input type="number" name="beef" class="form-control mx-auto w-auto" id="beef" placeholder="Beef..." required>
-               <input type="number" name="chicken" class="form-control mx-auto w-auto" id="chicken" placeholder="Chicken..." required>
-                <input type="number" name="pork" class="form-control mx-auto w-auto" id="pork" placeholder="Pork..." required>
+                <input type="number" name="beef" class="form-control mx-auto w-auto" id="beef" placeholder="Beef..." required min="0">
+               <input type="number" name="chicken" class="form-control mx-auto w-auto" id="chicken" placeholder="Chicken..." required min="0">
+                <input type="number" name="pork" class="form-control mx-auto w-auto" id="pork" placeholder="Pork..." required min="0">
+                <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
+              </form>     
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto mb-2">
+        <div class="d-flex">
+          <div class="card shadow rounded-3" style="width: 18rem;">
+            <div class="card-body">
+              <h3>🧥</h3>
+              <form action="/trackershopping" method="post">
+                <h5 class="card-title"><b>I spent less on drycleaning this month:</b></h5>
+                <p>Spending less on drycleaning is great for saving money, and the planet as drycleaning frequently causes many harmful chemicals to be released into the atmosphere. When you started with carbon tracker you were spending around {values} each month, how much did you spend on drycleaning this week?</p>
+                <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="drycleaning" placeholder="$" required min="0">
                 <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
               </form>     
             </div>

@@ -44,7 +44,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took fewer flights this year:</b></h5>
                     <p>Fewer flights either meant you traveled directly more, or that you took fewer flights and lower co2 emissions. Tell us how many less flights you took than usual so we can give you kudos.</p>
-                    <input type="number" name="fewer_flights" class="form-control mx-auto w-auto mb-2" id="fewer_flights" placeholder="How many?">
+                    <input type="number" name="fewer_flights" class="form-control mx-auto w-auto mb-2" id="fewer_flights" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -59,7 +59,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I spent fewer nights in hotels:</b></h5>
                     <p>When you started you reported spending an average of {value} nights per year in hotels. Cutting down on hotels can also save you money. How many nights did you spend this year?</p>
-                    <input type="number" name="fewer_hotels" class="form-control mx-auto w-auto mb-2" id="fewer_hotels" placeholder="How many?">
+                    <input type="number" name="fewer_hotels" class="form-control mx-auto w-auto mb-2" id="fewer_hotels" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -74,7 +74,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took more direct flights:</b></h5>
                     <p>Direct flights not only save you time (flight time, security checks and layovers), but they also drastically reduce the amount of fuel you would use gettinng to places. Nicely done!</p>
-                    <input type="number" name="direct_flights" class="form-control mx-auto w-auto mb-2" id="direct_flights" placeholder="How many?">
+                    <input type="number" name="direct_flights" class="form-control mx-auto w-auto mb-2" id="direct_flights" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -89,7 +89,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I decided to take a train instead of a plane:</b></h5>
                     <p>That might take a bit longer but you've saved on emissions, and we hope you enjoyed the scenic route. How many plane rides did you substitute?</p>
-                    <input type="number" name="train_over_plane" class="form-control mx-auto w-auto mb-2" id="train_over_plane" placeholder="How many rides?">
+                    <input type="number" name="train_over_plane" class="form-control mx-auto w-auto mb-2" id="train_over_plane" placeholder="How many rides?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -104,7 +104,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I vacationed locally:</b></h5>
                     <p>What an awesome way to get to know your city and surroundings even better. This is a great way to save money, and carbon emissions! How many vacation days did you spent locally?</p>
-                    <input type="number" name="local_vacation" class="form-control mx-auto w-auto mb-2" id="local_vacation" placeholder="How many days?">
+                    <input type="number" name="local_vacation" class="form-control mx-auto w-auto mb-2" id="local_vacation" placeholder="How many days?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -119,7 +119,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I chose to walk or bike, not drive:</b></h5>
                     <p>Good for the planet and you got some exercise, double points for that! Tell us how many miles did walked or cycled so we can add that to your score.</p>
-                    <input type="number" name="bike_walk" class="form-control mx-auto w-auto mb-2" id="bike_walk" placeholder="How many miles?">
+                    <input type="number" name="bike_walk" class="form-control mx-auto w-auto mb-2" id="bike_walk" placeholder="How many miles?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -134,7 +134,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I saved money on my transport:</b></h5>
                     <p>Amazing! That translates to cO2 savings and monetary savings! Double win, double points! Tell us how much you saved so we can add it to your points and savings scores.</p>
-                    <input type="number" name="transport_savings" class="form-control mx-auto w-auto mb-2" id="transport_savings" placeholder="$">
+                    <input type="number" name="transport_savings" class="form-control mx-auto w-auto mb-2" id="transport_savings" placeholder="$" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
@@ -149,7 +149,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took my airline up on the offer to offest my carbon:</b></h5>
                     <p>Congratulations on seizing the opportunity! Some offset programs are better than others. So it's always good to double check. How much carbon did you offset?</p>
-                    <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How many days?">
+                    <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How many days?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>
