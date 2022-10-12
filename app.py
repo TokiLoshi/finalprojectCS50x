@@ -1212,7 +1212,6 @@ def trackerelectricity():
     
     # Get benchmark values from db: 
     get_db_electricity = db.execute("SELECT state, electricity, electricity_impact, waste_frequency, recycling FROM footprint WHERE user_id=?", session.get("user_id"))
-    print("USER's electricity and home details in the db: ", get_db_electricity)
     for info in get_db_electricity:
       energy_usage_db = float(info['electricity'])
       waste_frequency = int(info['waste_frequency'])
@@ -1222,7 +1221,6 @@ def trackerelectricity():
 
     # Get tracker info from db:
     get_db = db.execute("SELECT saved_plastic, saved_money, saved_energy, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
-    print("GET DB: ", get_db)
     for info in get_db: 
       saved_plastic = info['saved_plastic']
       monetary_savings = info['saved_money']
@@ -1235,16 +1233,8 @@ def trackerelectricity():
       more_recycling_total = info['more_recycling']
       carbon_savings = info['carbon_savings'] 
       db_total_score = info['total_score']
-    print("FROM DB pastic savings: ", saved_plastic)
-    print("FROM DB monetary savings:", monetary_savings)
-    print("FROM DB energy savings:", energy_savings)
-    print("FROM DB compost total:", compost_total)
-    print("FROM DB green_tariff_status: ", green_tariff_status)
-    print("FROM DB solar_panels_status; :", solar_panels_status)
-    print("FROM DB less_waste_total:", less_waste_total)
-    print("FROMM DB: more_recycling_total", more_recycling_total)
-    print("FROM DB carbon savings: ", carbon_savings)
-    print("FROM DB TOTAL SCORE: ", db_total_score)
+    
+    # Get necessary values for looking up electricity
     electricity_activity_id = "electricity-energy_source_grid_mix"
     region = state
 
@@ -1260,20 +1250,16 @@ def trackerelectricity():
     more_recycling = request.form.get("more_recycling")
     
     # Handle empty fields and calculate adds
-    # utilitiy bill
+    # Utilitiy bill
     if reduced_utility_bill is None:
-      print("We don't know their electricity bill")
       energy_savings_add = 0
       carbon_savings_utilities = 0
     else:
-      print("They reduced their electricity bill:", reduced_utility_bill)
       reduced_utility_bill = float(reduced_utility_bill)
       if reduced_utility_bill > energy_usage_db:
-        flash("You used more energy this month than usual")
         energy_savings_add = 0
         carbon_savings_utilities = 0
       elif reduced_utility_bill == energy_usage_db:
-        flash("You used the same amount of energy as usual")
         energy_savings_add = 0
         carbon_savings_utilities = 0
       else:
@@ -1283,24 +1269,15 @@ def trackerelectricity():
         electricity_lookup = impact_by_energy(electricity_activity_id, region, reduced_utility_bill)
         electricity_emissions = float(electricity_lookup['Carbon_emissions'])
         carbon_savings_utilities = previous_emissions - electricity_emissions
-        print("kwh saved: ", energy_savings_add)
-        print(type(energy_savings_add))
-        print("Previous emissions: ", previous_emissions)
-        print(type(carbon_savings_utilities))
-        print("Electricity emissions: ", electricity_emissions)
-        print("Carbon saved: ", carbon_savings_utilities)
     
-    # composting
+    # Composting
     if composting is None:
       composting_add = 0
-      print("No composting")
     else:
-      print("They composted:", composting)
       composting_add = int(composting)
     
-    # green tariff
+    # Green tariff
     if green_tariff is None: 
-      print("No green tariff: ")
       if green_tariff_status == "Yes":
         green_tariff_status = "Yes"
         points_for_going_green = 0
@@ -1308,122 +1285,91 @@ def trackerelectricity():
         green_tariff_status = "No"
         points_for_going_green = 0
     else:
-      print("Green tariff: ", green_tariff)
+      # If the user has entered something their green tariff status should be updated to yes in db
       green_tariff_status = "Yes"
       points_for_going_green = 10
-    print("After the conditionals the green tariff stauts is: ", green_tariff_status)
     
-    # solar panels
+    # Solar panels
     if solar_panels is None:
-      print("No solar panels")
       if solar_panels_status == "Yes":
-        print("They don't have solar panels")
         solar_panels_status = "Yes"
         points_for_solar_panels = 0
       else:
         solar_panels_status = "No"
         points_for_solar_panels = 0
     else: 
-      print("Solar panels: ", solar_panels)
-      solar_panels_status = "yes"
+      # If the user has entered something their solar panels status should be updated to yes in db
+      solar_panels_status = "Yes"
       points_for_solar_panels = 20
-    print("After the conditionals their solar panel status is: ", solar_panels_status)
     
-    # short shower
+    
+    # Short shower
     if short_shower is None:
-      print("No short shower")
       water_savings_add = 0
     else: 
-      print("Short shower: ", short_shower)
       # HACK:
       # Average shower uses 2.5 Gallons of water per minute https://green.harvard.edu/tools-resources/green-tip/4-ways-measure-5-minute-shower#:~:text=Did%20you%20know%20the%20average,water%20for%20the%20average%20shower!
       water_savings_add = float(short_shower) * 2.5
-      print("WATER SAVINGS : ", water_savings_add)
     
-    # electricity savings
+    # Electricity savings
     if saved_electricity is None: 
-      print("No electricity: ")
       energy_savings_add_bulbs = 0
       money_savings_add_bulbs = 0
       added_points_bulbs = 0
       carbon_savings_bulbs = 0
     else:
-      print("Saved electricity from bulbs", saved_electricity)
       # HACK:
-      saved_electricity = float(saved_electricity)
       # Save (3.05 - 1.34) in $ switching https://blog.constellation.com/2016/03/25/led-vs-cfl-bulbs/
       # LED lights are 75% more efficient https://www.energy.gov/energysaver/led-lighting
       # Incandescent bulbs use 60 watts per hour vs LED which uses 7 - 10 https://www.familyhandyman.com/list/how-much-electricity-items-in-your-house-use/
+      saved_electricity = float(saved_electricity)
       money_savings_add_bulbs = float((3.05 - 1.34) * (saved_electricity))
-      print("Money savings from changing light bulbs", money_savings_add_bulbs)
+      
       # Estimating savings of 50 watts per hour from switching to LED the equivalent in kWh
       # kWh=(watts * hrs) / 1,000 https://justenergy.com/blog/kilowatts-and-calculations/#:~:text=Here's%20the%20Formula%20for%20Calculating,watts%20%C3%97%20hrs)%20%C3%B7%201%2C000
       energy_savings_add_bulbs = (50 * saved_electricity) / 1000
       carbon_savings_lookup = impact_by_energy(electricity_activity_id, region, energy_savings_add)
-      print("Carbon savings lookup: ", carbon_savings_lookup)
       carbon_savings_bulbs = (float(carbon_savings_lookup['Carbon_emissions']))
-      print("Money savings from changing light bulbs: ", money_savings_add_bulbs)
-      print("energy savings", energy_savings_add_bulbs)
-      print("Carbon savings from changing lightbulbs", carbon_savings_bulbs)
-      # Offered the user double points for this - add to score
+     
+     # Offered the user double points for this - add to score
       added_points_bulbs = 2
     
-    # less plastic
+    # Less plastic
     if less_plastic is None:
-      print("No less plastic")
       less_plastic_add = 0
     else:
-      print("less plastic", less_plastic)
       less_plastic_add = float(less_plastic)
     
     # less waste
     if less_waste is None: 
-      print("No lsess waste")
       less_waste_add = 0
     else: 
-      print("Less wasted: ", less_waste)
       less_waste_add = float(less_waste)
     
     # more recycling 
     if more_recycling is None:
-      print("No more recycling")
       more_recycling_add = 0
     else: 
       more_recycling_add = float(more_recycling) / 100
-      print("More recycling: ", more_recycling_add)
     
     # Print totals to tally 
     energy_savings_total = float(energy_savings) + energy_savings_add + energy_savings_add_bulbs
-    carbon_savings_total = float(carbon_savings) + carbon_savings_utilities + carbon_savings_bulbs
-    money_savings_total = float(monetary_savings) + money_savings_add_bulbs
+    carbon_savings_total = formatfloat(float(carbon_savings) + carbon_savings_utilities + carbon_savings_bulbs)
+    money_savings_total = formatfloat(float(monetary_savings) + money_savings_add_bulbs)
     compost_new_total = int(float(compost_total) + composting_add)
     green_tariff_status_end = green_tariff_status
     solar_panels_status_end = solar_panels_status
     water_savings_total = float(water_savings) + water_savings_add
     plastic_savings = int(float(saved_plastic) + less_plastic_add)
-    total_waste_savings = float(less_waste_total) + less_waste_add
+    total_waste_savings = float(less_waste_total) + float(less_waste_add)
     total_recycling_score = float(more_recycling_total) + more_recycling_add
-    print("ENERGY SAVINGS TOTAL: ", energy_savings_total)
-    print("CARBON SAVIGNS TOTAL", carbon_savings_total)
-    print("COMPOSTING TOTAL: ", compost_new_total)
-    print("END GREEN TARIFF: ", green_tariff_status_end)
-    print("SOLAR PANEL STATUS", solar_panels_status_end)
-    print("WATER SAVINGS TOTAL: ", water_savings_total)
-    print("PLASTIC SAVINGS: ", plastic_savings)
-    print("TOTAL WASTE SAVINGS: ", total_waste_savings)
-    print("TOTAL RECYCLING SCORE: ", total_recycling_score)
     starting_score = float(db_total_score)
     stuff_to_add = float(formatfloat(energy_savings_add + energy_savings_add_bulbs + carbon_savings_bulbs + carbon_savings_utilities + composting_add + money_savings_add_bulbs + points_for_going_green + points_for_solar_panels + water_savings_add + less_plastic_add + less_waste_add + more_recycling_add))
     new_added_score =  float(formatfloat(energy_savings_add + energy_savings_add_bulbs + carbon_savings_utilities + carbon_savings_bulbs + money_savings_add_bulbs + composting_add + points_for_going_green + points_for_solar_panels + water_savings_add + less_plastic_add + less_waste_add + more_recycling_add))
     new_total_score = float(db_total_score) + new_added_score
-    print("STARTING SCORE: ", starting_score)
-    print("Stuff to add: ", stuff_to_add)
-    print("GRAND SUB TOTAL: ", new_added_score)
-    print("SCORE to upate: ", new_total_score)
    
     # Update db
-    updatedb = db.execute("UPDATE trackers SET saved_plastic=?, saved_money?, saved_energy=?, more_compost=?, green_tariff=?, solar_panels=?, saved_water=?, less_waste=?, more_recycling=?, carbon_savings=? total_score=? WHERE user_id=?", plastic_savings, money_savings_total, energy_savings_total, compost_new_total, green_tariff_status_end, solar_panels_status_end, water_savings_total, total_waste_savings, total_recycling_score, carbon_savings_total, new_total_score, session.get("user_id"))
-    print("I think it worked")
+    updatedb = db.execute("UPDATE trackers SET saved_plastic=?, saved_money=?, saved_energy=?, more_compost=?, green_tariff=?, solar_panels=?, saved_water=?, less_waste=?, more_recycling=?, carbon_savings=?, total_score=? WHERE user_id=?", plastic_savings, money_savings_total, energy_savings_total, compost_new_total, green_tariff_status_end, solar_panels_status_end, water_savings_total, total_waste_savings, total_recycling_score, carbon_savings_total, new_total_score, session.get("user_id"))
     return render_template("/trackerelectricity.html", garbage=waste_frequency, recycling=recycling_amount, kwh=energy_usage_db)
   else:
     print("We're here in get")
