@@ -43,7 +43,7 @@
                   <h3>✈️</h3>
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took fewer flights this year:</b></h5>
-                    <p>Fewer flights either meant you traveled directly more, or that you took fewer flights and lower co2 emissions. Tell us how many less flights you took than usual so we can give you kudos.</p>
+                    <p>Fewer flights either meant you traveled directly more, or that you took fewer flights and lower co2 emissions. When you started you were taking on average {{totalflights}} per year. Tell us how many flights you so we can give you kudos.</p>
                     <input type="number" name="fewer_flights" class="form-control mx-auto w-auto mb-2" id="fewer_flights" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
@@ -58,7 +58,7 @@
                   <h3>🏩</h3>
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I spent fewer nights in hotels:</b></h5>
-                    <p>When you started you reported spending an average of {value} nights per year in hotels. Cutting down on hotels can also save you money. How many nights did you spend this year?</p>
+                    <p>When you started you reported spending an average of {{hotelnights}} nights per year in hotels. Cutting down on hotels can also save you money. How many nights did you spend this year?</p>
                     <input type="number" name="fewer_hotels" class="form-control mx-auto w-auto mb-2" id="fewer_hotels" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
@@ -149,7 +149,7 @@
                   <form action="/trackertransport" method="post">
                     <h5 class="card-title"><b>I took my airline up on the offer to offest my carbon:</b></h5>
                     <p>Congratulations on seizing the opportunity! Some offset programs are better than others. So it's always good to double check. How much carbon did you offset?</p>
-                    <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How many days?" min="0">
+                    <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How much?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                   </form>
                 </div>

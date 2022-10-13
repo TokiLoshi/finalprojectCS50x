@@ -1687,6 +1687,27 @@ def trackertransport():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
+    # Set region
+    region = "US"
+    
+    # Get db values to repopulate fields on load 
+    get_db_transport = db.execute("SELECT short_haul, medium_haul, long_haul FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+    get_db_spending = db.execute("SELECT hotels FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+    print("GET TRANSPORT FROM DB: ", get_db_transport)
+    for info in get_db_transport:
+      short_haul = info['short_haul']
+      medium_haul = info['medium_haul']
+      long_haul = info['long_haul']
+    total_flights = int(short_haul) + int(medium_haul) + int(long_haul)
+    for info in get_db_spending: 
+      hotel_nights = info['hotels']
+    if hotel_nights == "No info given":
+      hotel_nights = "You didn't mention how many nights you spend on average in hotels. You can change this at anytime to track your changes here."
+      fewer_hotels_db = 0
+    else:
+      fewer_hotels_db = hotel_nights
+    
+    # Get current values from form
     get_db = db.execute("SELECT saved_money, saved_energy, vacationed_local, green_tariff, solar_panels, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
     print("GET DB: ", get_db)
     fewer_flights = request.form.get("fewer_flights")
@@ -1698,42 +1719,134 @@ def trackertransport():
     transport_savings = request.form.get("transport_savings")
     local_vacation = request.form.get("local_vacation")
     carbon_offset = request.form.get("carbon_offset")
+
+    # Get values from tracker database
+    tracker_db = db.execute("SELECT saved_money, vacationed_local, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET tracker for transport: ", tracker_db)
+    for info in tracker_db:
+      saved_money_db = info['saved_money']
+      vacationed_local_db = info['vacationed_local']
+      fewer_flights_db = info['fewer_flights']
+      fewer_hotels_db = info['fewer_hotels']
+      more_direct_flights_db = info['more_direct_flights']
+      miles_walked_biked_db = info['miles_walk_bike']
+      carbon_offset_db = info['carbon_offset']
+      carbon_savings_db = info['carbon_savings']
+      total_score_db = info['total_score']
+        
+    # Manage empty fields and start tally
+    print("total flights: ", total_flights)
+    print("fewer flights: ", fewer_flights)
     if fewer_flights is None:
       print("no fewer flights")
+      flights_saved = 0
     else: 
       print("Took fewer flights; ", fewer_flights)
-    if fewer_hotels is None:
+      if int(fewer_flights) > total_flights or int(fewer_flights) == total_flights:
+        flights_saved = 0
+      else:
+        flights_saved = total_flights - int(fewer_flights)
+    
+    if fewer_hotels is None or fewer_hotels_db == 0:
       print("no fewer nights in hotels")
+      hotel_nights_saved = 0 
+      carbon_savings_hotel = 0
     else: 
       print("Fewer nights in hotels:", fewer_hotels)
+      hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
+      # From calculator
+      hotel_activity_id = "accommodation_type_hotel_stay"
+      hotel_lookup = impact_by_number(hotel_activity_id, hotel_nights_saved, region)
+      carbon_savings_hotel = hotel_lookup['Carbon_emissions']
+      print("Hotels savings; ", hotel_nights_saved)
+      print("Carbon Emissions saved: ", carbon_savings_hotel)
+    
     if direct_flights is None:
       print("No more direct flights")
+      direct_flights_add = 0
     else: 
       print("More direct flights: ", direct_flights)
+      direct_flights_add = int(direct_flights)
+    
     if train_over_plane is None:
       print("Didn't choose trains over planes")
+      more_trains_add = 0 
     else: 
       print("Chose train over plane", train_over_plane)
+      more_trains_add = int(train_over_plane)
+    
     if local_vacation is None:
       print("No local vacations: ", local_vacation)
+      local_vacation_add = 0
     else: 
       print("Took local vacation: ", local_vacation)
+      local_vacation_add = int(local_vacation)
+    
     if bike_walk is None: 
       print("No bike or walk over car")
+      biked_miles_add = 0 
     else: 
       print("Chose to bike or walk: ", bike_walk)
+      biked_miles_add = float(bike_walk)
+    
     if transport_savings is None:
       print("No transport savings")
+      money_savings_transport = 0
     else: 
       print("Transport Savings: ", transport_savings)
+      money_savings_transport = float(transport_savings)
+    
     if carbon_offset is None:
       print("No offsets")
+      carbon_offset_status = 0
     else:
       print("Offsets: ", carbon_offset)
-    return render_template("/trackertransport.html")
+      carbon_offset_status = float(carbon_offset)
+    
+    # New scores totals
+    total_flights_saved = int(fewer_flights_db) + flights_saved + more_trains_add
+    carbon_savings_total = carbon_savings_hotel + float(carbon_savings_db)
+    direct_flights_total = direct_flights_add + int(more_direct_flights_db)
+    local_vacation_total = int(vacationed_local_db) + local_vacation_add
+    total_hotel_nights_saved = int(fewer_hotels_db) + int(fewer_hotels)
+    total_bike_walk = float(miles_walked_biked_db) + biked_miles_add
+    money_savings_total = money_savings_transport + float(saved_money_db)
+    carbon_offset_total = float(carbon_offset_db) + carbon_offset_status
+    new_total_score = float(total_score_db) + flights_saved + int(fewer_hotels) + more_trains_add  + carbon_savings_hotel + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
+
+    print("Total flights saved: ", total_flights_saved)
+    print("Carbon savings: ", carbon_savings_total)
+    print("Total direct flights: ", direct_flights_total)
+    print("locat vacation total: ", local_vacation_total)
+    print("Total_bike_walk: ", total_bike_walk)
+    print("Money savings total: ", money_savings_total)
+    print("carbon offset total: ", carbon_offset_total)
+    print("total carbon savings: ", carbon_offset_total)
+    print("New total score: ", new_total_score)
+
+    # Add new scores to db
+    update_db = db.execute("UPDATE trackers SET saved_money=?, vacationed_local=?, fewer_flights=?, fewer_hotels=?, more_direct_flights=?, miles_walk_bike=?, carbon_offset=?, carbon_savings=?, total_score=? WHERE user_id=?", money_savings_total, local_vacation_total, total_flights_saved, total_hotel_nights_saved, direct_flights_total, total_bike_walk, carbon_offset_total, carbon_savings_total, new_total_score, session.get("user_id"))
+    check_db = db.execute("SELECT saved_money, vacationed_local, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("Check db for update: ", check_db)
+    return render_template("/trackertransport.html", totalflights=total_flights, hotelnights=hotel_nights)
   else:
     print("We're here in get")
-  return render_template("/trackertransport.html")
+    # Get values from db to populate fields:
+    get_db_transport = db.execute("SELECT short_haul, medium_haul, long_haul FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+    get_db_spending = db.execute("SELECT hotels FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+    print("GET TRANSPORT FROM DB: ", get_db_transport)
+    for info in get_db_transport:
+      short_haul = info['short_haul']
+      medium_haul = info['medium_haul']
+      long_haul = info['long_haul']
+    total_flights = int(short_haul) + int(medium_haul) + int(long_haul)
+    for info in get_db_spending: 
+      hotel_nights = info['hotels']
+    if hotel_nights == "No info given":
+      hotel_nights = "You didn't mention how many nights you spend on average in hotels. You can change this at anytime to track your changes here."
+    else:
+      hotel_nights = hotel_nights
+  return render_template("/trackertransport.html", totalflights=total_flights, hotelnights=hotel_nights)
 
 
 
