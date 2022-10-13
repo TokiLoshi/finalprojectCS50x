@@ -1257,9 +1257,11 @@ def trackerelectricity():
     else:
       reduced_utility_bill = float(reduced_utility_bill)
       if reduced_utility_bill > energy_usage_db:
+        flash("You used more electricity than usual this month")
         energy_savings_add = 0
         carbon_savings_utilities = 0
       elif reduced_utility_bill == energy_usage_db:
+        flash("You used the same amount of electricity as usual")
         energy_savings_add = 0
         carbon_savings_utilities = 0
       else:
@@ -1392,9 +1394,34 @@ def trackerelectricity():
 def trackershopping():
   """Allows user to track their progress"""
   if request.method == "POST":
-    print("We're in post")
-    get_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
-    print("GET DB: ", get_db)
+    print("We're in post in shopping")
+    
+    # Get necessary items to render the page on refresh: 
+    getdrycleaning = db.execute("SELECT drycleaning, drycleaning_impact FROM footprint WHERE user_id=?", session.get("user_id"))
+    for info in getdrycleaning:
+      drycleaning_spend_db = info['drycleaning']
+      drycleaning_impact = info['drycleaning_impact']
+
+    spending_impact = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, dietary_attitude, restaurants, accessories, hotels FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+    for item in spending_impact:
+      beef_consumption = item['beef_consumption']
+      pork_consumption = item['pork_consumption']
+      chicken_consumption = item['chicken_consumption']
+      dietary_attitude = item['dietary_attitude']
+      restaurants = item['restaurants']
+      accessories = item['accessories']
+
+    if restaurants == "No info given":
+      restaurants_spend = "You didn't mention when you started how much you were spending on restaurants. You can update that at any point. How much did you spend this month?"
+    else:
+      restaurants_spend = "When you got started you said you were spending $" + restaurants + "each month. How much did you spend this month?"
+      
+    if accessories == "No info given":
+      accessories_spend = "You didn't mention when you started how much you were spending on accessories. You can update that at any point. How much did you spend this month?"
+    else:
+      accessories_spend = "When you got started you said you were spending $" + accessories + "each month. How much did you spend this month?"
+      
+    # Get items from form 
     vintage_clothes = request.form.get("vintage_clothes")
     sustainable_clothes = request.form.get("sustainable_clothes")
     paper_bags = request.form.get("paper_bags")
@@ -1404,43 +1431,220 @@ def trackershopping():
     beef = request.form.get("beef")
     chicken = request.form.get("chicken")
     pork = request.form.get("pork")
+    drycleaning_form = request.form.get("drycleaning")
+    restaurants_form = request.form.get("restaurants")
+    accessories_form = request.form.get("accessories")
+    
+    # region for calculations:
+    region = "US"
+
+    # Manage empty fields and tally up scores
     if vintage_clothes is None:
-      print("No vintage clothes")
+      vintage_clothes_add = 0
     else:
-      print("Vintage clothes: ", vintage_clothes)
+      vintage_clothes_add = 1
+    
     if sustainable_clothes is None: 
-      print("No sustainable clothes")
+      sustainable_clothes_add = 0
     else: 
-      print("Sustainable clothes", sustainable_clothes)
+      sustainable_clothes_add = 1
+
     if paper_bags is None: 
-      print("No paper bags")
+      plastic_saved_by_paper = 0
     else: 
-      print("Paper bags", paper_bags)
+      plastic_saved_by_paper = int(paper_bags)
+    
     if own_bags is None:
-      print("No own bags")
+      plastic_saved_by_reusable = 0
     else:
-      print("No own bags: ", own_bags)
+      plastic_saved_by_reusable = int(own_bags)
+
     if water_bottle is None:
-      print("no water bottle")
+      money_savings_plastic = 0
     else: 
-      print("Water bottle:", water_bottle)
+      money_savings_plastic = int(water_bottle)
+
     if local_groceries is None:
-      print("No local groceries")
+      local_points = 0
     else: 
-      print("Local groceries", local_groceries)
-    if beef is None:
-      print("No beef")
+      # HACK:
+      # Points awarded for the percentage of groceries bough locally (10%)
+      local_points = float(local_groceries) / 10
+
+    # Calculate how many fewer times each meat was consumed, and carbon savings
+    if beef is None or chicken is None or pork is None:
+      less_beef_add = 0
+      carbon_savings_beef = 0
+      less_chicken_add = 0 
+      carbon_savings_chicken = 0
+      less_pork_add = 0 
+      carbon_savings_pork = 0
     else:
-      print("Beef: ", beef)
-    if chicken is None:
-      print("No chicken")
-    else:
-      print("Chicken: ", chicken)
-    if pork is None:
-      print("No pork")
+      beef = int(beef)
+      beef_consumption_weekly = int(beef_consumption) 
+      chicken = int(chicken)
+      chicken_consumption_weekly = chicken_consumption 
+      pork = int(pork)
+      pork_consumption_weekly = int(pork_consumption) 
+      
+      # API activity id from calculator
+      beef_activity_id = "consumer_goods-type_meat_products_beef"
+      chicken_activity_id = "consumer_goods-type_meat_products_poultry"
+      pork_activity_id = "consumer_goods-type_meat_products_pork"
+      # prices from calculator 
+      beef_price = 5.12 / 2
+      chicken_prices = (1.87 / 2) 
+      pork_prices = [1.21, 11.21, 9.64, 11.26, 8.89, 9.04, 16.22, 9.56, 8.20, 7.92, 8.83, 9.04, 8.79, 8.76, 11.25]
+      sum_pork_prices = sum(pork_prices)
+      average_pork_prices = sum(pork_prices) / len(pork_prices)
+      if beef > beef_consumption_weekly or beef == beef_consumption_weekly:
+        less_beef_add = 0
+        carbon_savings_beef = 0
+        if chicken > chicken_consumption_weekly or chicken == chicken_consumption_weekly:
+          less_chicken_add = 0 
+          carbon_savings_chicken = 0
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+        else:
+          less_chicken_add = chicken_consumption_weekly - chicken
+          chicken_spend = chicken_prices * less_chicken_add
+          chicken_lookup = impact_by_money(chicken_activity_id, region, chicken_spend)
+          carbon_savings_pork = chicken_lookup['Carbon_emissions']
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+      else:
+        less_beef_add = beef_consumption_weekly - beef
+        beef_spend = beef_price * less_beef_add
+        beef_lookup = impact_by_money(beef_activity_id, region, beef_spend)
+        carbon_savings_beef = beef_lookup['Carbon_emissions']
+        if chicken > chicken_consumption_weekly or chicken == chicken_consumption_weekly:
+          less_chicken_add = 0 
+          carbon_savings_chicken = 0
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+        else:
+          less_chicken_add = chicken_consumption_weekly - chicken
+          chicken_spend = chicken_prices * less_chicken_add
+          chicken_lookup = impact_by_money(chicken_activity_id, region, chicken_spend)
+          carbon_savings_chicken = chicken_lookup['Carbon_emissions']
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+
+    if drycleaning_form is None: 
+      drycleaning_savings = 0
+      carbon_savings_drycleaning = 0
     else: 
-      print("Pork: ", pork)
-    return render_template("/trackershopping.html")
+      drycleaning_form = float(drycleaning_form)
+      if drycleaning_form > float(drycleaning_spend_db) or drycleaning_form == float(drycleaning_spend_db):
+        flash("Oops you it looks like you didn't save on drycleaning this month")
+        drycleaning_savings = 0
+        carbon_savings_drycleaning = 0
+      else:
+        drycleaning_savings = float(drycleaning_spend_db) - drycleaning_form
+        # From calculator
+        drycleaning_activity_id = "consumer_goods-type_dry_cleaning_laundry"
+        drycleaning_lookup = impact_by_money(drycleaning_activity_id, region, drycleaning_savings)
+        carbon_savings_drycleaning = drycleaning_lookup['Carbon_emissions']
+
+    if restaurants_form is None: 
+      restaurants_savings = 0
+      carbon_savings_restaurants = 0
+    else:
+      # from calculator
+      restaurants_activity_id = "consumer_services-type_full_service_restaurants"
+      if restaurants == "No info given":
+        restaurants = 0
+        restaurants_savings = 0
+        carbon_savings_restaurants = 0
+      else: 
+        restaurants_form = float(restaurants_form)
+        restaurants = float(restaurants)
+        if restaurants_form > restaurants or restaurants_form == restaurants:
+          flash("Oops looks like you didn't save on restaurants this month")
+          restarants_savings = 0
+          carbon_savings_restaurants = 0
+        else: 
+          restaurants_savings = restaurants - restaurants_form
+          restaurants_lookup = impact_by_money(restaurants_activity_id, region, restarants_savings)
+          carbon_savings_restaurants = restaurants_lookup['Carbon_emissions']
+
+    if accessories_form is None: 
+      accessories_savings = 0
+      carbon_savings_accessories = 0
+    else: 
+      accessories_activity_id = "consumer_goods-type_clothing_clothing_accessories_stores"
+      if accessories == "No info given":
+        accessories = 0
+        accessories_savings = 0
+        carbon_savings_accessories = 0
+      else:
+        accessories_form = float(accessories_form)
+        accessories = float(accessories) 
+        if accessories_form > accessories_spend or accessories_form == accessories_spend:
+          flash("Looks like you actually spent more than usual on accessories")
+          accessories_savings = 0
+          carbon_savings_accessories = 0
+        else: 
+          accessories_savings = accessories - accessories_form
+          accessories_lookup = impact_by_money(accessories_activity_id, region, accessories_savings)
+          carbon_savings_accessories = accessories_lookup['Carbon_emissions']
+
+    # Tally totals based on previous values in trackers form
+    get_db_tracker = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    print("GET DB shopping: ", get_db_tracker)
+    for info in get_db_tracker: 
+      vintage_clothes = info['vintage_clothing']
+      sustainable_clothes = info['sustainable_clothing']
+      saved_plastic = info['saved_plastic']
+      saved_money = info['saved_money']
+      bought_local = info['bought_local']
+      less_beef = info['less_beef']
+      less_chicken = info['less_chicken']
+      less_pork = info['less_pork']
+      total_score = info['total_score']
+    
+    vintage_clothes_total = int(vintage_clothes) + vintage_clothes_add
+    sustainable_clothes_total = int(sustainable_clothes) + sustainable_clothes_add
+    saved_plastic_total = int(saved_plastic) + plastic_saved_by_paper + plastic_saved_by_reusable
+    saved_money_total = float(saved_money) + money_savings_plastic + drycleaning_savings + accessories_savings 
+    bought_local_total = int(bought_local) + local_points
+    new_beef_total = int(less_beef) + less_beef_add
+    new_chicken_total = int(less_chicken) + less_chicken_add
+    new_pork_total = int(less_pork) + less_pork_add
+    carbon_savings_total = carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + carbon_savings_drycleaning + carbon_savings_restaurants + carbon_savings_accessories
+    new_total_score = float(total_score) + vintage_clothes_add + sustainable_clothes_add + plastic_saved_by_paper + plastic_saved_by_reusable + local_points + less_beef_add + less_chicken_add + less_pork_add + carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + money_savings_plastic + drycleaning_savings + accessories_savings 
+
+    # Update DB
+    update_db = db.execute("UPDATE trackers SET vintage_clothing=?, sustainable_clothing=?, saved_plastic=?, saved_money=?, bought_local=?, less_beef=?, less_chicken=?, less_pork=?, carbon_savings=?, total_score=? WHERE user_id=?", vintage_clothes_total, sustainable_clothes_total, saved_plastic_total, saved_money_total, bought_local_total, new_beef_total, new_chicken_total, new_pork_total, carbon_savings_total, new_total_score, session.get("user_id"))
+    check_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id")) 
+
+    return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
+  
+  # Handle GET request
   else:
     print("We're here in get")
     check_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
@@ -1449,7 +1653,33 @@ def trackershopping():
       flash("Please calculate your carbon footprint to start")
       return redirect("/calculator")
     else:
-      return render_template("/trackershopping.html")
+      getdrycleaning = db.execute("SELECT drycleaning, drycleaning_impact FROM footprint WHERE user_id=?", session.get("user_id"))
+      print("Drycleaning db: ", getdrycleaning)
+      for info in getdrycleaning:
+        drycleaning_spend_db = info['drycleaning']
+        drycleaning_impact = info['drycleaning_impact']
+      spending_impact = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, dietary_attitude, restaurants, accessories, hotels FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+      print("spending_impact", spending_impact)
+      for item in spending_impact:
+        beef_consumption = item['beef_consumption']
+        pork_consumption = item['pork_consumption']
+        chicken_consumption = item['chicken_consumption']
+        dietary_attitude = item['dietary_attitude']
+        restaurants = item['restaurants']
+        accessories = item['accessories']
+      print("Restaruants", restaurants)
+      if restaurants == "No info given":
+        print("Yup no info given")
+        restaurants_spend = "You didn't mention when you started how much you were spending on restaurants. You can update that at any point. How much did you spend this month?"
+      else:
+        print("We're stuck in else over here")
+        restaurants_spend = "When you got started you said you were spending $" + restaurants + "each month. How much did you spend this month?"
+      
+      if accessories == "No info given":
+        accessories_spend = "You didn't mention when you started how much you were spending on accessories. You can update that at any point. How much did you spend this month?"
+      else:
+        accessories_spend = "When you got started you said you were spending $" + accessories + "each month. How much did you spend this month?"
+      return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
 
 @app.route("/trackertransport", methods=["GET", "POST"])
 @login_required

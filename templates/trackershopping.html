@@ -131,11 +131,13 @@
               <h3>🐮</h3>
               <form action="/trackershopping" method="post">
                 <h5 class="card-title"><b>I went flexitarian:</b></h5>
-                <p>Even one day with less meat can make a big differences. Thank you for being flexible with your diet.</p>
-                <p>When you started with carbon tracker you were eating {values} each week, how many times was it this week?</p>
+                <p>Even one day with less meat can make a big differences. Thank you for giving being flexitarian a try.</p>
+                <p>You were eating beef {{beefconsumption}} time(s) a week when you started. How many times did you eat beef this week?</p>
                 <input type="number" name="beef" class="form-control mx-auto w-auto" id="beef" placeholder="Beef..." required min="0">
+                <p>You were eating chicken {{chickenconsumption}} time(s) a week when you started. How many times did you eat chicken this week?</p>
                <input type="number" name="chicken" class="form-control mx-auto w-auto" id="chicken" placeholder="Chicken..." required min="0">
-                <input type="number" name="pork" class="form-control mx-auto w-auto" id="pork" placeholder="Pork..." required min="0">
+               <p>You were eating pork {{porkconsumption}} time(s) a week when you started. How many times did you eat pork this week?</p> 
+               <input type="number" name="pork" class="form-control mx-auto w-auto" id="pork" placeholder="Pork..." required min="0">
                 <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
               </form>     
             </div>
@@ -149,8 +151,39 @@
               <h3>🧥</h3>
               <form action="/trackershopping" method="post">
                 <h5 class="card-title"><b>I spent less on drycleaning this month:</b></h5>
-                <p>Spending less on drycleaning is great for saving money, and the planet as drycleaning frequently causes many harmful chemicals to be released into the atmosphere. When you started with carbon tracker you were spending around {values} each month, how much did you spend on drycleaning this week?</p>
+                <p>Spending less on drycleaning is great for saving money, and the planet as drycleaning frequently causes many harmful chemicals to be released into the atmosphere.</p> 
+                  <p>When you started with carbon tracker you were spending around {{drycleaningspend}} each month, how much did you spend on drycleaning this week?</p>
                 <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="drycleaning" placeholder="$" required min="0">
+                <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
+              </form>     
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto mb-2">
+        <div class="d-flex">
+          <div class="card shadow rounded-3" style="width: 18rem;">
+            <div class="card-body">
+              <h3>🍣</h3>
+              <form action="/trackershopping" method="post">
+                <h5 class="card-title"><b>I spent less at restaurants this month:</b></h5>
+                <p>Spending less on restaurants is great for saving money, and the planet as the waste from takeout and restaurants does contribute to your carbon footprint. {{restaurantsspend}}</p>
+                <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$" required min="0">
+                <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
+              </form>     
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto mb-2">
+        <div class="d-flex">
+          <div class="card shadow rounded-3" style="width: 18rem;">
+            <div class="card-body">
+              <h3>👜</h3>
+              <form action="/trackershopping" method="post">
+                <h5 class="card-title"><b>I spent less on accessories this month:</b></h5>
+                <p>That lowers your carbon emissions and makes your wallet happy! Way to go! When you got started you were spending {{accessories}}?</p>
+                <input type="number" name="accessories" class="form-control mx-auto w-auto" id="accessories" placeholder="$" required min="0">
                 <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
               </form>     
             </div>
