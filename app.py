@@ -1068,7 +1068,66 @@ def homeuser():
 @login_required
 def leaderboard():
   """Shows user how their consumption and actions rank compared to other users"""
-  return render_template("/leaderboard.html")
+  if request.method == "POST":
+    print("Hey, it's post time")
+    return render_template("/leaderboard.html")
+  else: 
+    print("Hey, it's GET time, get it?")
+    
+    # Get Leaderboardname
+    check_name = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
+    for item in check_name:
+      leaderboardname = item['leaderboardname']
+
+    # Get total carbon savings:
+    carbon_savings_total = db.execute("SELECT SUM(carbon_savings) FROM trackers")
+    print("Total carbon saved so far", carbon_savings_total)
+    for item in carbon_savings_total: 
+      total_carbon_saved = item['SUM(carbon_savings)']
+    total_carbon_saved = (co2(float(total_carbon_saved))).replace("per year", "")
+    print("Total carbon saved from db: ", total_carbon_saved)
+
+    # Get money savings
+    money_savings_total = db.execute("SELECT SUM(saved_money) FROM trackers")
+    for item in money_savings_total:
+      total_money_saved = item['SUM(saved_money)']
+    total_money_saved = str(total_money_saved)
+    total_money_saved = "$" + total_money_saved
+
+    # Get plastic saved:
+    plastic_saved = db.execute("SELECT SUM(saved_plastic) FROM trackers")
+    print("Plastic saved: ", plastic_saved)
+    for item in plastic_saved: 
+      total_plastic_saved = item['SUM(saved_plastic)']
+    print("Plastic saved in db: ", total_plastic_saved)
+
+    # Get total water savings: 
+    water_saved = db.execute("SELECT SUM(saved_water) FROM trackers")
+    print("Water saved: ", water_saved)
+    for item in water_saved:
+      total_water_saved = item['SUM(saved_water)']
+    print("Total community water savings: ", total_water_saved)
+
+    # Get miles walked: 
+    miles_walked_biked = db.execute("SELECT SUM(miles_walk_bike) FROM trackers")
+    print("Miles walked or biked: ", miles_walked_biked)
+    for item in miles_walked_biked: 
+      total_miles = item['SUM(miles_walk_bike)']
+    total_miles = str(total_miles)
+    total_miles = total_miles + " miles"
+
+    # Get flexitarian days: 
+    flexitarian_db = db.execute("SELECT SUM(less_beef), SUM(less_chicken), SUM(less_pork) FROM trackers")
+    for item in flexitarian_db:
+      beef_flex = item["SUM(less_beef)"]
+      chicken_flex = item['SUM(less_chicken)']
+      pork_flex = item['SUM(less_pork)']
+    total_flex = int(beef_flex) + int(chicken_flex) + int(pork_flex)
+    total_flex = str(total_flex)
+    total_flex = total_flex + " days"
+    print("FLEXITARIAN: ", total_flex)
+
+    return render_template("/leaderboard.html", flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
 
 # Login page adapted from PSET 9 finance distribution code
 @app.route("/login", methods=["GET", "POST"])

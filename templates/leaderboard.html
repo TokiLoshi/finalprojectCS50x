@@ -7,7 +7,7 @@
 {% block main %}
 <form action="/leaderboard" method="get">
   <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-    <h4>Hey there, champ!</h4> 
+    <h4>Hey there, {{leaderboardname}}!</h4> 
     <h5>Check out what this amazing community has accomplished:</h5>
     <hr>
     <div class="mb-3 container-fluid align-content-start">
@@ -17,24 +17,20 @@
         <tbody>
           <hr>
           <tr>
-            <td>Total Carbon Offset:</td>
-            <td>x tonnes</td>
+            <td>Total Carbon Saved:</td>
+            <td>{{carbonsavings}}</td>
           </tr>
           <tr>
-            <td>Total $ Saved:</td>
-            <td>$1,0000,0000</td>
+            <td>Total monetary Savings:</td>
+            <td>{{dollarsavings}}</td>
           </tr>
           <tr>
-            <td>Total miles walked:</td>
-            <td>900 miles</td>
-          </tr>
-          <tr>
-            <td>Total LED bulbs converted:</td>
-            <td>400 LED Bulbs</td>
+            <td>Cumulative green miles:</td>
+            <td>{{greenmiles}}</td>
           </tr>
           <tr>
             <td>Cumulative Flexitarian Days:</td>
-            <td>700 Flexitarian Days</td>
+            <td>{{flexitarian}}</td>
           </tr>
           </tbody>
       </table>
