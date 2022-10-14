@@ -9,27 +9,221 @@
   <div>
     <div class="container p-3 shadow rounded-3 orange">
       <h2 class="whiteText">You are making the world a better place!</h2>
-      <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
-      <img class="img-fluid rounded-2" src="/static/world.jpg" width="300" alt="green island in the ocean"/>
-      </br>
-    </form>       
-      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-        <h4>What shall we do today?</h4>
-        
-        <div class="mb-3 container-fluid align-content-start">
-          <form action="/calculator" method="post">
-            <button class="btn btn-dark m-2 p-3 col-8">Check my Carbon Footprint</button>
-          </form>
-          <form action="/tracker" method="post">
-            <button class="btn btn-dark m-2 p-3 col-8">Log an Activity</button>
-          </form>
-          <form action="/leaderboard" method="post">
-            <button class="btn btn-dark m-2 p-3 col-8">Check out the Leaderbaord</button>
-          </form>
-          <form action="/challenges" method="post">
-            <button class="btn btn-dark m-2 p-3 col-8">Start a new Challenge</button>
-          </form>
-          </div>
+      
+    </form>   
+    <img class="img-fluid rounded-2" src="/static/world.jpg" width="300" alt="green island in the ocean"/>
+  </br>    
+      <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
+        <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
+
+        <h4>Hello, {{leaderboardname}}</h4>
+          <h5>What shall we do today?</h5>
+                <div class="card text-center">
+                  <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                      <li class="nav-item">
+                        <form action="/calculator" method="post">
+                          <button class="btn btn-dark btn-sm m-1 p-2">Calculator</button>
+                        </form>
+                      </li>
+                      <li class="nav-item">
+                        <form action="/trackershopping" method="post">
+                          <button class="btn btn-dark btn-sm m-1 p-2">Tracker</button>
+                        </form>
+                      </li>
+                      <li class="nav-item">
+                        <form action="/leaderboard" method="post">
+                          <button class="btn btn-dark btn-sm m-1 p-2">Leaderboard</button>
+                        </form>
+                      </li>
+                      <li class="nav-item">
+                        <form action="/challenges" method="post">
+                          <button class="btn btn-dark btn-sm m-1 p-2">Challenges</button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">Your Stats since you joined:</h5>
+                    <p class="card-text">on {{datetime}}</p>
+                    <p><b>Total points: {{totalscore}}</b></p>
+              <div class="row">
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>👣</h3>
+                          <h5 class="card-title"><b>Carboon Footprint:</b></h5>
+                          <p>When you started you were taking on average {{totalflights}} per year.</p>
+                          <p><b>Carbon savings to date:</b></p> 
+                          <p>{{consumption}} </p>
+                          <p><b>Carbon offsets purchased to date:</b>
+                          <p>{{carbonoffsets}}</p>
+                          <p><b>Total carbon savings from your choices:</b>
+                          <p>{{carbonsavings}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>💵</h3>
+                          <h5 class="card-title"><b>Savings:</b></h5>
+                          <p>Your sustainable actions have saved you a total of</p> 
+                          <p><b>${{savings}}</b></p>
+                          <p>And counting...</p>
+                          <p>When you started you were spending</p>
+                          <p><b>${{transportcost}} each month on your commute</b></p>
+                          <p>Since then you've biked / walked to rack up a cumulative:</p>
+                          <p><b>{{bikewalkmiles}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🍾</h3>
+                          <h5 class="card-title"><b>Sustainable shopping:</b></h5>
+                          <p>Your sustainable decisions have saved you from using a lot of plastic.</p>
+                          <p>{{plastic}}</p>
+                          <p>🧥</p>
+                          <p>You've also made more sustainable fashion decisions:</p>
+                          <p><b>{{sustainableshopping}}</b></p>
+                          <p>🥑</p>
+                          <p>Shopping for groceries locally is great for local farmers and small businesses</p>
+                          <p><b>{{locallegend}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>♻️</h3>
+                          <h5 class="card-title"><b>Waste:</b></h5>
+                          <p>When you started you were throwing out:</p>
+                          <p><b>{{totalwaste}} bags per week.</b></p>
+                          <p>You were recycling around </p>
+                          <p><b>{{recycling}}</b></p>
+                          <p>Your carbon footprint from landfill was:</p> 
+                          <p><b>{{landfillimpact}}</b></p>
+                          <p>compared to your impact from recycling 
+                          <p><b>{{recyclingimpact}}</b></p>
+                          <p>Since starting you last reported increasing your recycling to</p>
+                          <p><b>{{morerecycling}}</b></p>
+                          <p>And you've composted</p>
+                          <p><b>{{morecompost}}</b></p>
+                          <p>And last you reduced your waste: <b>{{lesswaste}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🛫</h3>
+                          <h5 class="card-title"><b>Flights:</b></h5>
+                          <p>When you started you were taking on average:</p>
+                            <p><b>{{totalflights}} flights per year</b></p>
+                          <p>Flights saved to date:</p>
+                          <p><b>{{flightsaved}} flights</b></p>
+                          <p>And you've taken more direct flights:</p>
+                          <p><b>{{flightsdirect}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>⚡️</h3>
+                          <h5 class="card-title"><b>Saved energy:</b></h5>
+                          <p>Energy saved to date: </p>
+                          <p><b>{{energysaved}} kWh</b></p>
+                          <p>When you started you were using:</b></p>
+                          <p><b>{{electricitydb}} kWh per month</b></p>
+                          <p>💧</p>
+                          <p>At the same time you've been saving water:</p>
+                          <p>{{savedwater}}</p>
+                          <p>As far as solar goe:</p>
+                          <p>{{solardisplay}}</p>
+                          <p>And asking your provider for sustainable energy</p>
+                          <p>{{greentariff}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🐮</h3>
+                          <h5 class="card-title"><b>Reduced meat consumption:</b></h5>
+                          <p>When you started you said:</p>
+                          <p>🥩</p>
+                          <p><b>{{beef}}</b></p>
+                          <p>And since you started you have </p>
+                          <p><b>{{beefsub}}</b></p>
+                          <p>When you started you said:</p>
+                          <p>🍗</p>
+                          <p><b>{{chicken}}</b></p>
+                          <p>And since you started you have </p>
+                          <p><b>{{chickensub}}</b></p>
+                          <p>When you started you said:</p>
+                          <p>🥓</p>
+                          <p><b>{{pork}}</b></p>
+                          <p>And since you started you have </p>
+                          <p><b>{{porksub}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🤝</h3>
+                          <h5 class="card-title"><b>Added value to your community:</b></h5>
+                          <p>Added friends to carbon tracker:</p>
+                          <p><b>{{addedfriends}}</b></p> 
+                          <p>Helped a community garden or taught sustainability: </p>
+                          <p><b>{{helpedout}}</b></p>
+                          <p>🌳</p>
+                          <p>Made your community greener by planting trees</p>
+                          <p><b>{{plantedtrees}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🎆</h3>
+                          <h5 class="card-title"><b>Travel:</b></h5>
+                          <p>Local vacations: </p>
+                          <p><b>{{localvacations}}</b></p>
+                          <p>When you started you were reported spending this many nights in hotels per year:</p>
+                          <p><b>{{hotelnights}}</b></p>
+                          <p>Since you've started you've spent fewer nights in hotels: </p>
+                          <p><b>{{hotelsaved}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            </div>
+          </div>  
         
       </div>
   </div>

@@ -114,15 +114,30 @@ def activity():
 def calculator():
   """Quiz user takes to tally up their carbon score"""
   if request.method == "POST":
+    # Check the user hasn't already asked this: 
+    check_not_answered = db.execute("SELECT user_id FROM footprint")
+    if check_not_answered is None:
+      return render_template("/calculator.html")
+    else:
+      user_check = 0
+      for id in check_not_answered:
+        user_check = id['user_id']
+      if user_check == session.get("user_id"):
+        their_stuff = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", user_check)
+        flash("You've already answered this, but you can update your answers in consumption")
+        return render_template("/calculatorconsumptionupdate.html")
+    
     # Get information from form
     building = request.form.get("building")
     state = request.form.get("state")
     household_occupants = request.form.get("household_occupants")
-    recycling = int(request.form.get("recycling"))
+    recycling = request.form.get("recycling")
     waste_frequency = request.form.get("rubbish")
-    utility_bill = float(request.form.get("utilitybill"))
-    drycleaning = float(request.form.get("drycleaning"))
+    utility_bill = request.form.get("utilitybill")
+    drycleaning = request.form.get("drycleaning")
     region = "US"
+    if building is None and state is None and household_occupants is None and recycling is None and waste_frequency is None and utility_bill is None:
+      return render_template("/calculator.html")
 
     # HACK: 
     # This is a once off we might want to factor into a lifetime footprint
@@ -153,7 +168,7 @@ def calculator():
       impact_electricity = 0
     else:  
       region = state
-      energy = utility_bill
+      energy = float(utility_bill)
       electricity_emissions = impact_by_energy(electricity_activity_id, region, energy)
       # Estimating waste per month so multiply by 12 to get the estimation for the year
       impact_electricity = (electricity_emissions['Carbon_emissions'] * 12)
@@ -174,7 +189,11 @@ def calculator():
       weight_kg = float("{:.2f}".format(kg))
       
       # Convert to percentage
-      percentage_recycled = recycling / 100
+      recycling = int(recycling)
+      if recycling == 0:
+        percentage_recycled = 0
+      else:
+        percentage_recycled = recycling / 100
       percentage_landfil = (100 - recycling)
       weight_recycled = weight_kg * percentage_recycled
       weight_landfill = float(weight_kg - weight_recycled)
@@ -698,14 +717,6 @@ def contact():
     flash("Oopsie, it happens")
     return render_template("/contact.html")
 
-# Footprint page
-@app.route("/footprint", methods=["GET", "POST"])
-@login_required
-def footprint():
-  """Shows user their current footprint and which areas are impacting their score the most"""
-
-  return render_template("/footprint.html")
-
 # History page
 @app.route("/history", methods=["GET", "POST"])
 @login_required
@@ -719,12 +730,338 @@ def home():
   """Information about the web app and what it does"""
   return render_template("home.html")
 
-# Page user sees after they return
+# Page user sees after they return 
 @app.route("/homeuser", methods=["GET", "POST"])
 @login_required
 def homeuser():
   """Displays information for returning user"""
-  return render_template("homeuser.html")
+  if request.method == "POST":
+    print("Hi, we're in post")
+    return render_template("homeuser.html")
+  else:
+    print("Hi we're in get")
+    footprint_db = db.execute("SELECT electricity, waste_frequency, recycling, landfill_impact, recycling_impact, total_footprint_general FROM footprint WHERE user_id=?", session.get("user_id"))
+    transport_footprint_db = db.execute("SELECT transport_cost, short_haul, medium_haul, long_haul, transport_footprint_total FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+    consumption_footprint_db = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, hotels, consumption_footprint_total FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+    trackers_db = db.execute("SELECT added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    get_date_joined = db.execute("SELECT leaderboardname, datejoined FROM users WHERE id=?", session.get("user_id"))
+    print("DB TRacker", trackers_db)
+    print("Footprint db: ", footprint_db)
+    
+    # Extract date joined
+    for info in get_date_joined:
+      date_joined = info['datejoined']
+      leaderboardname = info['leaderboardname']
+    print("DATE JOINED: ", date_joined)
+    # Format date time
+    months_in_year = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 : "August", 9 : "September", 10: "October", 11 : "November", 12 : "December"}
+    formatted_date_joined = date_joined[:10]
+    date_year = (formatted_date_joined[:5])
+    date_month = int(formatted_date_joined[5:8].replace("-", ""))
+    date_day = formatted_date_joined[8:]
+    display_date = date_day + " " + months_in_year[date_month] + " " + date_year.replace("-", "") 
+
+    # Extract values from footprint
+    for input in footprint_db: 
+      electricity_db = input['electricity']
+      waste_frequency_db = input['waste_frequency']
+      recycling_db = input['recycling']
+      landfill_impact = input['landfill_impact']
+      recycling_impact = input['recycling_impact']
+      total_footprint_general_db = input['total_footprint_general']
+
+    # Format recycling and waste
+    if waste_frequency_db is None:
+      total_waste_display = "No info yet, please use the calculator to find out more"
+    else:
+      total_waste_display = waste_frequency_db
+
+    if recycling_db is None:
+      recycling_display = "No info yet, please use the calculator to find out more"
+    else: 
+      recycling_display = str(recycling_db) + "%"
+
+    if landfill_impact is None:
+      landfill_impact_display = "No info yet, please use the calculator to find out more"
+    else: 
+      landfill_impact_display = co2(float(landfill_impact))
+
+    if recycling_impact is None:
+      recycling_impact_display = "No info yet, please use the calculator to find out more"
+    else:
+      recycling_impact_display = co2(float(recycling_impact))
+
+    # Format electricity
+    if electricity_db is None:
+      electricity_display = "No info yet, please use the calculator to find out more"
+    else:
+      electricity_display = electricity_db
+
+    # Extract values from transport footprint
+    for input in transport_footprint_db:
+      transport_cost_db = input['transport_cost']
+      short_haul_db = input['short_haul']
+      medium_haul_db = input['medium_haul']
+      long_haul_db = input['long_haul']
+      transport_footprint_total_db = input['transport_footprint_total']
+
+    # Get total values of flights from transport and cost of transport
+    total_flights = int(short_haul_db) + int(medium_haul_db) + int(long_haul_db)
+
+
+    # Extract values from consumption footprint
+    for input in consumption_footprint_db:
+      beef_consumption_db = input['beef_consumption']
+      pork_consumption_db = input['chicken_consumption']
+      chicken_consumption_db = input['pork_consumption']
+      hotels_db = input['hotels']
+      consumption_footprint_total_db = input['consumption_footprint_total']
+    
+    # Format beef for display: 
+    if beef_consumption_db == "I don't eat beef" :
+      beef_display = "You were not eating beef"
+    elif int(beef_consumption_db) == 1:
+      beef_display = "You were eating beef once a week"
+    else:
+      beef_consumption_db = str(beef_consumption_db)
+      beef_display = "You were eating beef " + beef_consumption_db + " times a week"
+
+    # Format chicken for display: 
+    if chicken_consumption_db == "I don't eat chicken":
+      chicken_display = "You were not eating chicken"
+    elif int(chicken_consumption_db) == 1:
+      chicken_display = "You were eating chicken once a week"
+    else:
+      chicken_consumption_db = str(chicken_consumption_db)
+      chicken_display = "You were eating chicken " + chicken_consumption_db + " times a week"
+    
+    # Format pork for display: 
+    if pork_consumption_db == "I don't eat pork" :
+      pork_display = "You were not eating pork"
+    elif int(pork_consumption_db) == 1:
+      pork_display = "You were eating pork once a week"
+    else:
+      pork_consumption_db = str(pork_consumption_db)
+      pork_display = "You were eating pork " + pork_consumption_db + " times a week"
+
+    if hotels_db == "No info given":
+      hotels_display = "Please complete the calculator to start tracking this"
+    else:
+      hotels_display = str(hotels_db) + "nights a year"
+
+    # Calculate total footprint and times 1000:
+    number_in_general_total_footprint = float((total_footprint_general_db).replace(" ton of cO2 per year", "")) * 1000
+    number_in_transport_footprint_total_db = float((transport_footprint_total_db).replace(" ton of cO2 per year", "")) * 1000
+    number_in_consumption_footprint_total_db = float((consumption_footprint_total_db).replace(" ton of cO2 per year", "")) * 1000
+    grand_total = co2(number_in_general_total_footprint + number_in_transport_footprint_total_db +  number_in_consumption_footprint_total_db)
+
+    # Extract values from trackers 
+    for input in trackers_db:
+      added_friends_db = input['added_friends']
+      planted_trees_db = input['planted_trees']
+      helped_community_db = input['helped_community']
+      vintage_clothing_db = input['vintage_clothing']
+      sustainable_clothing_db = input['sustainable_clothing']
+      saved_plastic_db = input['saved_plastic']
+      saved_money_db = input['saved_money']
+      saved_energy_db = input['saved_energy']
+      bought_local_db = input['bought_local']
+      vacationed_local_db = input['vacationed_local']
+      less_beef_db = input['less_beef']
+      less_chicken_db = input['less_chicken']
+      less_pork_db = input['less_pork']
+      more_compost_db = input['more_compost']
+      green_tariff_db = input['green_tariff']
+      solar_panels_db = input['solar_panels']
+      saved_water_db = input['saved_water']
+      less_waste_db = input['less_waste']
+      more_recycling_db = input['more_recycling']
+      fewer_flights_db = input['fewer_flights']
+      fewer_hotels_db = input['fewer_hotels']
+      more_direct_flights_db = input['more_direct_flights']
+      miles_walk_bike_db = input['miles_walk_bike']
+      carbon_offset_db = input['carbon_offset']
+      carbon_savings_db = input['carbon_savings']
+      total_score_db = input['total_score']
+
+      # Format clothes and plastic 
+      if saved_plastic_db == 0:
+        display_plastic = "You haven't logged anything yet but you can in the tracker"
+      elif saved_plastic_db == 1:
+        display_plastic = "You've saved at least one piece of plastic. This is the start of beautiful things."
+      else: 
+        saved_plastic_db = str(saved_plastic_db)
+        # Lifecylce of plastic https://www.wwf.org.au/news/blogs/the-lifecycle-of-plastics
+        display_plastic = "You've saved " + saved_plastic_db + " pieces of plastic that otherwise might have landed up in the oceans, in our drinking water. Plastic bags take 20 years to break down, plastic cups can take as long as 450 years."
+      
+      if vintage_clothing_db == 0:
+        vintage_clothing = 0
+      else:
+        vintage_clothing = int(vintage_clothing_db)
+      
+      if sustainable_clothing_db == 0:
+        sustainable_clothing = 0
+      else:
+        sustainable_clothing = int(sustainable_clothing_db)
+      sustainable_clothing_decisions = vintage_clothing + sustainable_clothing
+      if sustainable_clothing_decisions == 0:
+        clothing_display = "We don't have anything yet, but you can change that in the trakcer."
+      elif sustainable_clothing_decisions == 1: 
+        clothing_display = "once and we think it looks great on you! Keep going."
+      else: 
+        clothing_display = str(sustainable_clothing_decisions) + " times. This look suits you!"
+
+      if bought_local_db == 0:
+        local_shopping = "If you've shopped locally lately tell us in tracker so we can give you kudos"
+      elif bought_local_db == 1: 
+        local_shopping = "You've increased how much you've shopped locally, we thank you so do your local farmers and businesses"
+      else: 
+        local_shopping = "You last reported getting at least " + str(bought_local_db) + " percent of your groceries locally"
+
+      # Format community
+      if int(added_friends_db) == 0:
+        display_friends = "If you've brought any friends onboard please add it to the tracker"
+      elif int(added_friends_db) == 1: 
+        display_friends = "Thank you for a new friend"
+      else: 
+        added_friends = str(added_friends_db)
+        display_friends = "Thank you for " + added_friends + " new friends"
+      
+      if int(helped_community_db) == 0:
+        helped_out = "If you've helped your community become more sustainable recently, please add it to the tracker"
+      elif int(helped_community_db) == 1:
+        helped_out = "You've helped your community once already, this is the start of something beautiful."
+      else:
+        helped_community_db = str(helped_community_db)
+        helped_out = "You've shown up for your community " + helped_community_db + " times! We all appreciate you!"
+      
+      if int(planted_trees_db) == 0:
+        display_planted_trees = "If you've planted any trees lately log it in your tracker"
+      elif int(planted_trees_db) == 1:
+        display_planted_trees = "You've planted your first tree since starting. Your community is looking greener already!"
+      else: 
+        planted_trees_db = str(planted_trees_db)
+        display_planted_trees = "You've planted " + planted_trees_db + " and we think you're amazing!"
+
+      # Format saved energy for display
+      if saved_energy_db == 0:
+        saved_energy_display = "Please log an energy saving activity to start tracking your progress here"
+      else:
+        saved_energy_display = saved_energy_db
+      
+      if green_tariff_db == "No":
+        green_tariff_display = "If you've selected a green tariff from your energy provider let us know in the tracker"
+      else:
+        green_tariff_display = "Nice work on asking your energy provider to keep you green"
+      
+      if solar_panels_db == "No":
+        solar_panel_display = "If you've gone solar let us know in the db"
+      else:
+        solar_panel_display = "Nice work going solar and getting your energy from renewable sources!"
+      
+      if saved_water_db == 0: 
+        saved_water_display = "If you've saved water lately let us know in the tracker so we can give you kudos"
+      elif saved_water_db == 1: 
+        saved_water_display = "You've logged your first time saving water. Keep it going!"
+      else: 
+        saved_water_db = str(saved_water_db)
+        saved_water_display = "You've saved " + saved_water_db + " times. Thank you!" 
+
+      # Format flexitarian options 
+      if less_beef_db == 0:
+        beef_less_display = "If you were planning on eating beef recently and substituted for a vegetarian option, please log it in the tracker"
+      elif less_beef_db == 1: 
+        beef_less_display = "Substituted beef once"
+      else: 
+        beef_less_display = "Substituted beef " + str(less_beef_db) + " times"
+
+      if less_chicken_db == 0: 
+        chicken_less_display = "If you were planning on eating chicken recently and substituted it for a vegetarian option, please log it in the tracker"
+      elif less_chicken_db == 1: 
+        chicken_less_display = "Substituted chicken once"
+      else:
+        chicken_less_display = "Substituted chicken " + str(less_chicken_db) + " times"
+
+      if less_pork_db == 0:
+        pork_less_display = "If you were planning on eating pork recently and substituted it for a vegetarian option, please log it in the tracker"
+      elif less_pork_db == 1:
+        pork_less_display = "Substituted pork once"
+      else:
+        pork_less_display = "Substituted pork " + str(less_pork_db) + " times"
+
+      # Format composing and recycling
+      if more_recycling_db == 0:
+        more_recycling_display = "If you've recycled more lately log it in the tracker to start seeing progress."
+      else: 
+        more_recycling_display = str(more_recycling_db) + "%"
+      
+      if more_compost_db == 0:
+        more_compost_display = "If you've composted more lately log it in the tracker"
+      else:
+        more_compost_display = str(more_compost_db) + "%"
+
+      if less_waste_db == 0:
+        less_waste_display = "If you've been throwing out less garbage than usual log it in the tracker"
+      elif less_waste_db == 1:
+        less_waste_display = "once"
+      else:
+        less_waste_db = str(less_waste_db)
+        less_waste_display = less_waste_db + " times"
+
+      # Format carbon offsets for display 
+      if carbon_offset_db == 0:
+        carbon_offsets = "If you have purchased any carbon offsets since starting, please log them to start tracking your progress here"
+      else:
+        carbon_offsets = float(carbon_offset_db)
+        if carbon_offsets < 1000:
+          carbon_offsets = str(carbon_offsets) + " kg of cO2"
+        else:
+          carbon_offsets = co2(carbon_offsets).replace("per year", "")
+      
+      # Format carbon savings for display  
+      if carbon_savings_db == 0:
+        carbon_savings_display = "Please log a carbon saving activity to start tracking your progress here"
+      else: 
+        carbon_savings_display = carbon_savings_db
+      
+      # Format fewer flights, direct flights and hotels
+      if fewer_flights_db == 0:
+        flights_display = "Please log an event in which you chose to take fewer flights to start tracking your progress here"
+      else:
+        flights_display = fewer_flights_db
+
+      if fewer_hotels_db == 0:
+        hotels_saved_display = "If you spent fewer nights in hotels than you usually do please log that in the tracker"
+      else: 
+        hotels_saved_display = str(fewer_hotels_db) + " fewer nights"
+      
+      if more_direct_flights_db == 0:
+        direct_flights_display = "Please log an event in which you chose a direct flight"
+      else:
+        direct_flights_display = "A total of " + str(more_direct_flights_db) + " direct flights" 
+
+      if vacationed_local_db == 0: 
+        local_vacations_display = "If you've taken local vacation days please let us know in tracker so we can give you kudos"
+      elif vacationed_local_db == 0:
+        local_vacations_display = "You've taken your first local vacation day. Here's to the start of getting to know your surrounding area even better. We're sure you're going to discover some new hidden gems."
+      else:
+        vacationed_local_db = str(vacationed_local_db)
+        local_vacations_display = "You've accumulated " + vacationed_local_db + " days so far. We'd love to know what treasures you've discovered."
+
+      # Format bike walk miles
+      if miles_walk_bike_db == 0:
+        miles_display = "Please log a walk or cycle to start tracking your progress here"
+      else: 
+        miles_display = str(miles_walk_bike_db) + " miles"
+
+      # Format total score: 
+      if total_score_db == 0:
+        display_score = "N/A"
+      else:
+        display_score = formatfloat(float(total_score_db))
+
+
+    return render_template("homeuser.html",localvacations=local_vacations_display, savedwater=saved_water_display, solardisplay=solar_panel_display, greentariff=green_tariff_display,  locallegend=local_shopping, sustainableshopping=clothing_display, plastic=display_plastic, lesswaste=less_waste_display, addedfriends=display_friends, helpedout=helped_out, plantedtrees=display_planted_trees, totalscore=display_score, morerecycling=more_recycling_display, morecompost=more_compost_display, recyclingimpact=recycling_impact_display, landfillimpact=landfill_impact_display, recycling=recycling_display, totalwaste=waste_frequency_db, chickensub=chicken_less_display, porksub=pork_less_display, beefsub=beef_less_display, chicken=chicken_display, pork=pork_display, beef=beef_display, hotelsaved=hotels_saved_display, hotelnights=hotels_display, flightsdirect=direct_flights_display, flightsaved=flights_display, totalflights=total_flights, bikewalkmiles=miles_display, transportcost=transport_cost_db, energysaved=saved_energy_display, electricitydb=electricity_display, savings=saved_money_db, carbonsavings=carbon_savings_display, carbonoffsets=carbon_offsets, leaderboardname=leaderboardname, datetime=display_date, consumption=grand_total, formatted=number_in_consumption_footprint_total_db)
 
 # Leaderboard page
 @app.route("/leaderboard", methods=["GET", "POST"])
@@ -1701,11 +2038,13 @@ def trackertransport():
     total_flights = int(short_haul) + int(medium_haul) + int(long_haul)
     for info in get_db_spending: 
       hotel_nights = info['hotels']
+      print("Hotel nights: ", hotel_nights)
     if hotel_nights == "No info given":
       hotel_nights = "You didn't mention how many nights you spend on average in hotels. You can change this at anytime to track your changes here."
       fewer_hotels_db = 0
     else:
       fewer_hotels_db = hotel_nights
+    print("Hotel nights outside of db loop: ", hotel_nights)
     
     # Get current values from form
     get_db = db.execute("SELECT saved_money, saved_energy, vacationed_local, green_tariff, solar_panels, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
@@ -1753,13 +2092,17 @@ def trackertransport():
       carbon_savings_hotel = 0
     else: 
       print("Fewer nights in hotels:", fewer_hotels)
-      hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
-      # From calculator
-      hotel_activity_id = "accommodation_type_hotel_stay"
-      hotel_lookup = impact_by_number(hotel_activity_id, hotel_nights_saved, region)
-      carbon_savings_hotel = hotel_lookup['Carbon_emissions']
-      print("Hotels savings; ", hotel_nights_saved)
-      print("Carbon Emissions saved: ", carbon_savings_hotel)
+      if hotel_nights == 0:
+        hotel_nights_saved = 0 
+        carbon_savings_hotel = 0
+      else: 
+        hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
+        # From calculator
+        hotel_activity_id = "accommodation_type_hotel_stay"
+        hotel_lookup = impact_by_number(hotel_activity_id, hotel_nights_saved, region)
+        carbon_savings_hotel = hotel_lookup['Carbon_emissions']
+        print("Hotels savings; ", hotel_nights_saved)
+        print("Carbon Emissions saved: ", carbon_savings_hotel)
     
     if direct_flights is None:
       print("No more direct flights")
@@ -1808,11 +2151,11 @@ def trackertransport():
     carbon_savings_total = carbon_savings_hotel + float(carbon_savings_db)
     direct_flights_total = direct_flights_add + int(more_direct_flights_db)
     local_vacation_total = int(vacationed_local_db) + local_vacation_add
-    total_hotel_nights_saved = int(fewer_hotels_db) + int(fewer_hotels)
+    total_hotel_nights_saved = int(fewer_hotels_db) + hotel_nights_saved
     total_bike_walk = float(miles_walked_biked_db) + biked_miles_add
     money_savings_total = money_savings_transport + float(saved_money_db)
     carbon_offset_total = float(carbon_offset_db) + carbon_offset_status
-    new_total_score = float(total_score_db) + flights_saved + int(fewer_hotels) + more_trains_add  + carbon_savings_hotel + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
+    new_total_score = float(total_score_db) + flights_saved + hotel_nights_saved + more_trains_add  + carbon_savings_hotel + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
 
     print("Total flights saved: ", total_flights_saved)
     print("Carbon savings: ", carbon_savings_total)
