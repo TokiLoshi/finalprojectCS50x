@@ -747,6 +747,8 @@ def homeuser():
     get_date_joined = db.execute("SELECT leaderboardname, datejoined FROM users WHERE id=?", session.get("user_id"))
     print("DB TRacker", trackers_db)
     print("Footprint db: ", footprint_db)
+    homeuser = impact_by_energy("electricity-energy_source_grid_mix", "CA", 400)
+    print("HERE: ", homeuser)
     
     # Extract date joined
     for info in get_date_joined:
