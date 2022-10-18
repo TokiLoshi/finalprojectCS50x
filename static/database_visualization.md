@@ -43,7 +43,7 @@ erDiagram
       carbon_offset NUMERIC
       carbon_savings NUMERIC
       total_score NUMERIC
-    }
+    } 
     FOOTPRINT ||--|{ TRANSPORT_FOOTPRINT : part_2
     FOOTPRINT {
         id INTEGER_PRIMARY_KEY_AUTOINCREMENT_NOT_NULL
@@ -101,5 +101,16 @@ erDiagram
       hotels_impact TEXT
       consumption_footprint_total TEXT
 
+    }
+    TRACKERS ||--o{ LEADERBOARD : pull_top_ten
+    LEADERBOARD {
+      id PRIMARY KEY AUTOINCREMENT NOT NULL
+      user_id INTEGER NOT NULL 
+      leaderboardname TEXT NOT NULL 
+      challenges NUMERIC 
+      green_miles NUMERIC 
+      carbon_saved NUMERIC
+      plastic_saved NUMERIC 
+      total_points NUMERIC
     }
   ```

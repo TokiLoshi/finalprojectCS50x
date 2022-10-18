@@ -1072,7 +1072,7 @@ def leaderboard():
   """Shows user how their consumption and actions rank compared to other users"""
   if request.method == "POST":
     print("Hey, it's post time")
-    return render_template("/leaderboard.html")
+    return redirect("/leaderboard")
   else: 
     print("Hey, it's GET time, get it?")
     
@@ -1129,7 +1129,29 @@ def leaderboard():
     total_flex = total_flex + " days"
     print("FLEXITARIAN: ", total_flex)
 
-    return render_template("/leaderboard.html", flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
+    # Pull leaders from leaderboard 
+    leaders = db.execute("SELECT leaderboardname, challenges, total_points FROM leaderboard ORDER BY total_points DESC LIMIT 10")
+    print("LEADERS: ", leaders)
+    for leader in leaders: 
+      leadingname = leader['leaderboardname']
+      challenges = leader['challenges']
+      totalpoints = leader['total_points']
+
+    # Find user's current position: 
+    find_leader = db.execute("SELECT leaderboardname, total_points FROM leaderboard ORDER BY total_points DESC LIMIT 1")
+    print("AND THE LEADER IS: ", find_leader)
+    find_current_position = db.execute("SELECT * FROM leaderboard ")
+    print("FIND CURRENT POSITION: ", find_current_position)
+    everything_but_the_kitchen_sink = db.execute("SELECT * FROM leaderboard WHERE user_id=10")
+    print("Kitchen Sink: ", everything_but_the_kitchen_sink)
+    # TO DO: 
+    # Learn how to figure out where someone would rank on a leaderboard, and their position in sqlite
+    # https://stackoverflow.com/questions/40649355/query-on-sqlite-to-group-only-the-three-most-recent-records-for-each-user
+  
+    # TO DO: 
+    # UPdate the user_id column in sqlite to be unique
+
+    return render_template("/leaderboard.html", leaders=leaders, leadingname=leadingname, challenges=challenges, totalpoints=totalpoints, flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
 
 # Login page adapted from PSET 9 finance distribution code
 @app.route("/login", methods=["GET", "POST"])
