@@ -720,7 +720,7 @@ def contact():
 # History page
 @app.route("/history", methods=["GET", "POST"])
 @login_required
-def route():
+def history():
   """User can view all of their history on the app"""
   return render_template("/history.html")
 
@@ -1140,10 +1140,17 @@ def leaderboard():
     # Find user's current position: 
     find_leader = db.execute("SELECT leaderboardname, total_points FROM leaderboard ORDER BY total_points DESC LIMIT 1")
     print("AND THE LEADER IS: ", find_leader)
-    find_current_position = db.execute("SELECT * FROM leaderboard ")
-    print("FIND CURRENT POSITION: ", find_current_position)
-    everything_but_the_kitchen_sink = db.execute("SELECT * FROM leaderboard WHERE user_id=10")
-    print("Kitchen Sink: ", everything_but_the_kitchen_sink)
+    max_points = 0
+    for points in find_leader:
+      max_points = points['total_points']
+    print("FIND CURRENT POSITION: ", max_points)
+    you = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    temp_test = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=8")
+    your_points = 0
+    for points in temp_test: 
+      your_points = points['total_points']
+    points_to_top = str(max_points - your_points)
+    print("You are? " + points_to_top + "Away from the top")
     # TO DO: 
     # Learn how to figure out where someone would rank on a leaderboard, and their position in sqlite
     # https://stackoverflow.com/questions/40649355/query-on-sqlite-to-group-only-the-three-most-recent-records-for-each-user
@@ -1151,7 +1158,7 @@ def leaderboard():
     # TO DO: 
     # UPdate the user_id column in sqlite to be unique
 
-    return render_template("/leaderboard.html", leaders=leaders, leadingname=leadingname, challenges=challenges, totalpoints=totalpoints, flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
+    return render_template("/leaderboard.html", pointstotop= points_to_top, leaders=leaders, leadingname=leadingname, challenges=challenges, totalpoints=totalpoints, flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
 
 # Login page adapted from PSET 9 finance distribution code
 @app.route("/login", methods=["GET", "POST"])
@@ -1291,6 +1298,8 @@ def register():
       hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
       new_user = db.execute("INSERT INTO users (name, email, leaderboardname, hash) VALUES(?, ?, ?, ?)", name, email, leaderboardname, hash)
       print("NEW USERS: ")
+      
+      # Update Trackers with user info
       find_id = db.execute("SELECT id FROM users WHERE leaderboardname=?", leaderboardname)
       print("find id: ", find_id)
       for id in find_id:
@@ -1299,6 +1308,9 @@ def register():
       green_tariffs = "No"
       solar_panels = "No"
       set_tracker_scores_db = db.execute("INSERT INTO trackers (user_id, added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score) VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", get_id, green_tariffs, solar_panels)
+
+      # Add user to the leaderboard 
+      join_leaderboard = db.execute("INSERT INTO leaderboard (leaderboardname, challenges, green_miles, carbon_saved, plastic_saved, total_points) VALUES(?, ?, 0, 0, 0, 0, 0)", get_id, leaderboardname)
       return render_template("/login.html")
 
   # Handle GET request 
@@ -1614,10 +1626,19 @@ def trackercommunity():
     print("Community total: ", community_total)
     print("New grandtotal: ", new_total_score)
 
-    # Update DB: 
+    # Update Tracker DB: 
     update_db = db.execute("UPDATE trackers SET added_friends=?, planted_trees=?, helped_community=?, total_score=? WHERE user_id=?", friends_total, trees_total, community_total, new_total_score, session.get("user_id"))
     updated_db = db.execute("SELECT * FROM trackers WHERE user_id=?", session.get("user_id"))
     print("Updated DB: ", updated_db)
+
+    # Update leaderboard DB:
+    lookup_total_points = db.execute("SELECT total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    old_points = 0
+    for point in lookup_total_points: 
+      old_points = point['total_points']
+    new_score = int(old_points) + new_total_score
+    update_leaderboard = db.execute("UPDATE leaderboard SET total_points=? WHERE user_id=?", new_score, session.get("user_id"))
+    
     return render_template("/trackercommunity.html")
   else:
     print("We're here in get")
@@ -1792,6 +1813,26 @@ def trackerelectricity():
    
     # Update db
     updatedb = db.execute("UPDATE trackers SET saved_plastic=?, saved_money=?, saved_energy=?, more_compost=?, green_tariff=?, solar_panels=?, saved_water=?, less_waste=?, more_recycling=?, carbon_savings=?, total_score=? WHERE user_id=?", plastic_savings, money_savings_total, energy_savings_total, compost_new_total, green_tariff_status_end, solar_panels_status_end, water_savings_total, total_waste_savings, total_recycling_score, carbon_savings_total, new_total_score, session.get("user_id"))
+
+    # Update leaderboard 
+    lookup_total_points = db.execute("SELECT carbon_saved, plastic_saved, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    lb_old_points = 0
+    lb_carbon_savings = 0
+    lb_plastic_saved = 0
+    for point in lookup_total_points: 
+      lb_carbon_savings = point['carbon_saved']
+      lb_plastic_saved = point['plastic_saved']
+      lb_old_points = point['total_points']
+    lb_new_carbon_savings = float(lb_carbon_savings) + float(carbon_savings_total)
+    lb_new_plastic_savings = int(lb_plastic_saved) + int(plastic_savings)
+    lb_old_points = float(lb_old_points) + float()
+    lb_new_score = float(int(lb_old_points) + new_total_score)
+    lb_new_score = formatfloat(lb_new_score)
+
+    # Update LB DB
+    lb_update = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", lb_new_carbon_savings, lb_plastic_saved, lb_new_score, session.get("user_id"))
+    print("UPDATED DATABASE: ", lb_update)
+    
     return render_template("/trackerelectricity.html", garbage=waste_frequency, recycling=recycling_amount, kwh=energy_usage_db)
   else:
     print("We're here in get")
@@ -2062,6 +2103,21 @@ def trackershopping():
     update_db = db.execute("UPDATE trackers SET vintage_clothing=?, sustainable_clothing=?, saved_plastic=?, saved_money=?, bought_local=?, less_beef=?, less_chicken=?, less_pork=?, carbon_savings=?, total_score=? WHERE user_id=?", vintage_clothes_total, sustainable_clothes_total, saved_plastic_total, saved_money_total, bought_local_total, new_beef_total, new_chicken_total, new_pork_total, carbon_savings_total, new_total_score, session.get("user_id"))
     check_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id")) 
 
+    # Update LB
+    get_lb_score = db.execute("SELECT carbon_saved, plastic_saved, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    lb_old_score = 0
+    lb_carbon_savings = 0
+    lb_plastic_savings = 0
+    for score in get_lb_score:
+      lb_carbon_savings = score['carbon_saved']
+      lb_plastic_savings = score['plastic_saved']
+      lb_old_score = score['total_points']
+    new_lb_score = float(lb_old_score) + new_total_score
+    new_lb_plastic = float(lb_carbon_savings) +  carbon_savings_total
+    new_lb_carbon_savings = float(lb_plastic_savings) + saved_plastic_total
+    update_lb_total_points = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", new_lb_carbon_savings, new_lb_plastic, new_lb_score, session.get("user_id"))
+    check_db = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    print("Updates made to DB: ", check_db)
     return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
   
   # Handle GET request

@@ -104,9 +104,9 @@ erDiagram
     }
     TRACKERS ||--o{ LEADERBOARD : pull_top_ten
     LEADERBOARD {
-      id PRIMARY KEY AUTOINCREMENT NOT NULL
-      user_id INTEGER NOT NULL 
-      leaderboardname TEXT NOT NULL 
+      id PRIMARY_KEY_AUTOINCREMENT_NOT_NULL
+      user_id INTEGER_NOT_NULL 
+      leaderboardname TEXT_NOT_NULL 
       challenges NUMERIC 
       green_miles NUMERIC 
       carbon_saved NUMERIC
