@@ -7,62 +7,61 @@
 {% block main %}
 <form action="/leaderboard" method="get">
   <div class="card body rounded-2 shadow p-1 border-0 m-1 justify-content-center mx-auto w-75">
- <!--High angle view of cyclists by Pixabay on Pexels https://www.pexels.com/photo/high-angle-view-of-people-on-bicycle-248547/-->
- <h3>Leaderboard:</h3>
- <img class="img-fluid rounded-2 mb-1" src="/static/bike_race.jpg" mx-auto w-auto alt="bike_race"/>   
-    <h4>Hey there, {{leaderboardname}}!</h4> 
-    <h5>Check out what this amazing community has accomplished:</h5>
-    <div class="card-body">
-<div class="row">
-  <div class="col-auto mb-2">
-    <div class="d-flex">
-      <div class="card shadow rounded-3" style="width: 12rem;">
-        <div class="card-body">
-          <h3>🌿</h3>
+  <!--High angle view of cyclists by Pixabay on Pexels https://www.pexels.com/photo/high-angle-view-of-people-on-bicycle-248547/-->
+  <h3>Leaderboard:</h3>
+  <img class="img-fluid rounded-2 mb-1" src="/static/bike_race.jpg" mx-auto w-auto alt="bike_race"/>   
+  <h4>Hey there, {{leaderboardname}}!</h4> 
+  <h5>Check out what this amazing community has accomplished:</h5>
+  <div class="card-body">
+  <div class="row">
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 12rem;">
+          <div class="card-body">
+            <h3>🌿</h3>
             <h5 class="card-title"><b>Total Carbon Savings:</b></h5>
             <p>{{carbonsavings}}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-auto mb-2">
-    <div class="d-flex">
-      <div class="card shadow rounded-3" style="width: 12rem;">
-        <div class="card-body">
-          <h3>💰</h3>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 12rem;">
+          <div class="card-body">
+            <h3>💰</h3>
             <h5 class="card-title"><b>Total Community Savings:</b></h5>
             <p>{{dollarsavings}}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-auto mb-2">
-    <div class="d-flex">
-      <div class="card shadow rounded-3" style="width: 12rem;">
-        <div class="card-body">
-          <h3>💚</h3>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 12rem;">
+          <div class="card-body">
+            <h3>💚</h3>
             <h5 class="card-title"><b>Cumulative Green Miles:</b></h5>
             <p>{{greenmiles}}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-auto mb-2">
-    <div class="d-flex">
-      <div class="card shadow rounded-3" style="width: 12rem;">
-        <div class="card-body">
-          <h3>🐮</h3>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 12rem;">
+          <div class="card-body">
+            <h3>🐮</h3>
             <h5 class="card-title"><b>Cumulative Flexitarian Days:</b></h5>
             <p>{{flexitarian}}</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-     
-      <p class="mt-2"><b>{{leaderboardname}}, you are currently {{pointstotop}} points away from being in the lead!</b></p>
-      <p>Here's who is in the top 10:</p>
-      <table class="table table-striped table-warning table-hover table-responsive mx-auto w-auto">
-        <caption>Updated everytime you refresh the page</caption>
+    </div> 
+    <p class="mt-2"><b>{{leaderboardname}}, you are currently {{pointstotop}} points away from being in the lead!</b></p>
+    <p>Here's who is in the top 10:</p>
+    <table class="table table-striped table-warning table-hover table-responsive mx-auto w-auto">
+      <caption>Updated everytime you refresh the page</caption>
       <thead>
         <tr>
           <th scope="col">User</th>
@@ -70,22 +69,20 @@
           <th scope="col">Points</th>
         </tr>
       </thead>
-      <tbody>
-       
+      <tbody> 
         {% for leader in leaders %}
         <tr>
           {% for key, values in leader.items() %}
-          <td>{{values}}</td>
-         
+            <td>{{values}}</td>
           {% endfor %}
         </tr>
         {% endfor%}
       </tbody>
-      </table>
-    </form>
-      <form action="/challenges" method="post">
-        <button class="btn btn-dark m-2 p-3 col-6">Start a new challenge</button>
-      </form>
-      </div>
-
+    </table>
+</form>
+  <form action="/challenges" method="post">
+    <button class="btn btn-dark m-2 p-3 col-6">Start a new challenge</button>
+  </form>
+  </div>
+</div>
 {% endblock %}

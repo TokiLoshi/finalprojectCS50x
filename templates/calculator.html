@@ -7,134 +7,135 @@
 {% block main %}
 <form action="/calculator" method="post">
   <div>
-    <div class="container p-3 shadow rounded-3 orange">
-      <h2 class="whiteText">You can only improve what you measure</h2>
-      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-        <h4>Let's cacluate your current carbon footprint</h4>
-        <h5>How it works</h5>
-        <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
-        <img class="img-fluid rounded-2 mx-auto" src="/static/plastic_world.jpg" width="300" alt="green island in the ocean"/>
-        <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors (how quickly greenhouse gases (GHGs) are released into the atmosphere) from 5 key areas of your life. </p>
-        <ol class="calculator">
-          <li class="justify-content-lg-start">Your household electricity consumption</li>
-          <li>Your modes of transport</li>
-          <li>And lastly, your diet and shopping habits</li>
-        </ol>
-        <p>We've chosen the Climatiq API for the most accurate and industry standard estimations.</p>
-        <p>Once you're done we'll calculate your results, it should take just a few seconds...</p>
-        <p>On your results page, we'll show you how your footprint compares and we will provide you with quick and easy options to reduce your carbon footprint that will also increase your savings, improve your life and make you proud.</p>
-      </div>
-      </br>
-      <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-        <p>Page 1 of 3</p>
-        <div class="progress">
-          <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
+    <div class="container p-2 shadow rounded-3 grey">
+      <h2 class="orangeText">You can only improve what you measure</h2>
+        <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
+          <h4>Let's cacluate your current carbon footprint</h4>
+          <h5>How it works</h5>
+          <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
+          <img class="img-fluid rounded-2 mx-auto w-50 justify-content-center mx-auto" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
+          <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors (how quickly greenhouse gases (GHGs) are released into the atmosphere) from 5 key areas of your life. </p>
+          <ol class="calculator">
+            <li class="justify-content-lg-start">Your household electricity consumption</li>
+            <li>Your modes of transport</li>
+            <li>And lastly, your diet and shopping habits</li>
+          </ol>
+          <p>We've chosen the Climatiq API for the most accurate and industry standard estimations.</p>
+          <p>Once you're done we'll calculate your results, it should take just a few seconds...</p>
+          <p>On your results page, we'll show you how your footprint compares and we will provide you with quick and easy options to reduce your carbon footprint that will also increase your savings, improve your life and make you proud.</p>
         </div>
         </br>
-        <h4>Your household</h4>  
-        <!--Assorted color walls by Jessica Bryant from Pexels https://www.pexels.com/photo/assorted-color-wall-paint-house-photo-1370704/ -->
-        <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
-        <div class="mb-3 container-fluid align-content-start">
-              <label for="building" class="form-label"><b>What kind of building do you live in?</b></label>
+        <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+          <p>Page 1 of 3</p>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
+            </div>
+            </br>
+            <h4>Your household</h4>  
+            <!--Assorted color walls by Jessica Bryant from Pexels https://www.pexels.com/photo/assorted-color-wall-paint-house-photo-1370704/ -->
+            <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
+              <div class="mb-3 container-fluid align-content-start">
+                <label for="building" class="form-label"><b>What kind of building do you live in?</b></label>
                   <select name="building" class="form-select" aria-label="Default select example" required>
                     <option value="" selected disabled>Please select the type of building you live in</option>
                     <option value="construction-type_multifamily_residential_structures">Multi-family building / an apartment</option>
                     <option value="construction-type_single_family_residential_structures">Single-family home</option>
                   </select>
-              <label for="state" name="state" class="form-label"><b>Which State do you live in?:</b></label>
-                <select required name="state" class="form-select" aria-label="Default select example" required >
-                  <option selected value="" disabled>Please select your State</option>
-                  <option value="AL">Alabama (AL)</option>
-                  <option value="AKGD">Alaska (AKGD)</option>
-                  <option value="AZ">Arizona (AZ)</option>
-                  <option value="AR">Arkansas (AR)</option>
-                  <option value="CA">California (CA)</option>
-                  <option value="CO">Colorado (CO)</option>
-                  <option value="CT">Connecticut (CT)</option>
-                  <option value="DC">District of Columbia (DC)</option>
-                  <option value="DE">Delaware (DE)</option>
-                  <option value="FL">Florida (FL)</option>
-                  <option value="GA">Georgia (GA)</option>
-                  <option value="HI">Hawaii (HI)</option>
-                  <option value="IA">Iowa (IA)</option>
-                  <option value="ID">Idaho (ID</option>
-                  <option value="IL">Illinois (IL)</option>
-                  <option value="KY">Kentucky (KY)</option>
-                  <option value="KS">Kansas (KS)</option>
-                  <option value="LA">Louisiana (LA)</option>
-                  <option value="MA">Massachusetts (MA)</option>
-                  <option value="MD">Maryland (MD)</option>
-                  <option value="ME">Maine (ME)</option>
-                  <option value="MI">Michigan (MI)</option>
-                  <option value="MN">Minnesota (MN)</option>
-                  <option value="MO">Missouri (MO)</option>
-                  <option value="MS">Mississippi (MS)</option>
-                  <option value="MT">Montana (MT)</option>
-                  <option value="NC">North_Carolilna (NC)</option>
-                  <option value="ND">North_Dakota (ND)</option>
-                  <option value="NE">Nebraska (NE)</option>
-                  <option value="NEWE">New_England (NE)</option>
-                  <option value="NH">New_Hampshire (NH)</option>
-                  <option value="NJ">New_Jersey "NJ"</option>
-                  <option value="NM">New_Mexico (NM)</option>
-                  <option value="NV">Nevada (NV)</option>
-                  <option value="NY">New_York (NY)</option>
-                  <option value="OH">Ohio (OH)</option>
-                  <option value="OK">Oklahoma (OK)</option>
-                  <option value="OR">Oregon (OR)</option>
-                  <option value="PA">Pennsylvania (PA)</option>
-                  <option value="PR">Peurto Rico (PR)</option>
-                  <option value="RI">Rhode Island (RI)</option>
-                  <option value="SC">South Carolina (SC)</option>
-                  <option value=">SD">South Dakota (SD)</option>
-                  <option value="TN">Tennessee (TN)</option>
-                  <option value="TX">Texas (TX)</option>
-                  <option value="UT">Utah (UT)</option>
-                  <option value="VA">Virginia (VA)</option>
-                  <option value="VT">Vermont (VT)</option>
-                  <option value="WA">Washington (WA)</option>
-                  <option value="WV">West Virginia (WV)</option>
-                  <option value="WI">Wisconsin (WI)</option>
-                  <option value="WY">Wyoming (WY)</option>
-                </select>
-              <label for="household_occupants" class="form-label"><b>How many people in your household</b></label>
-                <select name="household_occupants" class="form-select" aria-label="Default select example" required>
-                  <option selected value="" disabled>Please select how many people in your household</option>
-                  <option value="1">Just Me</option>
-                  <option value="2">2 of us</option>
-                  <option value="3">3 of us</option>
-                  <option value="4">5 of us</option>
-                  <option value="5">5+</option>
-                </select>
-              <label for="rubbish" class="form-label"><b>How often do you have to take out the trash?</b></label>
-                <select name="rubbish" class="form-select" aria-label="Default select example" required>
-                  <option selected value="" disabled>How many full gallon bags do you throw out per week?</option>
-                  <option value="1">1 full gallon bag</option>
-                  <option value="2">2 full gallon bags</option>
-                  <option value="3">3 full gallon bags</option>
-                  <option value="4">4 full gallon bags</option>
-                  <option value="5">5 full gallon bags</option>
-                  <option value="5">6+ full gallon bags</option>
-                </select>
-            <label for="recycling" class="form-label"><b>How much for your rubbish do you recycle?</b></label>
-              <select name="recycling" class="form-select" aria-label="Default select example" required>
-                <option selected value="" disabled>How much of your trash is recycling and compost?</option>
-                <option value="10">10% recycling</option>
-                <option value="20">20% recycling</option>
-                <option value="3">30% recycling</option>
-                <option value="40">40% recycling</option>
-                <option value="50">50% recycling</option>
-                <option value="60">60% recycling</option>
-                <option value="70">70% recycling</option>
-                <option value="75">More than 75% recycling and compost</option>
-            </select>
-            <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month?</b></label>
-            <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="KWh on average" required>
-            <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month?</b></label>
-            <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
-            <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>
-            </div>
-    </div>
+                <label for="state" name="state" class="form-label"><b>Which State do you live in?:</b></label>
+                  <select required name="state" class="form-select" aria-label="Default select example" required >
+                    <option selected value="" disabled>Please select your State</option>
+                    <option value="AL">Alabama (AL)</option>
+                    <option value="AKGD">Alaska (AKGD)</option>
+                    <option value="AZ">Arizona (AZ)</option>
+                    <option value="AR">Arkansas (AR)</option>
+                    <option value="CA">California (CA)</option>
+                    <option value="CO">Colorado (CO)</option>
+                    <option value="CT">Connecticut (CT)</option>
+                    <option value="DC">District of Columbia (DC)</option>
+                    <option value="DE">Delaware (DE)</option>
+                    <option value="FL">Florida (FL)</option>
+                    <option value="GA">Georgia (GA)</option>
+                    <option value="HI">Hawaii (HI)</option>
+                    <option value="IA">Iowa (IA)</option>
+                    <option value="ID">Idaho (ID</option>
+                    <option value="IL">Illinois (IL)</option>
+                    <option value="KY">Kentucky (KY)</option>
+                    <option value="KS">Kansas (KS)</option>
+                    <option value="LA">Louisiana (LA)</option>
+                    <option value="MA">Massachusetts (MA)</option>
+                    <option value="MD">Maryland (MD)</option>
+                    <option value="ME">Maine (ME)</option>
+                    <option value="MI">Michigan (MI)</option>
+                    <option value="MN">Minnesota (MN)</option>
+                    <option value="MO">Missouri (MO)</option>
+                    <option value="MS">Mississippi (MS)</option>
+                    <option value="MT">Montana (MT)</option>
+                    <option value="NC">North_Carolilna (NC)</option>
+                    <option value="ND">North_Dakota (ND)</option>
+                    <option value="NE">Nebraska (NE)</option>
+                    <option value="NEWE">New_England (NE)</option>
+                    <option value="NH">New_Hampshire (NH)</option>
+                    <option value="NJ">New_Jersey "NJ"</option>
+                    <option value="NM">New_Mexico (NM)</option>
+                    <option value="NV">Nevada (NV)</option>
+                    <option value="NY">New_York (NY)</option>
+                    <option value="OH">Ohio (OH)</option>
+                    <option value="OK">Oklahoma (OK)</option>
+                    <option value="OR">Oregon (OR)</option>
+                    <option value="PA">Pennsylvania (PA)</option>
+                    <option value="PR">Peurto Rico (PR)</option>
+                    <option value="RI">Rhode Island (RI)</option>
+                    <option value="SC">South Carolina (SC)</option>
+                    <option value=">SD">South Dakota (SD)</option>
+                    <option value="TN">Tennessee (TN)</option>
+                    <option value="TX">Texas (TX)</option>
+                    <option value="UT">Utah (UT)</option>
+                    <option value="VA">Virginia (VA)</option>
+                    <option value="VT">Vermont (VT)</option>
+                    <option value="WA">Washington (WA)</option>
+                    <option value="WV">West Virginia (WV)</option>
+                    <option value="WI">Wisconsin (WI)</option>
+                    <option value="WY">Wyoming (WY)</option>
+                  </select>
+                <label for="household_occupants" class="form-label"><b>How many people in your household</b></label>
+                  <select name="household_occupants" class="form-select" aria-label="Default select example" required>
+                    <option selected value="" disabled>Please select how many people in your household</option>
+                    <option value="1">Just Me</option>
+                    <option value="2">2 of us</option>
+                    <option value="3">3 of us</option>
+                    <option value="4">5 of us</option>
+                    <option value="5">5+</option>
+                  </select>
+                <label for="rubbish" class="form-label"><b>How often do you have to take out the trash?</b></label>
+                  <select name="rubbish" class="form-select" aria-label="Default select example" required>
+                    <option selected value="" disabled>How many full gallon bags do you throw out per week?</option>
+                    <option value="1">1 full gallon bag</option>
+                    <option value="2">2 full gallon bags</option>
+                    <option value="3">3 full gallon bags</option>
+                    <option value="4">4 full gallon bags</option>
+                    <option value="5">5 full gallon bags</option>
+                    <option value="5">6+ full gallon bags</option>
+                  </select>
+                <label for="recycling" class="form-label"><b>How much for your rubbish do you recycle?</b></label>
+                  <select name="recycling" class="form-select" aria-label="Default select example" required>
+                    <option selected value="" disabled>How much of your trash is recycling and compost?</option>
+                    <option value="10">10% recycling</option>
+                    <option value="20">20% recycling</option>
+                    <option value="3">30% recycling</option>
+                    <option value="40">40% recycling</option>
+                    <option value="50">50% recycling</option>
+                    <option value="60">60% recycling</option>
+                    <option value="70">70% recycling</option>
+                    <option value="75">More than 75% recycling and compost</option>
+                  </select>
+                <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month?</b></label>
+                  <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="KWh on average" required>
+                <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month?</b></label>
+                  <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
+                  <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>
+              </div>
+          </div>
+        </div>
     </div>
   </div>
 </form>

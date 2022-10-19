@@ -6,7 +6,9 @@ a {
 
 body 
 {
-  background-color: #FF9551;
+  /* background-color: #FF9551; */
+  background-color: #EAECEE;
+  /* background-color: #343434; */
 }
 
 nav .navbar-brand
@@ -20,6 +22,13 @@ nav .navbar-brand
 .orange {
   background-color: #FF9551;
 }
+.grey {
+  background-color: #EAECEE;
+}
+.dark-blue {
+  background-color: #AED6F1;
+}
+
 .blue {
   background-color: #6FEDD6;
 }
@@ -30,7 +39,9 @@ nav .navbar-brand
   color: #C8C8C9;
 }
 .navbar-dark {
-  background-color: #FF4A4A !important;
+  /* background-color: #FF4A4A !important; */
+  /* https://htmlcolorcodes.com/colors/shades-of-black/ */
+  background-color: #343434 !important;
 }
 .whiteText {
   color: #B9FFF8;

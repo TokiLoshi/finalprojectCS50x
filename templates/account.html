@@ -6,9 +6,10 @@
 
 {% block main %}
 <!-- Forest by Tyler Lastovich from Pexels https://www.pexels.com/photo/green-leafed-trees-572688/ */ -->
- <div class="bg-image" style="background-image: url('/static/forest.jpg'); height:100vh;" >
+
 <form action="/account" method="get" class="account-background">
   <div class="container-fluid mt-2 p-2">
+    <img class="img-fluid w-50 justify-content-center mb-2 rounded-2 shadow-3" src="/static/forest.jpg" >
     <div class="card float-right p-2 border-0 shadow-sm rounded">
       <div class="card-body">
           <table class="table">
@@ -40,17 +41,14 @@
           </form>
          
             <form action="/account" method="post" class="float-right">   
-            <button action="/changepassword" method="post" type="submit" id="password" name="password" class="btn btn-danger btn-xs float-right m-2">Change Password</button>
-          </form>
-            <form action="/changename" method="post" class="float-right">   
-            <button action="/changename" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-xs float-right m-2">Change Leaderboard Name</button>  
+            <button action="/changepassword" method="post" type="submit" id="password" name="password" class="btn btn-danger btn-sm float-right m-2">Change Password</button>
           </form>
         </form>
-        <form action="/history" method="post" class="float-right">   
-        <button action="/history" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-xs float-right m-2">View my History</button>  
-      </form>
       <form action="/leaderboardicon" method="post" class="float-right">   
-        <button action="/history" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-xs float-right m-2 mx-auto">Choose my leaderboard icon</button>  
+        <button action="/history" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-sm float-right m-2 mx-auto">Choose leaderboard icon</button>  
+      </form>
+      <form action="/changename" method="post" class="float-right">   
+        <button action="/changename" method="post" type="submit" id="name" name="name" class="btn btn-dark btn-sm float-right m-2">Change Leaderboard Name</button>  
       </form>
         </form>
               </div>

@@ -101,13 +101,6 @@ def account():
     print("We're in get")
   return render_template("/account.html", name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
 
-# Users activity page
-@app.route("/activity", methods=["GET", "POST"])
-@login_required
-def activity():
-  """Allows users to track their activities and see how that affects their carbon score"""
-  return render_template("/activity.html")
-
 # Calculator page for instructions and household calculations
 @app.route("/calculator", methods=["GET", "POST"])
 @login_required
@@ -717,18 +710,16 @@ def contact():
     flash("Oopsie, it happens")
     return render_template("/contact.html")
 
-# History page
-@app.route("/history", methods=["GET", "POST"])
-@login_required
-def history():
-  """User can view all of their history on the app"""
-  return render_template("/history.html")
-
 # Main home page
 @app.route("/", methods=["GET"])
 def home():
   """Information about the web app and what it does"""
-  return render_template("home.html")
+  if request.method == "POST":
+    print("Hey we're at home in post")
+    return render_template("/home")
+  else: 
+    print("Hey wer'e in GET in home, GET it??")
+    return render_template("home.html")
 
 # Page user sees after they return 
 @app.route("/homeuser", methods=["GET", "POST"])

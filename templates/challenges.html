@@ -6,116 +6,88 @@
 
 {% block main %}
 <form action="/challenges" method="get">
-  <div class="container p-3 shadow rounded-3">
-    <h2 class="whiteText">Are you up for the challenge</h2>
-    <!--Person Walking in the desert by Walid Ahmaad from Pexels https://www.pexels.com/photo/person-walking-on-desert-847400/ -->
-    <img class="img-fluid rounded-2" src="/static/person_walking_desert.jpg" width="600" alt="green island in the ocean"/>
-    </br>
-    <div class="card body rounded-2 shadow p-3 border-0 m-2">
-<p>At Carbon Tracker our goal is to help you leave behind only the things you're proud of</p>
-<p>Humans are naturally a bit competitive, so we thought we'd make this fun</p>
-<p>Check out how your challenges are doing and compete with your community to increase your $ savings and make the world a better place</p>
-<p><b>Add a challenge below or update your progress</b></p>
-</div>
-</div>
-</form>
-</div>
-</br>
-<div class="container text-center">
-<div class="card body rounded-2 shadow orange p-3 border-0">
-<div class="container text-center">
-  <div class="row">
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
+<div class="container p-3 shadow rounded-3">
+  <h2 class="orangeText">Are you up for the challenge</h2>
+  <!--Person Walking in the desert by Walid Ahmaad from Pexels https://www.pexels.com/photo/person-walking-on-desert-847400/ -->
+  <img class="img-fluid rounded-2" src="/static/person_walking_desert.jpg" width="600" alt="green island in the ocean"/>
+  </br>
+  <div class="card body rounded-2 shadow p-3 border-0 m-2"> 
+    <p>At Carbon Tracker our goal is to help you leave behind only the things you're proud of</p>
+    <p>Looking for some quick and easy challenges?</p>
+    <p><b>Here are some easy ideas for ways to challenge yourself</b></p>
+    <div class="row">
+      <div class="col-auto mb-2">
+        <div class="d-flex">
+          <div class="card shadow rounded-3" style="width: 14rem;">
             <div class="card-body">
-              <h3>Go Flexitarian</h3>
-              <p class="card-text">Meat consumption can have a huge impact on the environment. Are you up for the challenge to go vegetarian for at least one day of the week for a month?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 150 points</p>
-              <p><b>Duration:</b> 30 days</p>
-            </div>
+            <h3>🐮</h3>
+            <h3>Go Flexitarian</h3>
+            <!--https://www.denverwater.org/tap/whats-beef-water-->
+            <!--https://ourworldindata.org/carbon-footprint-food-methane-->
+            <p class="card-text">Meat consumption can have a huge impact on the environment (roughly 100kg of CO2 equivaelent per kg of beef). Beef is also resource intensive, not only in terms of land usage and feed, but also water - it takes around 1,847 gallons of water (39 full bathubs) to produce one poud of beef. Are you up for the challenge to substitute one meat dish for a vegetarian option?</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <h3>Change out your lightbulbs</h3>
-              <p class="card-text">Meat consumption can have a huge impact on the environment. Are you up for the challenge to go vegetarian for at least one day of the week for a month?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 150 points</p>
-              <p><b>Duration:</b> 30 days</p>
-            </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 14rem;">
+          <div class="card-body">
+            <h3>💡</h3>
+            <h5 class="card-title"><b>Change out your lightbulbs:</b></h5>
+            <!--https://www.energy.gov/energysaver/led-lighting#:~:text=LED%20is%20a%20highly%20energy,times%20longer%2C%20than%20incandescent%20lighting.-->
+            <p class="card-text">Switching from incandescent to LED lighting, is not only good for your carbon footprint but also for your wallet. LEDs use 75% less energy (lowering your energy bill and your footprint) and last up to 25 times longer. We challenge you to pick a room in your home that has incandescent lights and swap them out for LED lighting.</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <h3>Reduce you plastic</h3>
-              <p class="card-text">Microfibers are worrying scientists. And it's having a huge impact on our waste. Are you up for the challenge of swapping out one item you normally get as plastic and sub it out for a more sustainable alternative?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 100 points</p>
-              <p><b>Duration:</b> 2 weeks</p>
-            </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 14rem;">
+          <div class="card-body">
+            <h3>🚲</h3>
+              <h5 class="card-title"><b>Make a commute green:</b></h5>
+              <p class="card-text">Need to run an errand, or are you hoping to shake up your commute? Consider taking a bicycle or walking instead, and start wracking up some green miles. Making your commute Green is great for the environment, helps you to reduce your own footprint, and gets you out and moving. A side of endorphines may be just the shake up your commute needs.</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <h3>Change your commute</h3>
-              <p class="card-text">Changing up your commute can be refreshing, good for the mind, body, wallet and carbon footprint. Are you up for the challenge to pick one place you normally drive to and either walk or bike there instead?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 150 points</p>
-              <p><b>Duration:</b> 1 week</p>
-            </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 14rem;">
+          <div class="card-body">
+            <h3>💧</h3>
+            <h5 class="card-title"><b>Bring your own water bottle:</b></h5>
+            <p class="card-text">Ditch the single use plastics for a day. You might be surprised by how much you might save (plastic and money)</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <h3>Save water</h3>
-              <p class="card-text">Droughts are bad. Are you up for the challenge to reduce your typical shower times by 30 seconds once a week for a month?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 150 points</p>
-              <p><b>Duration:</b> 150 points</p>
-            </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 14rem;">
+          <div class="card-body">
+            <h3>👖</h3>
+              <h5 class="card-title"><b>Sustainable fashion:</b></h5>
+              <!--https://www.worldbank.org/en/news/feature/2019/09/23/costo-moda-medio-ambiente-->
+              <p class="card-text">It takes around 3,780 litres and 33.4kg of Co2 equivelent in emissions to produce a single pair of jeans. Less than 1% of used clothing is recyled into new garments. We challenge you to find more creative ways to shop, and to recycle your garments.</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <h3>Sustainable fashion</h3>
-              <p class="card-text">Some materials have a higher carbon footprint than others. Are you up for the challenge to check the materials before you buy?</p>
-              <p><b>Estimated carbon savings:</b> x tonnes</p>
-              <p><b>Estimated $ savings:</b> $100</p>
-              <p><b>Max points available:</b> 150 points</p>
-              <p><b>Duration:</b> Challenge complete the next time you go shopping and make a better decision</p>
-            </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 14rem;">
+          <div class="card-body">
+            <h3>🎒</h3>
+            <h5 class="card-title"><b>Bring your own bags:</b></h5>
+            <!--https://www.wwf.org.au/news/blogs/the-lifecycle-of-plastics-->
+            <p class="card-text">It takes 20 years for a plastic bag to degrade, and even then they degrade into microplastics which can land up in our drinking water and food. Every time you go to the grocery store if you use your own bags you are saving us all at least 20 years worth of plastic.</p>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
+</div>
 </form>
 {% endblock %}

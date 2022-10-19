@@ -6,28 +6,30 @@
 
 {% block main %}
 <form action="/calculatorconsumptionupdate" method="post">
-<div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
-  <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
-<img class="img-fluid rounded-2 mx-auto" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
- <h4>Your Diet and Shopping Habits</h4>
-   <div class="mb-3 container-fluid align-content-start">
-     <form action="/calculator" method="post">
-                <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on average spending. If you're curious please go ahead.</i></p>
-                <p><i>If you didn't enter any of these fields last time, you can do that now. Please note only the fields you left empty last time will be updated.</i></p>
-                <p><b>How much would you say you...</b></p>
-                <label for="new_clothes" class="form-label"><b>spend each year on new clothes each year?</b></label>
-            <input type="number" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
-            <label for="restaurants" class="form-label"><b>spend on restaurants in a month?</b></label>
-            <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
-            <label for="accessories" class="form-label"><b>spend on new accessories each year?</b></label>
-            <input type="number" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
-            <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
-            <input type="number" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
-            <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels each year?</b></label>
-            <input type="number" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
-       <button class="btn btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
-     </form>
-   </div>
+<div class="container p-2 shadow rounded-3 grey">
+  <h4>Dining and Shopping</h4>
+  <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
+    <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
+    <img class="img-fluid rounded-2 mx-auto justify-content-center w-50" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
+    <div class="mb-3 container-fluid align-content-start">
+      <form action="/calculator" method="post">
+        <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on average spending. If you're curious please go ahead.</i></p>
+        <p><i>If you didn't enter any of these fields last time, you can do that now. Please note only the fields you left empty last time will be updated.</i></p>
+        <p><b>How much would you say you...</b></p>
+        <label for="new_clothes" class="form-label"><b>spend each year on new clothes each year?</b></label>
+        <input type="number" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
+        <label for="restaurants" class="form-label"><b>spend on restaurants in a month?</b></label>
+        <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
+        <label for="accessories" class="form-label"><b>spend on new accessories each year?</b></label>
+        <input type="number" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
+        <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
+        <input type="number" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
+        <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels each year?</b></label>
+        <input type="number" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
+        <button class="btn btn-dark btn-sm m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
+      </form>
+    </div>
+  </div>
 </div>
 </form>
 

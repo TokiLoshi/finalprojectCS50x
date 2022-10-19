@@ -7,20 +7,21 @@
 {% block main %}
 <form action="/homeuser" method="post">
   <div>
-    <div class="container p-3 shadow rounded-3 orange">
-      <h2 class="whiteText">You are making the world a better place!</h2>
+    <div class="container p-2 shadow rounded-3 grey">
+      <h2 class="orangeText">You are making the world a better place!</h2>
       
     </form>   
-    <img class="img-fluid rounded-2" src="/static/world.jpg" width="300" alt="green island in the ocean"/>
-  </br>    
+   
+  </br>
+  <img class="img-fluid rounded-2 justify-content-center w-50" src="/static/world.jpg" alt="green island in the ocean"/>
       <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
         <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
-
+       
         <h4>Hello, {{leaderboardname}}</h4>
           <h5>What shall we do today?</h5>
                 <div class="card text-center">
-                  <div class="card-header">
-                    <ul class="nav nav-pills card-header-pills">
+                  <div class="card-header ">
+                    <ul class="nav nav-pills card-header-pills justify-content-center">
                       <li class="nav-item">
                         <form action="/calculator" method="post">
                           <button class="btn btn-dark btn-sm m-1 p-2">Calculator</button>
@@ -47,10 +48,10 @@
                     <h5 class="card-title">Your Stats since you joined:</h5>
                     <p class="card-text">on {{datetime}}</p>
                     <p><b>Total points: {{totalscore}}</b></p>
-              <div class="row">
+              <div class="row justify-content-center">
                 <div class="col-auto mb-2">
                   <div class="d-flex">
-                    <div class="card shadow rounded-3" style="width: 16rem;">
+                    <div class="card shadow rounded-3 mx-auto" style="width: 16rem;">
                       <div class="card-body">
                         <h3>👣</h3>
                           <h5 class="card-title"><b>Carboon Footprint:</b></h5>
@@ -118,23 +119,8 @@
                           <p><b>{{morerecycling}}</b></p>
                           <p>And you've composted</p>
                           <p><b>{{morecompost}}</b></p>
-                          <p>And last you reduced your waste: <b>{{lesswaste}}</b></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-auto mb-2">
-                  <div class="d-flex">
-                    <div class="card shadow rounded-3" style="width: 16rem;">
-                      <div class="card-body">
-                        <h3>🛫</h3>
-                          <h5 class="card-title"><b>Flights:</b></h5>
-                          <p>When you started you were taking on average:</p>
-                            <p><b>{{totalflights}} flights per year</b></p>
-                          <p>Flights saved to date:</p>
-                          <p><b>{{flightsaved}} flights</b></p>
-                          <p>And you've taken more direct flights:</p>
-                          <p><b>{{flightsdirect}}</b></p>
+                          <p>And last you reduced your waste:</p> 
+                          <p><b>{{lesswaste}}</b></p>
                       </div>
                     </div>
                   </div>
@@ -218,7 +204,22 @@
                     </div>
                   </div>
                 </div>
-
+                <div class="col-auto mb-2">
+                  <div class="d-flex">
+                    <div class="card shadow rounded-3" style="width: 16rem;">
+                      <div class="card-body">
+                        <h3>🛫</h3>
+                          <h5 class="card-title"><b>Flights:</b></h5>
+                          <p>When you started you were taking on average:</p>
+                            <p><b>{{totalflights}} flights per year</b></p>
+                          <p>Flights saved to date:</p>
+                          <p><b>{{flightsaved}} flights</b></p>
+                          <p>And you've taken more direct flights:</p>
+                          <p><b>{{flightsdirect}}</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

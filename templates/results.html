@@ -6,12 +6,12 @@
 
 {% block main %}
 <form action="/results" method="post">
-  <div class="container p-3 shadow rounded-3 orange">
-    <h2 class="whiteText">Your results are in</h2>
+  <div class="container p-3 shadow rounded-3 grey">
+    <h2 class="orangeText">Your results are in</h2>
     <!--Laughing male construction by by Andrea Piacquadio from Pexels https://www.pexels.com/photo/laughing-male-constructor-showing-thumb-up-at-working-desk-3760613/ -->
     <img class="img-fluid rounded-2 mx-auto w-100" src="/static/laughing_construction.jpg" alt="green island in the ocean"/>
     </br>
-  </form>       
+</form>       
     <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto">
       <h4>We believe things are only going to get better from here</h4>
       <p>Good news! We've calculated your results.</p>
@@ -23,80 +23,76 @@
         <p><b>Your Houshold footprint:</b> {{household}}</p>
         <p><b>Your Transport footprint:</b> {{transport}}</p>
         <p><b>You consumption and spending footprint:</b> {{consumption}}</p>
-
-      <p>As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
+        <p>As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
         <p>But first let's take a better look at each footprint.</p>
         <form action="/challenges" method="post">
-
-
-</div>
-</div>
-  <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
-    <h4>Your household general footprint</h4>
-    <!--Composition of detergents on the table by Anna Shvets from Pexels https://www.pexels.com/photo/composition-of-detergents-on-table-5217889/ -->
-    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/detergents.jpg" alt="green island in the ocean"/>
-    <table class="table table-striped table-hover table-responsive">
-      <caption>Data provided by Climatiq API</caption>
-      <thead>
-        <tr>
-          <th scope="col">Factor</th>
-          <th scope="col">Impact</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">Your Building:</th>
-          <td>{{building}}</td>
-        </tr>
-        <tr>
-          <th scope="row">The impact of this kind of construction:</th>
-          <td>{{buildingimpact}}</td>
-        </tr>
-        <tr>
-          <th scope="row">State:</th>
-          <td>{{state}} </td>
-        </tr>
-        <tr>
-          <th scope="row">Electricity usage:</th>
-          <td>{{electricity}} kWh</td>
-        </tr>
-        <tr>
-          <th scope="row">Electricity impact:</th>
-          <td>{{electrictyimpact}} kWh</td>
-        </tr>
-        <tr>
-          <th scope="row">You take out the garbage:</th>
-          <td>{{wastefrequency}} times a week</td>
-        </tr>
-        <tr>
-          <th scope="row">You recycle:</th>
-          <td>{{recycling}}% of your garbage</td>
-        </tr>
-        <tr>
-          <th scope="row">Impact from landfill:</th>
-          <td>{{landfill}}</td>
-        </tr>
-        <tr>
-          <th scope="row">Impact from recycling:</th>
-          <td>{{recyclingimpact}}</td>
-        </tr>
-        <tr>
-          <th scope="row">Typical spend on drycleaning:</th>
-          <td>${{drycleaning}} per year</td>
-        </tr>
-        <tr>
-          <th scope="row">Impact from drycleaning:</th>
-          <td>{{drycleaningimpact}}</td>
-        </tr>
-        <tr>
-          <th scope="row">Total Household impact:</th>
-          <td>{{totalfootprint}}</td>
-        </tr>
-        <tr>
-          <th scope="row">Your individual impact:</th>
-          <td>{{individualfootprint}}</td>
-        </tr>
-        
+      </div>
+    </div>
+    <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
+      <h4>Your household general footprint</h4>
+      <!--Composition of detergents on the table by Anna Shvets from Pexels https://www.pexels.com/photo/composition-of-detergents-on-table-5217889/ -->
+      <img class="img-fluid rounded-2 mx-auto w-100" src="/static/detergents.jpg" alt="green island in the ocean"/>
+      <table class="table table-striped table-hover table-responsive">
+        <caption>Data provided by Climatiq API</caption>
+        <thead>
+          <tr>
+            <th scope="col">Factor</th>
+            <th scope="col">Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Your Building:</th>
+            <td>{{building}}</td>
+          </tr>
+           <tr>
+            <th scope="row">The impact of this kind of construction:</th>
+            <td>{{buildingimpact}}</td>
+          </tr>
+          <tr>
+            <th scope="row">State:</th>
+            <td>{{state}} </td>
+          </tr>
+          <tr>
+            <th scope="row">Electricity usage:</th>
+            <td>{{electricity}} kWh</td>
+          </tr>
+          <tr>
+            <th scope="row">Electricity impact:</th>
+            <td>{{electrictyimpact}} kWh</td>
+          </tr>
+          <tr>
+            <th scope="row">You take out the garbage:</th>
+            <td>{{wastefrequency}} times a week</td>
+          </tr>
+          <tr>
+            <th scope="row">You recycle:</th>
+            <td>{{recycling}}% of your garbage</td>
+          </tr>
+          <tr>
+            <th scope="row">Impact from landfill:</th>
+            <td>{{landfill}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Impact from recycling:</th>
+            <td>{{recyclingimpact}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Typical spend on drycleaning:</th>
+            <td>${{drycleaning}} per year</td>
+          </tr>
+          <tr>
+            <th scope="row">Impact from drycleaning:</th>
+            <td>{{drycleaningimpact}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Total Household impact:</th>
+            <td>{{totalfootprint}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Your individual impact:</th>
+            <td>{{individualfootprint}}</td>
+          </tr>
     </table>
   </div>
   <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
@@ -250,9 +246,7 @@
         <tr>
           <th scope="row">Total consumption impact:</th>
           <td>{{totalconsumptionfootprint}}</td>
-        </tr>
-
-        
+        </tr> 
     </table>
   </div>
   <button class="btn btn-dark m-2 p-3 col-8">Start reducing my impact</button>

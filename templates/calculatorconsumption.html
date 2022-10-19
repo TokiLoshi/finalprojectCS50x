@@ -6,76 +6,76 @@
 
 {% block main %}
 <form action="/calculatorconsumption" method="post">
-<div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+<div class="container p-2 shadow rounded-3 grey">
+  <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-75">
   <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
-<img class="img-fluid rounded-2 mx-auto" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
- <h4>Your Diet and Shopping Habits</h4>
-   <div class="mb-3 container-fluid align-content-start">
-     <form action="/calculator" method="post">
+  <img class="img-fluid rounded-2 justify-content-center mx-auto w-50" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
+    <div class="mb-3 container-fluid align-content-start">
+      <form action="/calculator" method="post">
       <label for="beef" class="form-label"><b>How many times a week do you eat beef?</b></label>
-                <select name="beef" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="" disabled>On average...</option>
-                  <option value="0">I don't eat beef</option>
-                  <option value="1">Once a week</option>
-                  <option value="2">Twice a week</option>
-                  <option value="3">Three times a week</option>
-                  <option value="4">Four times a week</option>
-                  <option value="5">Five times a week</option>
-                  <option value="6">Six times a week</option>
-                  <option value="6">Every day</option>
-                </select>
+      <select name="beef" class="form-select mx-auto w-auto" aria-label="Default select example">
+        <option selected value="" disabled>On average...</option>
+        <option value="0">I don't eat beef</option>
+        <option value="1">Once a week</option>
+        <option value="2">Twice a week</option>
+        <option value="3">Three times a week</option>
+        <option value="4">Four times a week</option>
+        <option value="5">Five times a week</option>
+        <option value="6">Six times a week</option>
+        <option value="6">Every day</option>
+      </select>
       <label for="pork" class="form-label"><b>How many times a week do you eat pork?</b></label>
-                <select name="pork" class="form-select mx-auto w-auto" aria-label="Default select example" required>
-                  <option selected value="" disabled>On average...</option>
-                  <option value="0">I don't eat pork</option>
-                  <option value="1">Once a week</option>
-                  <option value="2">Twice a week</option>
-                  <option value="3">Three times a week</option>
-                  <option value="4">Four times a week</option>
-                  <option value="5">Five times a week</option>
-                  <option value="6">Six times a week</option>
-                  <option value="6">Every day</option>
-                </select>
-                <label for="chicken" class="form-label"><b>How many times a week do you eat chicken?</b></label>
-                <select name="chicken" class="form-select mx-auto w-auto" aria-label="Default select example" required>
-                  <option selected value="" disabled>On average...</option>
-                  <option value="0">I don't eat chicken</option>
-                  <option value="1">Once a week</option>
-                  <option value="2">Twice a week</option>
-                  <option value="3">Three times a week</option>
-                  <option value="4">Four times a week</option>
-                  <option value="5">Five times a week</option>
-                  <option value="6">Six times a week</option>
-                  <option value="6">Every day</option>
-                </select>
-                <label for="flexitarian" class="form-label mx-auto w-auto"><b>How do you feel about making dietary changes?</b></label>
-                <select name="flexitarian" class="form-select mx-auto w-auto" aria-label="Default select example">
-                  <option selected value="" disabled>Select</option>
-                  <option value="Not_a_chance">Not a chance</option>
-                  <option value="Nothing_major">As long as it's nothing major</option>
-                  <option value="Clear_benefits">If the benefits are clear</option>
-                  <option value="Open">I'm open to it</option>
-                  <option value="Actively_looking">I'm actively looking to make a change</option>
-                </select>
-                <hr>
-                <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on average spending. If you're curious please go ahead.</i></p>
-                <p><i>If you'd rather not say, don't worry we can still get you a decent bench mark. And you can recalculate your footprint any time.</i></p>
-                <p><b>How much would you say you...</b></p>
-                <label for="new_clothes" class="form-label"><b>spend each year on new clothes each year?</b></label>
-            <input type="number" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
-            <label for="restaurants" class="form-label"><b>spend on restaurants in a month?</b></label>
-            <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
-            <label for="accessories" class="form-label"><b>spend on new accessories each year?</b></label>
-            <input type="number" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
-            <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
-            <input type="number" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
-            <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels each year?</b></label>
-            <input type="number" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
-       <button class="btn btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
-     </form>
-   </div>
+      <select name="pork" class="form-select mx-auto w-auto" aria-label="Default select example" required>
+        <option selected value="" disabled>On average...</option>
+        <option value="0">I don't eat pork</option>
+        <option value="1">Once a week</option>
+        <option value="2">Twice a week</option>
+        <option value="3">Three times a week</option>
+        <option value="4">Four times a week</option>
+        <option value="5">Five times a week</option>
+        <option value="6">Six times a week</option>
+        <option value="6">Every day</option>
+      </select>
+      <label for="chicken" class="form-label"><b>How many times a week do you eat chicken?</b></label>
+      <select name="chicken" class="form-select mx-auto w-auto" aria-label="Default select example" required>
+        <option selected value="" disabled>On average...</option>
+        <option value="0">I don't eat chicken</option>
+        <option value="1">Once a week</option>
+        <option value="2">Twice a week</option>
+        <option value="3">Three times a week</option>
+        <option value="4">Four times a week</option>
+        <option value="5">Five times a week</option>
+        <option value="6">Six times a week</option>
+        <option value="6">Every day</option>
+      </select>
+      <label for="flexitarian" class="form-label mx-auto w-auto"><b>How do you feel about making dietary changes?</b></label>
+      <select name="flexitarian" class="form-select mx-auto w-auto" aria-label="Default select example">
+        <option selected value="" disabled>Select</option>
+        <option value="Not_a_chance">Not a chance</option>
+        <option value="Nothing_major">As long as it's nothing major</option>
+        <option value="Clear_benefits">If the benefits are clear</option>
+        <option value="Open">I'm open to it</option>
+        <option value="Actively_looking">I'm actively looking to make a change</option>
+      </select>
+      <hr>
+      <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on average spending. If you're curious please go ahead.</i></p>
+      <p><i>If you'd rather not say, don't worry we can still get you a decent bench mark. And you can recalculate your footprint any time.</i></p>
+      <p><b>How much would you say you...</b></p>
+      <label for="new_clothes" class="form-label"><b>spend each year on new clothes each year?</b></label>
+        <input type="number" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
+      <label for="restaurants" class="form-label"><b>spend on restaurants in a month?</b></label>
+        <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
+      <label for="accessories" class="form-label"><b>spend on new accessories each year?</b></label>
+        <input type="number" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
+      <label for="appliances" class="form-label"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
+        <input type="number" name="appliances" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on appliances" min="0">
+      <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels each year?</b></label>
+        <input type="number" name="hotels" class="form-control mx-auto w-auto" id="hotels" placeholder="# nights in hotels" min="0">
+      <button class="btn btn-sm btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
+      </form>
+    </div>
+  </div>
 </div>
 </form>
-
 
 {% endblock %}

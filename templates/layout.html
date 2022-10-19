@@ -12,9 +12,7 @@
     <!--Icons from Font Awesome-->
     <script src="https://kit.fontawesome.com/a56b22975c.js" crossorigin="anonymous"></script>
    <link href="/static/styles.css" rel="stylesheet">
-
    <title>Carbon Tracker: {% block title %}{% endblock %}</title>
-
 </head>
 <body>
   <nav class="bg-dark border navbar navbar-expand-md navbar-dark border-0">
@@ -48,29 +46,18 @@
         </div>
     </div>
 </nav>
-
 {% if get_flashed_messages() %}
     <header>
-        <div class="alert alert-primary mb-0 text-center red" role="alert">
+        <div class="alert alert-primary mb-0 text-center" role="alert">
             {{ get_flashed_messages() | join(" ") }}
         </div>
     </header>
 {% endif %}
-
-<main class="container-fluid py-3 ps-0 pe-0 text-center orange">
+<main class="container-fluid py-2 ps-0 pe-0 text-center dark-blue">
     {% block main %}{% endblock %}
 </main>
-
 <footer class="bg-dark border navbar-dark navbar-fixed-bottom p-3 border-0">
-    <p class="text-center mt-2" id="credit">An opensourced Final Project For Harvard EdX CS50 - By Bianca Silva</p>
+    <p class="text-center mt-2" id="credit">Coded wtih curiosity by Bianca Silva, 2022</p>
 </footer>
-
 </body>
-
-</html>
-
-
-
-</body>
-
 </html>
