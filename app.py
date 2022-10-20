@@ -331,7 +331,7 @@ def calculatorconsumption():
     chicken_emissions = impact_by_money(chicken_activity_id, region, chicken_spend)
     chicken_impact = chicken_emissions['Carbon_emissions']
     
-    # Hotel impact at 16.1kg (default 2022) per night 
+    # Hotel impact at 16.1kg (default 2022).ex per night 
     hotel_activity_id = "accommodation_type_hotel_stay"
     if len(hotels) == 0: 
       hotels = "No info given"
@@ -676,7 +676,13 @@ def changepassword():
 @login_required
 def challenges():
   """Allows the user to enroll in challenges that will promote a lower carbon footprint"""
-  return render_template("/challenges.html")
+  check_footprint = db.execute("SELECT user_id FROM footprint WHERE user_id=?", session.get("user_id"))
+  print("CHeck if user in footprint: ", check_footprint)
+  if len(check_footprint) == 0: 
+    flash("Please calculate your carbon footprint to get started")
+    return redirect("/calculator")
+  else:  
+    return render_template("/challenges.html")
 
 # Contact page
 @app.route("/contact", methods=["GET", "POST"])
@@ -731,6 +737,12 @@ def homeuser():
     return render_template("homeuser.html")
   else:
     print("Hi we're in get")
+    # check if this is the user's first time on the home page: 
+    check_footprint = db.execute("SELECT user_id FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("CHeck if user in footprint: ", check_footprint)
+    if len(check_footprint) == 0: 
+      flash("Please calculate your carbon footprint to get started")
+      return redirect("/calculator")
     footprint_db = db.execute("SELECT electricity, waste_frequency, recycling, landfill_impact, recycling_impact, total_footprint_general FROM footprint WHERE user_id=?", session.get("user_id"))
     transport_footprint_db = db.execute("SELECT transport_cost, short_haul, medium_haul, long_haul, transport_footprint_total FROM transport_footprint WHERE user_id=?", session.get("user_id"))
     consumption_footprint_db = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, hotels, consumption_footprint_total FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
@@ -1016,6 +1028,7 @@ def homeuser():
         carbon_savings_display = "Please log a carbon saving activity to start tracking your progress here"
       else: 
         carbon_savings_display = carbon_savings_db
+      print("Carbon Savings: ", carbon_savings_display)
       
       # Format fewer flights, direct flights and hotels
       if fewer_flights_db == 0:
@@ -1066,6 +1079,11 @@ def leaderboard():
     return redirect("/leaderboard")
   else: 
     print("Hey, it's GET time, get it?")
+    check_footprint = db.execute("SELECT user_id FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("CHeck if user in footprint: ", check_footprint)
+    if len(check_footprint) == 0: 
+      flash("Please calculate your carbon footprint to get started")
+      return redirect("/calculator")
     
     # Get Leaderboardname
     check_name = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
@@ -1136,12 +1154,13 @@ def leaderboard():
       max_points = points['total_points']
     print("FIND CURRENT POSITION: ", max_points)
     you = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
-    temp_test = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=8")
+    temp_test = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
     your_points = 0
     for points in temp_test: 
       your_points = points['total_points']
     points_to_top = str(max_points - your_points)
-    print("You are? " + points_to_top + "Away from the top")
+    # your_points = str(your_points)
+  
     # TO DO: 
     # Learn how to figure out where someone would rank on a leaderboard, and their position in sqlite
     # https://stackoverflow.com/questions/40649355/query-on-sqlite-to-group-only-the-three-most-recent-records-for-each-user
@@ -1149,7 +1168,7 @@ def leaderboard():
     # TO DO: 
     # UPdate the user_id column in sqlite to be unique
 
-    return render_template("/leaderboard.html", pointstotop= points_to_top, leaders=leaders, leadingname=leadingname, challenges=challenges, totalpoints=totalpoints, flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
+    return render_template("/leaderboard.html", yourpoints=your_points, pointstotop= points_to_top, leaders=leaders, leadingname=leadingname, challenges=challenges, totalpoints=totalpoints, flexitarian=total_flex, greenmiles=total_miles, dollarsavings=total_money_saved, carbonsavings=total_carbon_saved, leaderboardname=leaderboardname)
 
 # Login page adapted from PSET 9 finance distribution code
 @app.route("/login", methods=["GET", "POST"])
@@ -1228,36 +1247,57 @@ def register():
     email = request.form.get("email")
     goback = request.form.get("goback")
 
+    print("email from form: ", email)
+
+    # Handle random username generator
     if goback is not None:
       return render_template("/register.html", randomname=random_leaderboard) 
     
     # Check name isn't blank
-    if name is None:
+    if len(name) == 0:
       return apology("Please enter your name", 403)
     
+    # Check email isn't blank
+    if len(email) == 0:
+      return apology("Please enter your email")
+
+    email_check = email
+    count = db.execute("SELECT count(email) FROM users WHERE email=?", email_check)
+    print("Count: ", count)
+    for usermail in count:
+      email_count = int(usermail['count(email)'])
+      print("Count Email: ", email_count)
+    if (email_count == 1):
+      return apology("I'm sorry an account already exists for that email")
+
     # Check password isn't blank
-    elif password is None:
+    if password is None:
       return apology("Oops! Password cannot be blank", 403)
     
-    elif confirmation is None:
+    if confirmation is None:
       return apology("Confirmation is blank")
     
     # Check password and confirmation match
-    elif password != confirmation:
+    if password != confirmation:
       return apology("Oops! Your passwords don't match", 403)
     
     elif len(password) < 8:
       return apology("Password should be at least 8 char long for your security")
 
     # Check leaderboard name isn't blank
-    elif len(leaderboardname) == 0:
+    print("LEADERBOARD NAME: ", leaderboardname)
+    if len(leaderboardname) == 0:
       return apology("Please choose a leaderboard name", 403)
     
     # Check leaderboard name is unique
     leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
-    count = db.execute("SELECT count(email) FROM users WHERE email=?", email)
-    
-    if len(leaderboard_check) != 0:
+    print("LEADER BOARD CHECK: ", leaderboard_check)
+    leaderboard_name_check = ""
+    for name in leaderboard_check:
+      leaderboard_name_check = name['leaderboardname'] 
+    print("Leaderboardname check: ", leaderboard_name_check)
+    print(len(leaderboard_name_check))
+    if len(leaderboard_name_check) != 0:
       flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
       random_name = random_leaderboardname()
       leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", random_name)
@@ -1266,26 +1306,18 @@ def register():
       while len(leaderboard_check) !=0: 
         leaderboard_suggestion = random_leaderboardname
         print(leaderboard_suggestion)
-      if leaderboard_suggestion:
-        flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
-        return render_template("/register.html", randomname=leaderboard_suggestion)
-      else:
-        return render_template("/register.html", randomname=random_name)
-    
-    # Check email isn't blank an email
-    elif len(email) == 0:
-      return apology("Please enter your email")
-    # TO DO: 
-    # FIX ISSUE WITH EMAILS being the same - need to check for that email and issue apology that an account already exists 
-    # BUG HERE
-    elif (len(count) > 1):
-      return apology("An account already exists")
+        if leaderboard_suggestion:
+          flash("Oops, that leaderboard name has already been claimed. Try our random leaderboard name generator for more ideas")
+          return render_template("/register.html", randomname=leaderboard_suggestion)
+        else:
+          return render_template("/register.html", randomname=random_name)
     
     else:
       # TO DO: 
       # FIND OUT WHY AUTOINCREMENT DOESN'T GO FROM THE LAST USER BUT THE LAST NUMBER, AND IS THERE A WAY TO RESET IT
       # INSERT new user and store a hash of the password, update tracker_scores:
       # **** Should look at ways to make this password more secure
+      print("Email: ", email)
       hash = generate_password_hash(request.form.get("password"), method="pbkdf2:sha256", salt_length=8)
       new_user = db.execute("INSERT INTO users (name, email, leaderboardname, hash) VALUES(?, ?, ?, ?)", name, email, leaderboardname, hash)
       print("NEW USERS: ")
@@ -1301,7 +1333,7 @@ def register():
       set_tracker_scores_db = db.execute("INSERT INTO trackers (user_id, added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score) VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", get_id, green_tariffs, solar_panels)
 
       # Add user to the leaderboard 
-      join_leaderboard = db.execute("INSERT INTO leaderboard (leaderboardname, challenges, green_miles, carbon_saved, plastic_saved, total_points) VALUES(?, ?, 0, 0, 0, 0, 0)", get_id, leaderboardname)
+      join_leaderboard = db.execute("INSERT INTO leaderboard (user_id, leaderboardname, challenges, green_miles, carbon_saved, plastic_saved, total_points) VALUES(?, ?, 0, 0, 0, 0, 0)", get_id, leaderboardname)
       return render_template("/login.html")
 
   # Handle GET request 
@@ -1664,6 +1696,7 @@ def trackerelectricity():
       less_waste_total = info['less_waste']
       more_recycling_total = info['more_recycling']
       carbon_savings = info['carbon_savings'] 
+      print("Carbon Savings from DB checking: ", carbon_savings)
       db_total_score = info['total_score']
     
     # Get necessary values for looking up electricity
@@ -1789,6 +1822,7 @@ def trackerelectricity():
     # Print totals to tally 
     energy_savings_total = float(energy_savings) + energy_savings_add + energy_savings_add_bulbs
     carbon_savings_total = formatfloat(float(carbon_savings) + carbon_savings_utilities + carbon_savings_bulbs)
+    print("carbon savings tracker: ", carbon_savings_total)
     money_savings_total = formatfloat(float(monetary_savings) + money_savings_add_bulbs)
     compost_new_total = int(float(compost_total) + composting_add)
     green_tariff_status_end = green_tariff_status
@@ -1814,13 +1848,16 @@ def trackerelectricity():
       lb_carbon_savings = point['carbon_saved']
       lb_plastic_saved = point['plastic_saved']
       lb_old_points = point['total_points']
+    print("Old LB points: ", lb_old_points)
     lb_new_carbon_savings = float(lb_carbon_savings) + float(carbon_savings_total)
     lb_new_plastic_savings = int(lb_plastic_saved) + int(plastic_savings)
-    lb_old_points = float(lb_old_points) + float()
+    # Issue here
+    lb_old_points = float(lb_old_points)
     lb_new_score = float(int(lb_old_points) + new_total_score)
     lb_new_score = formatfloat(lb_new_score)
 
     # Update LB DB
+    # **There's an issue here
     lb_update = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", lb_new_carbon_savings, lb_plastic_saved, lb_new_score, session.get("user_id"))
     print("UPDATED DATABASE: ", lb_update)
     
@@ -1886,7 +1923,7 @@ def trackershopping():
     drycleaning_form = request.form.get("drycleaning")
     restaurants_form = request.form.get("restaurants")
     accessories_form = request.form.get("accessories")
-    
+
     # region for calculations:
     region = "US"
 
@@ -2089,7 +2126,7 @@ def trackershopping():
     new_pork_total = int(less_pork) + less_pork_add
     carbon_savings_total = carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + carbon_savings_drycleaning + carbon_savings_restaurants + carbon_savings_accessories
     new_total_score = float(total_score) + vintage_clothes_add + sustainable_clothes_add + plastic_saved_by_paper + plastic_saved_by_reusable + local_points + less_beef_add + less_chicken_add + less_pork_add + carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + money_savings_plastic + drycleaning_savings + accessories_savings 
-
+    print("CArbon savings total: ", carbon_savings_total)
     # Update DB
     update_db = db.execute("UPDATE trackers SET vintage_clothing=?, sustainable_clothing=?, saved_plastic=?, saved_money=?, bought_local=?, less_beef=?, less_chicken=?, less_pork=?, carbon_savings=?, total_score=? WHERE user_id=?", vintage_clothes_total, sustainable_clothes_total, saved_plastic_total, saved_money_total, bought_local_total, new_beef_total, new_chicken_total, new_pork_total, carbon_savings_total, new_total_score, session.get("user_id"))
     check_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id")) 
@@ -2136,7 +2173,6 @@ def trackershopping():
         accessories = item['accessories']
       print("Restaruants", restaurants)
       if restaurants == "No info given":
-        print("Yup no info given")
         restaurants_spend = "You didn't mention when you started how much you were spending on restaurants. You can update that at any point. How much did you spend this month?"
       else:
         print("We're stuck in else over here")
@@ -2174,7 +2210,6 @@ def trackertransport():
       fewer_hotels_db = 0
     else:
       fewer_hotels_db = hotel_nights
-    print("Hotel nights outside of db loop: ", hotel_nights)
     
     # Get current values from form
     get_db = db.execute("SELECT saved_money, saved_energy, vacationed_local, green_tariff, solar_panels, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
@@ -2202,7 +2237,7 @@ def trackertransport():
       carbon_offset_db = info['carbon_offset']
       carbon_savings_db = info['carbon_savings']
       total_score_db = info['total_score']
-        
+    
     # Manage empty fields and start tally
     print("total flights: ", total_flights)
     print("fewer flights: ", fewer_flights)
@@ -2228,6 +2263,7 @@ def trackertransport():
       else: 
         hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
         # From calculator
+        print("Hotel Nights Saved: ", hotel_nights_saved)
         hotel_activity_id = "accommodation_type_hotel_stay"
         hotel_lookup = impact_by_number(hotel_activity_id, hotel_nights_saved, region)
         carbon_savings_hotel = hotel_lookup['Carbon_emissions']
@@ -2288,13 +2324,14 @@ def trackertransport():
     new_total_score = float(total_score_db) + flights_saved + hotel_nights_saved + more_trains_add  + carbon_savings_hotel + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
 
     print("Total flights saved: ", total_flights_saved)
-    print("Carbon savings: ", carbon_savings_total)
+    print("Carbon Savings From hotel: ", carbon_savings_hotel)
+    print("Carbon Savings From db: ", carbon_savings_db)
+    print("Carbon savings total: ", carbon_savings_total)
     print("Total direct flights: ", direct_flights_total)
     print("locat vacation total: ", local_vacation_total)
     print("Total_bike_walk: ", total_bike_walk)
     print("Money savings total: ", money_savings_total)
     print("carbon offset total: ", carbon_offset_total)
-    print("total carbon savings: ", carbon_offset_total)
     print("New total score: ", new_total_score)
 
     # Add new scores to db

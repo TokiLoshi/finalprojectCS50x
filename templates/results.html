@@ -7,7 +7,7 @@
 {% block main %}
 <form action="/results" method="post">
   <div class="container p-3 shadow rounded-3 grey">
-    <h2 class="orangeText">Your results are in</h2>
+    <h2 class="darkBlue">Your results are in</h2>
     <!--Laughing male construction by by Andrea Piacquadio from Pexels https://www.pexels.com/photo/laughing-male-constructor-showing-thumb-up-at-working-desk-3760613/ -->
     <img class="img-fluid rounded-2 mx-auto w-100" src="/static/laughing_construction.jpg" alt="green island in the ocean"/>
     </br>
@@ -20,9 +20,9 @@
         <h3>{{total}}</h3>
         <h1>👣</h1>
         <p><b>This is made up of an estimate from three sectors of your life:</b></p>
-        <p><b>Your Houshold footprint:</b> {{household}}</p>
-        <p><b>Your Transport footprint:</b> {{transport}}</p>
-        <p><b>You consumption and spending footprint:</b> {{consumption}}</p>
+        <p><b>Houshold footprint:</b> {{household}}</p>
+        <p><b>Transport footprint:</b> {{transport}}</p>
+        <p><b>Consumption and spending footprint:</b> {{consumption}}</p>
         <p>As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
         <p>But first let's take a better look at each footprint.</p>
         <form action="/challenges" method="post">
@@ -249,7 +249,7 @@
         </tr> 
     </table>
   </div>
-  <button class="btn btn-dark m-2 p-3 col-8">Start reducing my impact</button>
+  <button class="btn btn-dark btn-sm m-2 p-3">Start reducing my impact</button>
 </form>
 </form>
 {% endblock %}
