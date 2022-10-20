@@ -15,7 +15,8 @@
     <p>At Carbon Tracker our goal is to help you leave behind only the things you're proud of</p>
     <p>Looking for some quick and easy challenges?</p>
     <p><b>Here are some easy ideas for ways to challenge yourself</b></p>
-    <div class="row">
+  </form>
+    <div class="row justify-content-center">
       <div class="col-auto mb-2">
         <div class="d-flex">
           <div class="card shadow rounded-3" style="width: 14rem;">
@@ -24,7 +25,11 @@
             <h3>Go Flexitarian</h3>
             <!--https://www.denverwater.org/tap/whats-beef-water-->
             <!--https://ourworldindata.org/carbon-footprint-food-methane-->
-            <p class="card-text">Meat consumption can have a huge impact on the environment (roughly 100kg of CO2 equivaelent per kg of beef). Beef is also resource intensive, not only in terms of land usage and feed, but also water - it takes around 1,847 gallons of water (39 full bathubs) to produce one poud of beef. Are you up for the challenge to substitute one meat dish for a vegetarian option?</p>
+            <form action="/challenges" method="post">
+              <p class="card-text">Meat consumption can have a huge impact on the environment (roughly 100kg of CO2 equivaelent per kg of beef). Beef is also resource intensive, not only in terms of land usage and feed, but also water - it takes around 1,847 gallons of water (39 full bathubs) to produce one poud of beef. Are you up for the challenge to substitute a meat dish for a vegetarian option this week?</p>
+              <input type="number" name="flexitarian" class="form-control mx-auto w-auto mb-2" id="flexitarian" placeholder="How many days?" min="1">
+              <button type="submit" name="flexitarian" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+            </form>
           </div>
         </div>
       </div>
@@ -37,6 +42,10 @@
             <h5 class="card-title"><b>Change out your lightbulbs:</b></h5>
             <!--https://www.energy.gov/energysaver/led-lighting#:~:text=LED%20is%20a%20highly%20energy,times%20longer%2C%20than%20incandescent%20lighting.-->
             <p class="card-text">Switching from incandescent to LED lighting, is not only good for your carbon footprint but also for your wallet. LEDs use 75% less energy (lowering your energy bill and your footprint) and last up to 25 times longer. We challenge you to pick a room in your home that has incandescent lights and swap them out for LED lighting.</p>
+            <form action="/challenges" method="post">
+            <input type="number" name="LED" class="form-control mx-auto w-auto mb-2" id="LED" placeholder="How many bulbs?" min="1">
+            <button type="submit" name="LED" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+            </form>
           </div>
         </div>
       </div>
@@ -48,7 +57,11 @@
             <h3>🚲</h3>
               <h5 class="card-title"><b>Make a commute green:</b></h5>
               <p class="card-text">Need to run an errand, or are you hoping to shake up your commute? Consider taking a bicycle or walking instead, and start wracking up some green miles. Making your commute Green is great for the environment, helps you to reduce your own footprint, and gets you out and moving. A side of endorphines may be just the shake up your commute needs.</p>
-          </div>
+             <form action="/challenges" method="post"> 
+                <input type="number" name="green-miles" class="form-control mx-auto w-auto mb-2" id="green-miles" placeholder="How many miles?" min="1">
+                <button type="submit" name="green-miles" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+            </form>
+            </div>
         </div>
       </div>
     </div>
@@ -60,7 +73,11 @@
               <h5 class="card-title"><b>Sustainable fashion:</b></h5>
               <!--https://www.worldbank.org/en/news/feature/2019/09/23/costo-moda-medio-ambiente-->
               <p class="card-text">It takes around 3,780 litres and 33.4kg of Co2 equivelent in emissions to produce a single pair of jeans. Less than 1% of used clothing is recyled into new garments. We challenge you to find more creative ways to shop, and to recycle your garments.</p>
-          </div>
+              <form action="/challenges" method="post">
+                <input type="number" name="fashion" class="form-control mx-auto w-auto mb-2" id="fashion" placeholder="How many garments?" min="1">
+                <button type="submit" name="fashion" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+              </form>  
+            </div>
         </div>
       </div>
     </div>
@@ -71,6 +88,10 @@
             <h3>💧</h3>
             <h5 class="card-title"><b>Bring your own water bottle:</b></h5>
             <p class="card-text">Ditch the single use plastics for a day. You might be surprised by how much you might save (plastic and money)</p>
+            <form action="/challenges" method="post">
+              <input type="number" name="plastics" class="form-control mx-auto w-auto mb-2" id="plastics" placeholder="How many items?" min="1">
+              <button type="submit" name="plastics" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+            </form>
           </div>
         </div>
       </div>
@@ -83,6 +104,10 @@
             <h5 class="card-title"><b>Bring your own bags:</b></h5>
             <!--https://www.wwf.org.au/news/blogs/the-lifecycle-of-plastics-->
             <p class="card-text">It takes 20 years for a plastic bag to degrade, and even then they degrade into microplastics which can land up in our drinking water and food. Every time you go to the grocery store if you use your own bags you are saving us all at least 20 years worth of plastic.</p>
+            <form action="/challenges" method="post">
+              <input type="number" name="bags" class="form-control mx-auto w-auto mb-2" id="bags" placeholder="How many bags?" min="1">
+              <button type="submit" name="bags" class="btn btn-dark btn-md m-2">Challenge Accepted</button>
+            </form>
           </div>
         </div>
       </div>

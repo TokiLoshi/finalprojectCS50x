@@ -113,4 +113,14 @@ erDiagram
       plastic_saved NUMERIC 
       total_points NUMERIC
     }
+    LEADERBOARD ||--o{ CHALLENGES: challenge_accepted 
+    CHALLENGES {
+      id PRIMARY_KEY_AUTOINCREMENT_NOT_NULL
+      user_id INTEGER NOT_NULL
+      leaderboardname TEXT_NOT_NULL
+      challenge TEXT_NOT_NULL
+      pledge NUMERIC_NOT_NULL
+      selected NUMERIC_NOT_NULL
+      completed 
+    }
   ```
