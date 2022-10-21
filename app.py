@@ -80,7 +80,7 @@ def about():
 @login_required
 def account():
   """Users account page with their username information"""
-  get_user_info = db.execute("SELECT name, leaderboardname, email, datejoined FROM users WHERE id=?", session.get("user_id"))
+  get_user_info = db.execute("SELECT icon, name, leaderboardname, email, datejoined FROM users WHERE id=?", session.get("user_id"))
   print("User's info: ", get_user_info)
   if len(get_user_info) == 0:
       name = "unknown"
@@ -89,17 +89,19 @@ def account():
       datejoined = "unknown"
   else:
     for info in get_user_info:
+      icon = info['icon']
       name = info['name']
       leaderboardname = info['leaderboardname']
       emailaddy = info['email']
       datejoined = info['datejoined']
+      
   print("USER INFO: ", get_user_info)
   if request.method == "POST":
     print("We're in post")
     return render_template("/changepassword.html")
   else:
     print("We're in get")
-  return render_template("/account.html", name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
+  return render_template("/account.html", icon=icon, name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
 
 # Calculator page for instructions and household calculations
 @app.route("/calculator", methods=["GET", "POST"])
@@ -443,8 +445,23 @@ def leaderboardicon():
   else:
     print("We're here in get")
     check_icon = request.args.get("animal")
+    if check_icon is not None: 
+      check_db_icon = db.execute("SELECT icon FROM users WHERE id=?", session.get("user_id"))
+      for item in check_db_icon:
+        old_icon = item['icon']
+      if old_icon == None:
+        icon = check_icon
+        update_new_icon = db.execute("UPDATE users SET icon=? WHERE id=?", icon, session.get("user_id"))
+        flash("You've got yourself a new icon. Looking good!")
+        return redirect("/account")
+      else:
+        icon = check_icon
+        update_new_icon = db.execute("UPDATE users SET icon=? WHERE id=?", icon, session.get("user_id"))
+        flash("Nice new icon!")
+        return redirect("/account")
     print("We have an icon in get: ", check_icon)
-    return render_template("leaderboardicon.html")
+    
+    return render_template("leaderboardicon.html", icon=icon)
 
 # Calculator page for consumption
 @app.route("/calculatorconsumptionupdate", methods=["GET", "POST"])
