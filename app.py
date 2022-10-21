@@ -436,16 +436,14 @@ def iconcolor():
 def leaderboardicon():
   """Update Leadearboard and user icons"""
   if request.method == "POST":
-    if "pepper" in request.form:
-      print("It's pepper")
-    else:
-      print("why doesn't this work?")
-    icon = request.form.get("name")
-    print("name of icon is: ", icon)
     print("We're here in post")
+    check_icon = request.args.get("animal")
+    print("We have an icon in post: ", check_icon)
     return render_template("leaderboardicon.html")
   else:
     print("We're here in get")
+    check_icon = request.args.get("animal")
+    print("We have an icon in get: ", check_icon)
     return render_template("leaderboardicon.html")
 
 # Calculator page for consumption
@@ -695,6 +693,7 @@ def challenges():
         print("They didn't choose flexitarian")
       else:
         challenge_accepted = "Flexitarian"
+        new_pledge = str(flexitarian) + " days"
         print("They chose flexitarian: ", flexitarian)
 
       if lightbulbs is None: 
@@ -702,62 +701,69 @@ def challenges():
       else: 
         print("They chose lightbulbs", lightbulbs)
         challenge_accepted = "LEDs"
+        new_pledge = str(lightbulbs) + " bulbs"
       
       if green_miles is None: 
         print("They didn't choose green miles")
       else: 
         print("They chose green miles", green_miles)
         challenge_accepted = "Green Miles"
+        new_pledge = str(lightbulbs) + " miles"
 
       if fashion is None: 
         print("They didn't choose fashion")
       else:
         print("They chose fashion: ", fashion)
         challenge_accepted = "Sustainable Fashion"
+        new_pledge = str(fashion) + " garments"
 
       if plastics is None: 
         print("They didn't choose plastics")
       else: 
         print("They chose plastics: ", plastics)
         challenge_accepted = "Save Plastic"
+        new_pledge = str(plastics) + " plastics"
 
       if bags is None: 
         print("They didn't choose bags")
       else: 
         print("They chose bags: ", bags)
-        challenge_accepted 
+        challenge_accepted = "Use own bags"
+        new_pledge = str(bags) + " bags"
 
       # Check challenges in DB
+      pledge = 0
+      challenge_selected= "None"
       check_db = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
       print("We have this info from the db", check_db)
       for item in check_db:
         challenge_selected = item['challenge']
         pledge = item['pledge']
-        selected = item['selected']
-        completed = item['completed']
-      print("Challenge selected", challenge_selected)
       print("Pledge: ", pledge)
-      print("Selected: ", selected)
-      print("Completed: ", completed)
+      print(type(pledge))
+      print("Challenge Accepted: ", challenge_accepted)
 
       # Update DB with new challenge info
-      if challenge_selected == flexitarian or lightbulbs or green_miles or fashion or plastics or bags:
+      get_leaderboard_name = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
+      for name in get_leaderboard_name: 
+        lb_name =  name['leaderboardname']
+      
+      if challenge_accepted == challenge_selected:
         flash("You've already selected that. If you've finished it please mark it as done in your account")
         return redirect("/challenges")
       else: 
-        # Update DB
-        selected_updated = int(selected) + 1
-        challenge_updated = challenge_selected + ", " + challenge_accepted 
-        update_challenge_db = db.execute("UPDATE challenges set challenge=?, pledge=?, selected=? WHERE user_id=?", challenge_selected, pledge, selected_updated, session.get("user_id"))
-
-        flexitarian = request.form.get("flexitarian")
-        lightbulbs = request.form.get("LED")
-        green_miles = request.form.get("green-miles")
-        fashion = request.form.get("fashion")
-        plastics = request.form.get("plastics")
-        bags = request.form.get("bags")
-        flash("You got it!")
-        return render_template("/challenges.html")
+        # Update DB and overwrite the none value that gets passed in at register
+        if pledge == 0 and challenge_selected == 'None Accepted':
+          print("Pledge is 0")
+          update_db = db.execute("UPDATE challenges SET challenge=?, pledge=? WHERE user_id=?", challenge_accepted, new_pledge, session.get("user_id"))
+          return render_template("/challenges.html")
+        else:
+          # If user already has an active challenge, insert new challenge into db
+          insert_new_challenge = db.execute("INSERT INTO challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, ?, ?)", session.get("user_id"), lb_name, challenge_accepted, new_pledge)
+          check_updates = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+          print("DB updated: ", check_updates)
+          flash("You got it!")
+          return render_template("/challenges.html")
 
     else: 
       print("Hey we're here in get")
@@ -801,7 +807,7 @@ def home():
   """Information about the web app and what it does"""
   if request.method == "POST":
     print("Hey we're at home in post")
-    return render_template("/home")
+    return render_template("/home.html")
   else: 
     print("Hey wer'e in GET in home, GET it??")
     return render_template("home.html")
@@ -811,26 +817,62 @@ def home():
 @login_required
 def homeuser():
   """Displays information for returning user"""
+  # Handle POST request
   if request.method == "POST":
     print("Hi, we're in post")
-    return render_template("homeuser.html")
+    return redirect("/homeuser")
+  
+  # Handle GET request
   else:
     print("Hi we're in get")
+    
     # check if this is the user's first time on the home page: 
     check_footprint = db.execute("SELECT user_id FROM footprint WHERE user_id=?", session.get("user_id"))
     print("CHeck if user in footprint: ", check_footprint)
     if len(check_footprint) == 0: 
       flash("Please calculate your carbon footprint to get started")
       return redirect("/calculator")
+
+    # Get Challenges from DB
+    challenges_db = db.execute("SELECT challenge, pledge FROM challenges WHERE user_id=?", session.get("user_id"))
+    amounts_pledged = 0
+    print("Challenges from DB: ", challenges_db)
+    for challenge in challenges_db:
+      challenges_accepted = challenge['challenge']
+      amounts_pledged = challenge['pledge']
+      if amounts_pledged == 0:
+        challenges_db = [{"empty": "No challenges yet"}]
+    
+
+    # Get list of current challenges for user to check off when one is done
+    challenge_completed = db.execute("SELECT challenge FROM challenges WHERE user_id=?", session.get("user_id"))
+    challenge_updated = request.args.get("challengecompleted")
+    print("Challenge requested to update FROM ARGS: ", challenge_updated)
+    if challenge_updated is not None: 
+      print("Hey we have something to update!", challenge_updated)
+      # Updated Database 
+      update_challenges_database = db.execute("DELETE FROM challenges WHERE challenge=? AND user_id=?", challenge_updated, session.get("user_id"))
+      check_db_for_challenge_update = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+      print("After challenge has been removed from DB: ", check_db_for_challenge_update)
+      
+      # Update Leaderboard to increase number of challenges completed
+      get_no_challenges_from_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
+      print("This is the no of challenges from the lb", get_no_challenges_from_lb)
+      for challenges in get_no_challenges_from_lb:
+        old_no_challenges = challenges['challenges']
+        print("Old no of challenges: ", old_no_challenges)
+      updated_challenges = int(old_no_challenges) + 1
+      lb_challenge_update = db.execute("UPDATE leaderboard SET challenges=? WHERE user_id=?", updated_challenges, session.get("user_id"))
+      check_updated_lb = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
+      print("UPDATED LB: ", check_updated_lb)
+      return redirect("/homeuser")
+    # Get footprint Data
     footprint_db = db.execute("SELECT electricity, waste_frequency, recycling, landfill_impact, recycling_impact, total_footprint_general FROM footprint WHERE user_id=?", session.get("user_id"))
     transport_footprint_db = db.execute("SELECT transport_cost, short_haul, medium_haul, long_haul, transport_footprint_total FROM transport_footprint WHERE user_id=?", session.get("user_id"))
     consumption_footprint_db = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, hotels, consumption_footprint_total FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
     trackers_db = db.execute("SELECT added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
     get_date_joined = db.execute("SELECT leaderboardname, datejoined FROM users WHERE id=?", session.get("user_id"))
-    print("DB TRacker", trackers_db)
-    print("Footprint db: ", footprint_db)
     homeuser = impact_by_energy("electricity-energy_source_grid_mix", "CA", 400)
-    print("HERE: ", homeuser)
     
     # Extract date joined
     for info in get_date_joined:
@@ -844,6 +886,14 @@ def homeuser():
     date_month = int(formatted_date_joined[5:8].replace("-", ""))
     date_day = formatted_date_joined[8:]
     display_date = date_day + " " + months_in_year[date_month] + " " + date_year.replace("-", "") 
+    
+    # Check for challenges they wanted to update: 
+    challenge_updated = request.form.get("challengecompleted")
+    print("Challenge requested to update: ", challenge_updated)
+    if challenge_updated is None: 
+      print("Nothing to update here")
+    else: 
+      print("They wanted the following to be updated: ", challenge_updated)
 
     # Extract values from footprint
     for input in footprint_db: 
@@ -934,9 +984,24 @@ def homeuser():
       hotels_display = str(hotels_db) + "nights a year"
 
     # Calculate total footprint and times 1000:
-    number_in_general_total_footprint = float((total_footprint_general_db).replace(" ton of cO2 per year", "")) * 1000
-    number_in_transport_footprint_total_db = float((transport_footprint_total_db).replace(" ton of cO2 per year", "")) * 1000
-    number_in_consumption_footprint_total_db = float((consumption_footprint_total_db).replace(" ton of cO2 per year", "")) * 1000
+    if "tons" in total_footprint_general_db:
+      db_general_total_footprint = total_footprint_general_db.replace(" tons of cO2 per year", "")
+    else:
+      db_general_total_footprint = total_footprint_general_db.replace(" ton of cO2 per year", "")
+    
+    if "tons" in transport_footprint_total_db:
+      db_transport_total_footprint = transport_footprint_total_db.replace(" tons of cO2 per year", "")
+    else:
+      db_transport_total_footprint = transport_footprint_total_db.replace(" ton of cO2 per year", "")
+
+    if "tons" in consumption_footprint_total_db:
+      db_consumption_total_footprint = consumption_footprint_total_db.replace(" tons of cO2 per year", "")
+    else:
+      db_consumption_total_footprint = consumption_footprint_total_db.replace(" ton of cO2 per year", "")
+
+    number_in_general_total_footprint = float(db_general_total_footprint) * 1000
+    number_in_transport_footprint_total_db = float(db_transport_total_footprint) * 1000
+    number_in_consumption_footprint_total_db = float(db_consumption_total_footprint) * 1000
     grand_total = co2(number_in_general_total_footprint + number_in_transport_footprint_total_db +  number_in_consumption_footprint_total_db)
 
     # Extract values from trackers 
@@ -1145,8 +1210,7 @@ def homeuser():
       else:
         display_score = formatfloat(float(total_score_db))
 
-
-    return render_template("homeuser.html",localvacations=local_vacations_display, savedwater=saved_water_display, solardisplay=solar_panel_display, greentariff=green_tariff_display,  locallegend=local_shopping, sustainableshopping=clothing_display, plastic=display_plastic, lesswaste=less_waste_display, addedfriends=display_friends, helpedout=helped_out, plantedtrees=display_planted_trees, totalscore=display_score, morerecycling=more_recycling_display, morecompost=more_compost_display, recyclingimpact=recycling_impact_display, landfillimpact=landfill_impact_display, recycling=recycling_display, totalwaste=waste_frequency_db, chickensub=chicken_less_display, porksub=pork_less_display, beefsub=beef_less_display, chicken=chicken_display, pork=pork_display, beef=beef_display, hotelsaved=hotels_saved_display, hotelnights=hotels_display, flightsdirect=direct_flights_display, flightsaved=flights_display, totalflights=total_flights, bikewalkmiles=miles_display, transportcost=transport_cost_db, energysaved=saved_energy_display, electricitydb=electricity_display, savings=saved_money_db, carbonsavings=carbon_savings_display, carbonoffsets=carbon_offsets, leaderboardname=leaderboardname, datetime=display_date, consumption=grand_total, formatted=number_in_consumption_footprint_total_db)
+    return render_template("homeuser.html", challenges=challenge_completed, challengesdb=challenges_db, localvacations=local_vacations_display, savedwater=saved_water_display, solardisplay=solar_panel_display, greentariff=green_tariff_display,  locallegend=local_shopping, sustainableshopping=clothing_display, plastic=display_plastic, lesswaste=less_waste_display, addedfriends=display_friends, helpedout=helped_out, plantedtrees=display_planted_trees, totalscore=display_score, morerecycling=more_recycling_display, morecompost=more_compost_display, recyclingimpact=recycling_impact_display, landfillimpact=landfill_impact_display, recycling=recycling_display, totalwaste=waste_frequency_db, chickensub=chicken_less_display, porksub=pork_less_display, beefsub=beef_less_display, chicken=chicken_display, pork=pork_display, beef=beef_display, hotelsaved=hotels_saved_display, hotelnights=hotels_display, flightsdirect=direct_flights_display, flightsaved=flights_display, totalflights=total_flights, bikewalkmiles=miles_display, transportcost=transport_cost_db, energysaved=saved_energy_display, electricitydb=electricity_display, savings=saved_money_db, carbonsavings=carbon_savings_display, carbonoffsets=carbon_offsets, leaderboardname=leaderboardname, datetime=display_date, consumption=grand_total, formatted=number_in_consumption_footprint_total_db)
 
 # Leaderboard page
 @app.route("/leaderboard", methods=["GET", "POST"])
@@ -1413,6 +1477,11 @@ def register():
 
       # Add user to the leaderboard 
       join_leaderboard = db.execute("INSERT INTO leaderboard (user_id, leaderboardname, challenges, green_miles, carbon_saved, plastic_saved, total_points) VALUES(?, ?, 0, 0, 0, 0, 0)", get_id, leaderboardname)
+      
+      # Join challenges
+      join_challenges = db.execute("INSERT into challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, 'None Accepted', 0)", get_id, leaderboardname)
+      check_challenges = db.execute("SELECT * FROM challenges WHERE user_id=?", get_id)
+      print("Check challenges were inserted into db", check_challenges)
       return render_template("/login.html")
 
   # Handle GET request 
@@ -2453,3 +2522,6 @@ def trackertransport():
 # https://www.grammarly.com/blog/adjective/
 # https://a-z-animals.com/animals/
 # https://stackoverflow.com/questions/4319236/remove-the-newline-character-in-a-list-read-from-a-file 
+
+
+  
