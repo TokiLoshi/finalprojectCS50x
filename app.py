@@ -58,7 +58,13 @@ mail = MailSendGrid(app)
 # uri = os.getenv("DATABASE_URL")
 # if uri.startswith("postgres:"):
 #   uri = uri.replace("postgress://", "postgresql://")
-db = SQL("sqlite:///carbon.db")
+
+# db = SQL("sqlite:///carbon.db")
+
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+db = SQL(uri)
 
 # Handle cache (from CS50 PSET 9)
 @app.after_request
@@ -698,6 +704,16 @@ def challenges():
   else:
     if request.method=="POST":
       print("Hey we're in post")
+      # Check if there are completed challenges: 
+      check_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
+      for challenge in check_lb:
+        challenges = int(challenge['challenges'])
+      if challenges == 0:
+        counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+      else: 
+        challenges = str(challenges)
+        counter = "You have completed " + challenges + " so far. Keep going!"
+      
       # Get values from form: 
       flexitarian = request.form.get("flexitarian")
       lightbulbs = request.form.get("LED")
@@ -773,18 +789,38 @@ def challenges():
         if pledge == 0 and challenge_selected == 'None Accepted':
           print("Pledge is 0")
           update_db = db.execute("UPDATE challenges SET challenge=?, pledge=? WHERE user_id=?", challenge_accepted, new_pledge, session.get("user_id"))
-          return render_template("/challenges.html")
+          return render_template("/challenges.html", counter=counter)
         else:
           # If user already has an active challenge, insert new challenge into db
           insert_new_challenge = db.execute("INSERT INTO challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, ?, ?)", session.get("user_id"), lb_name, challenge_accepted, new_pledge)
           check_updates = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
           print("DB updated: ", check_updates)
           flash("You got it!")
-          return render_template("/challenges.html")
+          # Check if there are completed challenges: 
+          check_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
+          for challenge in check_lb:
+            challenges = int(challenge['challenges'])
+          if challenges == 0:
+            counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+          else: 
+            challenges = str(challenges)
+            counter = "You have completed " + challenges + " so far. Keep going!"
+            return render_template("/challenges.html", counter=counter)
 
     else: 
       print("Hey we're here in get")
-      return render_template("/challenges.html")
+      # Check if there are completed challenges: 
+      check_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
+      print("Check LB ", check_lb)
+      for challenge in check_lb:
+        challenges = int(challenge['challenges'])
+      if challenges == 0:
+        counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+        return render_template("/challenges.html", counter=counter)
+      else: 
+        challenges = str(challenges)
+        counter = "You have completed " + challenges + " challenges so far. Keep going!"
+        return render_template("/challenges.html", counter=counter)
 
 # Contact page
 @app.route("/contact", methods=["GET", "POST"])
@@ -1304,21 +1340,24 @@ def leaderboard():
     for leader in leaders: 
       leadingname = leader['leaderboardname']
       challenges = leader['challenges']
-      totalpoints = leader['total_points']
+      totalpoints = formatfloat(float((str(leader['total_points'])).replace(",", "")))
 
     # Find user's current position: 
     find_leader = db.execute("SELECT leaderboardname, total_points FROM leaderboard ORDER BY total_points DESC LIMIT 1")
     print("AND THE LEADER IS: ", find_leader)
     max_points = 0
     for points in find_leader:
-      max_points = points['total_points']
+      max_points = float((points['total_points']).replace(",", ""))
+      print("Max POINTS: ", max_points)
+      print(type(max_points))
     print("FIND CURRENT POSITION: ", max_points)
     you = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
     temp_test = db.execute("SELECT leaderboardname, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
     your_points = 0
     for points in temp_test: 
-      your_points = float(points['total_points'])
-    points_to_top = formatfloat(max_points - your_points)
+      your_points = float((str(points['total_points'])).replace(",", ""))
+      print("YOUR POINTS: ", your_points)
+    points_to_top = formatfloat(float(max_points) - your_points)
     your_points = formatfloat(your_points)
   
     # TO DO: 
@@ -1824,7 +1863,7 @@ def trackercommunity():
     old_points = 0
     for point in lookup_total_points: 
       old_points = point['total_points']
-    new_score = float(old_points) + new_total_score
+    new_score = formatfloat(float(old_points) + new_total_score)
     update_leaderboard = db.execute("UPDATE leaderboard SET total_points=? WHERE user_id=?", new_score, session.get("user_id"))
     
     return render_template("/trackercommunity.html")
