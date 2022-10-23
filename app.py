@@ -668,13 +668,13 @@ def changepassword():
 
     # Check password and confirmation aren't blank 
     if len(newpassword) == 0:
-      return apology("No password")
+      return apology("No password entered")
     elif len(confirmpassword) == 0:
-      return apology("No confirmation")
+      return apology("No confirmation entered")
 
     # Check password meets minimum requirements
     elif len(newpassword) < 8:
-      return apology("Password is less than 8 char")
+      return apology("Password must be 8 or more char")
     
     # Check password and confirmation match
     elif newpassword != confirmpassword:
