@@ -50,7 +50,7 @@ Session(app)
 # app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
 # mail = Mail(app)
 
-app.config['MAIL_SENDGRID_API_KEY'] = os.environ['SENDGRID_API']
+app.config['MAIL_SENDGRID_API_KEY'] = os.environ['SENDGRID_API_KEY']
 mail = MailSendGrid(app)
 
 # Configure CS50 Library to use SQLite and adapt to tranfer to PostGres for Heroku deployment
