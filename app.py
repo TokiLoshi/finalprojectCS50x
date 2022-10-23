@@ -1591,7 +1591,7 @@ def reset():
         print(e)
       return render_template("/login.html")
   else: 
-    flash("Oopsie, it happens")
+    flash("Oopsie, it happens, we can help you with that.")
   return render_template("/reset.html")
 
 # Results page user sees after quiz
