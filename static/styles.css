@@ -54,5 +54,8 @@ nav .navbar-brand
   font-weight: 600;
 }
 .darkBlue {
-  color: #212F3D 
+  color: #212F3D;
+}
+.fa-brands{
+  color: white;
 }
