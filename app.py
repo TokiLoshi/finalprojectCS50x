@@ -116,48 +116,27 @@ def calculator():
   """Quiz user takes to tally up their carbon score"""
   if request.method == "POST":
     print("We're in calculator Post: ")
+    
     # Check the user hasn't already asked this: 
     check_not_answered = db.execute("SELECT user_id FROM footprint")
     print("check if not answered: ", check_not_answered)
 
-    if check_not_answered is None:
-      return render_template("/calculator.html")
-    else:
+    if check_not_answered is not None:
+      # Check if the user has completed the transport calculator
       user_check = 0
-      for id in check_not_answered:
-        user_check = id['user_id']
-        print("user check from db: ", user_check)
-      
-      if user_check == session.get("user_id"):
-        their_stuff = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", user_check)
-        print("this is what we know about their stuff: ", their_stuff)
-        check_transport_db = 0
-        if user_check == session.get("user_id"):
-          print("The user has answered the footprint question")
-          check_transport_db: db.execute("SELECT user_id FROM transport_footprint")
-          print("Check Transport in DB", check_transport_db)
-          if check_transport_db == 0:
-            return render_template("/calculatortransport.html")
-          else:
-            for answer in check_transport_db:
-              transport_check = answer['user_id']
-              if transport_check == session.get("user_id"):
-                print("user has answered this:")
-                check_consumption = db.execute("SELECT user_id FROM transport_footprint")
-                for datapoints in check_consumption:
-                  consumption_check = datapoints['user_id']
-                  if consumption_check == session.get("user_id"):
-                    print("user has answered the consumption check: ")
-                    their_stuff = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
-                    print("This is the stuff we already had of theirs in the DB: ", their_stuff)
-                    flash("You've already answered this, but you can update your answers in consumption")
-                    return render_template("/calculatorconsumptionupdate.html")
-                  else:
-                    return render_template("/calculatorconsumption")
-              else:
-                  return render_template("/calculatortransport.html")
-        flash("You've already answered this, but you can update your answers in consumption")
-        return render_template("/calculatorconsumptionupdate.html")
+      users_transport_footprint = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+      print("Users footprint transport: ", users_transport_footprint)
+      if users_transport_footprint is None: 
+        return render_template("/calculatortransport.html")
+      else: 
+        # Check if user has completed the consumption calculator:
+        users_consumption_footprint = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+        print("User's consumption footprint: ", users_consumption_footprint)
+        if users_consumption_footprint is None: 
+          return render_template("/calculatorconsumption")
+        else: 
+          flash("You've already answered this, but you can update your answers in consumption")
+          return render_template("/calculatorconsumptionupdate.html")
     
     # Get information from form
     building = request.form.get("building")
@@ -768,6 +747,7 @@ def changename():
     else:
         flash("Update successful")
         updateleaderboardname = db.execute("UPDATE users SET leaderboardname=? WHERE id=?", new_leaderboard_name, session.get("user_id"))
+        updateleaderboardname_lb = db.execute("UPDATE leaderboard SET leaderboardname=? WHERE user_id=?", new_leaderboard_name, session.get("user_id"))
         return redirect("/account")
   
   # Handle GET request 
@@ -839,11 +819,14 @@ def challenges():
 
       for challenge in check_lb:
         challenges = int(challenge['challenges'])
+        print("User has completed this many challenges: ", challenges)
       if challenges == 0:
         counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+      elif challenges == 1:
+        counter = "You have completed 1 challenge so far. Great start, don't stop! We're rooting for you."
       else: 
         challenges = str(challenges)
-        counter = "You have completed " + challenges + " so far. Keep going!"
+        counter = "You have completed " + challenges + " challenges so far. Keep going!"
       print("Challenges: ", challenges)
       print("Counter: ", counter)
 
@@ -928,45 +911,57 @@ def challenges():
       for item in check_db:
         challenge_selected = item['challenge']
         pledge = item['pledge']
-      print("Pledge: ", pledge)
-      print(type(pledge))
-      print("Challenge Accepted: ", challenge_selected)
-
-      # Update DB with new challenge info
+        print("We're in the loop and their pledge is: ", pledge)
+        print(type(pledge))
+        print("Challenge Accepted: ", challenge_selected)
+        if challenge_selected in challenge_accepted:
+          flash("You've already selected that. If you've finished it please mark it as done in your account")
+          return redirect("/challenges")
+      
+      # Get leaderboard info
       get_leaderboard_name = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
       for name in get_leaderboard_name: 
         lb_name =  name['leaderboardname']
       print("Get info from leaderboard: ", get_leaderboard_name)
+      
+      # Check to see if we need to remove stuff from the challenges e.g remove 'None Accepted' if it's the same
+      # Check to see if we should add stuff if there's nothing in the challenges for them i.e add 'None Accepted'
 
-      if challenge_accepted == challenge_selected:
-        flash("You've already selected that. If you've finished it please mark it as done in your account")
-        return redirect("/challenges")
-      else: 
-        # Update DB and overwrite the none value that gets passed in at register
-        if pledge == 0 and challenge_selected == 'None Accepted':
-          print("Pledge is 0")
-          update_db = db.execute("UPDATE challenges SET challenge=?, pledge=? WHERE user_id=?", challenge_accepted, new_pledge, session.get("user_id"))
-          print("The update to the db is: ", update_db)
-          check_db = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
-          print("Check db for what was updated: ", check_db)
+      # Debugging
+      print("We've gotten stuff from the db and lb")
+      print("So far the challenge accepted is: ", challenge_accepted)
+      print("The challenge selected is: ", challenge_selected)
+      
+      # Update DB and overwrite the none value that gets passed in at register
+      if pledge == 0 and challenge_selected == 'None Accepted':
+        print("Pledge is 0")
+        update_db = db.execute("UPDATE challenges SET challenge=?, pledge=? WHERE user_id=?", challenge_accepted, new_pledge, session.get("user_id"))
+        print("The update to the db is: ", update_db)
+        check_db = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+        print("Check db for what was updated: ", check_db)
+        return render_template("/challenges.html", counter=counter)
+      else:
+        # If user already has an active challenge, insert new challenge into db
+        insert_new_challenge = db.execute("INSERT INTO challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, ?, ?)", session.get("user_id"), lb_name, challenge_accepted, new_pledge)
+        check_for_none = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+        for current_challenges in check_for_none: 
+          old_current_challenges = current_challenges['challenge']
+          if 'None Accepted' in old_current_challenges:
+            remove_old_none = db.execute("DELETE FROM challenges WHERE challenge='None Accepted' AND user_id=?", session.get("user_id"))
+        check_updates = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+        print("DB updated: ", check_updates)
+        flash("You got it!")
+        # Check if there are completed challenges: 
+        check_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
+        for challenge in check_lb:
+          challenges = int(challenge['challenges'])
+        if challenges == 0:
+          counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+        else: 
+          challenges = str(challenges)
+          counter = "You have completed " + challenges + " so far. Keep going!"
           return render_template("/challenges.html", counter=counter)
-        else:
-          # If user already has an active challenge, insert new challenge into db
-          insert_new_challenge = db.execute("INSERT INTO challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, ?, ?)", session.get("user_id"), lb_name, challenge_accepted, new_pledge)
-          check_updates = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
-          print("DB updated: ", check_updates)
-          flash("You got it!")
-          # Check if there are completed challenges: 
-          check_lb = db.execute("SELECT challenges FROM leaderboard WHERE user_id=?", session.get("user_id"))
-          for challenge in check_lb:
-            challenges = int(challenge['challenges'])
-          if challenges == 0:
-            counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
-          else: 
-            challenges = str(challenges)
-            counter = "You have completed " + challenges + " so far. Keep going!"
-            return render_template("/challenges.html", counter=counter)
-          return render_template("/challenges.html", counter=counter)
+        return render_template("/challenges.html", counter=counter)
 
     else: 
       print("Hey we're here in get")
@@ -977,6 +972,9 @@ def challenges():
         challenges = int(challenge['challenges'])
       if challenges == 0:
         counter = "You haven't completed any challenges yet. You can mark challenges you've enrolled in as 'done' on your home page."
+        return render_template("/challenges.html", counter=counter)
+      elif challenges == 1:
+        counter = "You have completed 1 challenge so far. Great start, don't stop! We're rooting for you."
         return render_template("/challenges.html", counter=counter)
       else: 
         challenges = str(challenges)
@@ -1049,14 +1047,23 @@ def homeuser():
 
     # Get Challenges from DB
     challenges_db = db.execute("SELECT challenge, pledge FROM challenges WHERE user_id=?", session.get("user_id"))
-    amounts_pledged = 0
-    print("Challenges from DB: ", challenges_db)
-    for challenge in challenges_db:
-      challenges_accepted = challenge['challenge']
-      amounts_pledged = challenge['pledge']
-      print("Challenges Accepted: ", challenges_accepted)
-      if amounts_pledged == 0:
-        challenges_db = [{"empty": "No challenges yet"}]
+    if len(challenges_db) == 0:
+        pledged_amount = 0
+        get_leaderboardname = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
+        for name in get_leaderboardname:
+          user_leaderboardname = name['leaderboardname']
+        challenge_to_add = "None Accepted"
+        update_from_empty = db.execute("INSERT INTO challenges (user_id, leaderboardname, challenge, pledge) VALUES(?, ?, ?, ?)", session.get("user_id"), user_leaderboardname, challenge_to_add, pledged_amount)
+        check_update_made = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+        print("Check to see the None case was update: ", check_update_made)
+        return redirect("/homeuser") 
+    else:
+      amounts_pledged = 0
+      print("Challenges from DB: ", challenges_db)
+      for challenge in challenges_db:
+        challenges_accepted = challenge['challenge']
+        amounts_pledged = challenge['pledge']
+        print("Challenges Accepted: ", challenges_accepted)
     
     # Get list of current challenges for user to check off when one is done
     challenge_completed = db.execute("SELECT challenge FROM challenges WHERE user_id=?", session.get("user_id"))
@@ -1069,6 +1076,12 @@ def homeuser():
       # Updated Database 
       update_challenges_database = db.execute("DELETE FROM challenges WHERE challenge=? AND user_id=?", challenge_updated, session.get("user_id"))
       print("Challenge updated to database: ", update_challenges_database)
+      no_challenges = 0
+      check_challenges = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+      # Handling case where there are no challenges left
+      if check_challenges is None:
+        update_pledge = 0
+        update_challenges = db.execute("UPDATE challenges SET challenge=?, pledge=?", update_challenges, update_pledge)
       check_db_for_challenge_update = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
       print("After challenge has been removed from DB: ", check_db_for_challenge_update)
       
@@ -1085,13 +1098,14 @@ def homeuser():
       check_updated_lb = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
       print("UPDATED LB: ", check_updated_lb)
       return redirect("/homeuser")
+    
     # Get footprint Data
     footprint_db = db.execute("SELECT electricity, waste_frequency, recycling, landfill_impact, recycling_impact, total_footprint_general FROM footprint WHERE user_id=?", session.get("user_id"))
     print("Footprint from database: ", footprint_db)
     transport_footprint_db = db.execute("SELECT transport_cost, short_haul, medium_haul, long_haul, transport_footprint_total FROM transport_footprint WHERE user_id=?", session.get("user_id"))
     print("Transport footprint: ", transport_footprint_db)
     consumption_footprint_db = db.execute("SELECT beef_consumption, pork_consumption, chicken_consumption, hotels, consumption_footprint_total FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
-    print("cOnsumption footprint: ", consumption_footprint_db)
+    print("consumption footprint: ", consumption_footprint_db)
     trackers_db = db.execute("SELECT added_friends, planted_trees, helped_community, vintage_clothing, sustainable_clothing, saved_plastic, saved_money, saved_energy, bought_local, vacationed_local, less_beef, less_chicken, less_pork, more_compost, green_tariff, solar_panels, saved_water, less_waste, more_recycling, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
     print("Trackers DB: ", trackers_db)
     get_date_joined = db.execute("SELECT leaderboardname, datejoined FROM users WHERE id=?", session.get("user_id"))
@@ -1206,7 +1220,7 @@ def homeuser():
     if hotels_db == "No info given":
       hotels_display = "Please complete the calculator to start tracking this"
     else:
-      hotels_display = str(hotels_db) + "nights a year"
+      hotels_display = str(hotels_db) + " nights a year"
 
     # Calculate total footprint and times 1000:
     if "tons" in total_footprint_general_db:
@@ -1393,11 +1407,16 @@ def homeuser():
           carbon_offsets = co2(carbon_offsets).replace("per year", "")
       
       # Format carbon savings for display  
-      if carbon_savings_db == 0:
+      if float(carbon_savings_db) == 0:
         carbon_savings_display = "Please log a carbon saving activity to start tracking your progress here"
       else: 
-        carbon_savings_display = carbon_savings_db
+        carbon_savings_display = float(carbon_savings_db)
+        if carbon_savings_display > 1000:
+          carbon_savings_display = co2(carbon_savings_display)
+        else:
+          carbon_savings_display = str(formatfloat(carbon_savings_display)) + " kg of c02"
       print("Carbon Savings: ", carbon_savings_display)
+      print(type(carbon_savings_display))
       
       # Format fewer flights, direct flights and hotels
       if fewer_flights_db == 0:
@@ -1433,6 +1452,8 @@ def homeuser():
       if total_score_db == 0:
         display_score = "N/A"
       else:
+        if "," in total_score_db:
+          total_score_db = total_score_db.replace(",", "")
         display_score = formatfloat(float(total_score_db))
 
     return render_template("homeuser.html", challenges=challenge_completed, challengesdb=challenges_db, localvacations=local_vacations_display, savedwater=saved_water_display, solardisplay=solar_panel_display, greentariff=green_tariff_display,  locallegend=local_shopping, sustainableshopping=clothing_display, plastic=display_plastic, lesswaste=less_waste_display, addedfriends=display_friends, helpedout=helped_out, plantedtrees=display_planted_trees, totalscore=display_score, morerecycling=more_recycling_display, morecompost=more_compost_display, recyclingimpact=recycling_impact_display, landfillimpact=landfill_impact_display, recycling=recycling_display, totalwaste=waste_frequency_db, chickensub=chicken_less_display, porksub=pork_less_display, beefsub=beef_less_display, chicken=chicken_display, pork=pork_display, beef=beef_display, hotelsaved=hotels_saved_display, hotelnights=hotels_display, flightsdirect=direct_flights_display, flightsaved=flights_display, totalflights=total_flights, bikewalkmiles=miles_display, transportcost=transport_cost_db, energysaved=saved_energy_display, electricitydb=electricity_display, savings=saved_money_db, carbonsavings=carbon_savings_display, carbonoffsets=carbon_offsets, leaderboardname=leaderboardname, datetime=display_date, consumption=grand_total, formatted=number_in_consumption_footprint_total_db)
@@ -1496,13 +1517,27 @@ def leaderboard():
     total_miles = total_miles + " miles"
 
     # Get flexitarian days: 
-    flexitarian_db = db.execute("SELECT SUM(less_beef), SUM(less_chicken), SUM(less_pork) FROM trackers")
-    for item in flexitarian_db:
-      beef_flex = item["SUM(less_beef)"]
-      chicken_flex = item['SUM(less_chicken)']
-      pork_flex = item['SUM(less_pork)']
+    less_beef_db = db.execute("SELECT sum(less_beef) FROM trackers")
+    print("Less beef from DB: ", less_beef_db)
+    for item in less_beef_db:
+      beef_flex = item["sum"]
+      print("Beef flex: ", beef_flex)
+    less_chicken_db = db.execute("SELECT sum(less_chicken) FROM trackers")
+    print("Less chicken from DB", less_chicken_db)  
+    for item in less_chicken_db:
+      chicken_flex = item['sum']
+      print("Chicken flex: ", chicken_flex)
+    less_pork_db = db.execute("SELECT sum(less_pork) FROM trackers")
+    print("Less pork from DB: ", less_pork_db)
+    for item in less_pork_db:  
+      pork_flex = item['sum']
+      print("Pork flex: ", pork_flex)
     total_flex = int(beef_flex) + int(chicken_flex) + int(pork_flex)
+    print("Total Flex: ", total_flex)
+    print(type(total_flex))
     total_flex = str(total_flex)
+    print("Total flex: ", total_flex)
+    print(type(total_flex))
     total_flex = total_flex + " days"
     print("FLEXITARIAN: ", total_flex)
 
@@ -1519,7 +1554,7 @@ def leaderboard():
     print("AND THE LEADER IS: ", find_leader)
     max_points = 0
     for points in find_leader:
-      max_points = float((points['total_points']).replace(",", ""))
+      max_points = points['total_points']
       print("Max POINTS: ", max_points)
       print(type(max_points))
     print("FIND CURRENT POSITION: ", max_points)
@@ -2164,7 +2199,9 @@ def trackercommunity():
     friends_total = int(added_friends) + friends_add
     trees_total = int(planted_trees) + trees_add
     community_total = int(helped_community) + community_garden_add + mentor_add
-    new_total_score = int(total_score) + friends_total + trees_total + community_total
+    if "," in total_score:
+      total_score = total_score.replace(",", "")
+    new_total_score = float(total_score) + friends_total + trees_total + community_total
 
     print("Friends total: ", friends_total)
     print("Trees total: ", trees_total)
@@ -2181,7 +2218,12 @@ def trackercommunity():
     old_points = 0
     for point in lookup_total_points: 
       old_points = point['total_points']
-    new_score = formatfloat(float(old_points) + new_total_score)
+      print("Old points: ", old_points)
+    if "," in old_points:
+      old_points = old_points.replace(",", "")
+    new_score = new_total_score
+    print("New score to insert into leaderboard: ", new_score)
+    print(type(new_score))
     update_leaderboard = db.execute("UPDATE leaderboard SET total_points=? WHERE user_id=?", new_score, session.get("user_id"))
     
     return render_template("/trackercommunity.html")
@@ -2195,7 +2237,8 @@ def trackerelectricity():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post")
-    
+    flash("😀 Would you like to track something else?")
+
     # Get benchmark values from db: 
     get_db_electricity = db.execute("SELECT state, electricity, electricity_impact, waste_frequency, recycling FROM footprint WHERE user_id=?", session.get("user_id"))
     for info in get_db_electricity:
@@ -2242,26 +2285,32 @@ def trackerelectricity():
     if reduced_utility_bill is None:
       energy_savings_add = 0
       carbon_savings_utilities = 0
+      energy_points = 0
     else:
       reduced_utility_bill = float(reduced_utility_bill)
       if reduced_utility_bill > energy_usage_db:
         flash("You used more electricity than usual this month")
         energy_savings_add = 0
         carbon_savings_utilities = 0
+        energy_points = 0
       elif reduced_utility_bill == energy_usage_db:
         flash("You used the same amount of electricity as usual")
         energy_savings_add = 0
         carbon_savings_utilities = 0
+        energy_points = 0
       else:
         # HACK: 
-        # Points should be proportional to savings but in the magnitude of 100 so the score doesn't inflate too quickly
-        energy_savings_add = (energy_usage_db - reduced_utility_bill) / 100
+        # Points should be proportional to savings but in the magnitude of 500 so the score doesn't inflate too quickly
+        energy_savings_add = (energy_usage_db - reduced_utility_bill)
+        print("Energy Savings Add: ", energy_savings_add)
         electricity_lookup = impact_by_energy(electricity_activity_id, region, reduced_utility_bill)
         electricity_emissions = float(electricity_lookup['Carbon_emissions'])
         print("We're in the loop Electricity emissions: ", electricity_emissions)
         print("Previous emissions: ", previous_emissions)
         carbon_savings_utilities = previous_emissions - electricity_emissions
+        energy_points = energy_savings_add / 500
     print("Carbon savings from electricity after the conditionals: ", carbon_savings_utilities)
+
 
     # Composting
     if composting is None:
@@ -2351,6 +2400,8 @@ def trackerelectricity():
     # Print totals to tally 
     energy_savings_total = float(energy_savings) + energy_savings_add + energy_savings_add_bulbs
     carbon_savings_total = formatfloat(float(carbon_savings) + carbon_savings_utilities + carbon_savings_bulbs)
+    if "$" in monetary_savings:
+      monetary_savings = (monetary_savings.replace("$", "")).replace(",", "")
     money_savings_total = formatfloat(float(monetary_savings) + money_savings_add_bulbs)
     compost_new_total = int(float(compost_total) + composting_add)
     green_tariff_status_end = green_tariff_status
@@ -2381,17 +2432,22 @@ def trackerelectricity():
     lb_new_plastic_savings = int(lb_plastic_saved) + int(plastic_savings)
     # Issue here
     lb_old_points = float((lb_old_points).replace(",", ""))
+    print("Old LB Score: ", lb_old_points)
     lb_new_score = float(int(lb_old_points) + new_total_score)
+    print("LB New score: ", lb_new_score)
+    print(type(lb_new_score))
     lb_new_score = formatfloat(lb_new_score)
+    print("LB New Score: ", lb_new_score)
+    print(type(lb_new_score))
 
     # Update LB DB
-    # **There's an issue here
     lb_update = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", lb_new_carbon_savings, lb_plastic_saved, lb_new_score, session.get("user_id"))
     check_updated_db = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
     print("The Leaderboard has been updated in the db, here it is: ", check_updated_db)
     return render_template("/trackerelectricity.html", garbage=waste_frequency, recycling=recycling_amount, kwh=energy_usage_db)
   else:
     print("We're here in get")
+    
     # TO DO: 
     # Display values from bench mark here 
     get_db_electricity = db.execute("SELECT electricity, waste_frequency, recycling FROM footprint WHERE user_id=?", session.get("user_id"))
@@ -2403,7 +2459,11 @@ def trackerelectricity():
     print("Energy usage: ", energy_usage_db)
     print("Waste Frequency: ", waste_frequency)
     print("Recycling amount: ", recycling_amount)
+    
+    # TO DO: 
+    # Why did we want this to be an int again? 
     energy_usage = int(float(energy_usage_db))
+    print("Energy usage: ", energy_usage)
   return render_template("/trackerelectricity.html", garbage=waste_frequency, recycling=recycling_amount, kwh=energy_usage)
 
 @app.route("/trackershopping", methods=["GET", "POST"])
@@ -2427,16 +2487,17 @@ def trackershopping():
       dietary_attitude = item['dietary_attitude']
       restaurants = item['restaurants']
       accessories = item['accessories']
+      print('Accessories from spending: ', accessories)
 
     if restaurants == "No info given":
       restaurants_spend = "You didn't mention when you started how much you were spending on restaurants. You can update that at any point. How much did you spend this month?"
     else:
-      restaurants_spend = "When you got started you said you were spending $" + restaurants + "each month. How much did you spend this month?"
+      restaurants_spend = "When you got started you said you were spending $" + restaurants + " each month. How much did you spend this month?"
       
     if accessories == "No info given":
       accessories_spend = "You didn't mention when you started how much you were spending on accessories. You can update that at any point. How much did you spend this month?"
     else:
-      accessories_spend = "When you got started you said you were spending $" + accessories + "each month. How much did you spend this month?"
+      accessories_spend = "When you got started you said you were spending $" + accessories + " each month. How much did you spend this month?"
       
     # Get items from form 
     vintage_clothes = request.form.get("vintage_clothes")
@@ -2451,6 +2512,7 @@ def trackershopping():
     drycleaning_form = request.form.get("drycleaning")
     restaurants_form = request.form.get("restaurants")
     accessories_form = request.form.get("accessories")
+    print("Accessories from form user entered: ", accessories_form)
 
     # region for calculations:
     region = "US"
@@ -2501,11 +2563,17 @@ def trackershopping():
       carbon_savings_pork = 0
     else:
       beef = int(beef)
+      print("Beef: ", beef)
       beef_consumption_weekly = int(beef_consumption) 
+      print("Beef weekly consumption: ", beef_consumption_weekly)
       chicken = int(chicken)
+      print("Chicken", chicken)
       chicken_consumption_weekly = chicken_consumption 
+      print("Chicken consumption weekly: ", chicken_consumption_weekly)
       pork = int(pork)
+      print("Pork: ", pork)
       pork_consumption_weekly = int(pork_consumption) 
+      print("Pork consumption Weekly: ", pork_consumption_weekly)
       
       # API activity id from calculator
       beef_activity_id = "consumer_goods-type_meat_products_beef"
@@ -2520,51 +2588,27 @@ def trackershopping():
       if beef > beef_consumption_weekly or beef == beef_consumption_weekly:
         less_beef_add = 0
         carbon_savings_beef = 0
+        flash("This was the same amount or more beef than you normally eat.")
         if chicken > chicken_consumption_weekly or chicken == chicken_consumption_weekly:
           less_chicken_add = 0 
           carbon_savings_chicken = 0
+          flash("This was the same amount or more chicken than you normally eat.")
           if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
             less_pork_add = 0
             carbon_savings_pork = 0
+            flash("This was the same amount or more pork than you normally eat.")  
           else:
             less_pork_add = pork_consumption_weekly - pork
             pork_spend = average_pork_prices * less_pork_add
             pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
             carbon_savings_pork = pork_lookup['Carbon_emissions']
-        else:
-          less_chicken_add = chicken_consumption_weekly - chicken
-          chicken_spend = chicken_prices * less_chicken_add
-          chicken_lookup = impact_by_money(chicken_activity_id, region, chicken_spend)
-          carbon_savings_pork = chicken_lookup['Carbon_emissions']
-          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
-            less_pork_add = 0
-            carbon_savings_pork = 0
-          else:
-            less_pork_add = pork_consumption_weekly - pork
-            pork_spend = average_pork_prices * less_pork_add
-            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
-            carbon_savings_pork = pork_lookup['Carbon_emissions']
-      else:
-        less_beef_add = beef_consumption_weekly - beef
-        beef_spend = beef_price * less_beef_add
-        beef_lookup = impact_by_money(beef_activity_id, region, beef_spend)
-        carbon_savings_beef = beef_lookup['Carbon_emissions']
-        if chicken > chicken_consumption_weekly or chicken == chicken_consumption_weekly:
-          less_chicken_add = 0 
-          carbon_savings_chicken = 0
-          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
-            less_pork_add = 0
-            carbon_savings_pork = 0
-          else:
-            less_pork_add = pork_consumption_weekly - pork
-            pork_spend = average_pork_prices * less_pork_add
-            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
-            carbon_savings_pork = pork_lookup['Carbon_emissions']
+            print("Carbon Savings Pork: ", carbon_savings_pork)
         else:
           less_chicken_add = chicken_consumption_weekly - chicken
           chicken_spend = chicken_prices * less_chicken_add
           chicken_lookup = impact_by_money(chicken_activity_id, region, chicken_spend)
           carbon_savings_chicken = chicken_lookup['Carbon_emissions']
+          print("Carbon Savings Chicken: ", carbon_savings_chicken)
           if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
             less_pork_add = 0
             carbon_savings_pork = 0
@@ -2573,6 +2617,40 @@ def trackershopping():
             pork_spend = average_pork_prices * less_pork_add
             pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
             carbon_savings_pork = pork_lookup['Carbon_emissions']
+            print("Carbon Savings Pork: ", carbon_savings_pork)
+      else:
+        less_beef_add = beef_consumption_weekly - beef
+        beef_spend = beef_price * less_beef_add
+        beef_lookup = impact_by_money(beef_activity_id, region, beef_spend)
+        carbon_savings_beef = beef_lookup['Carbon_emissions']
+        print("Carbon Savings Beef: ", carbon_savings_beef)
+        if chicken > chicken_consumption_weekly or chicken == chicken_consumption_weekly:
+          less_chicken_add = 0 
+          carbon_savings_chicken = 0
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+            print("Carbon Savings Pork: ", carbon_savings_pork)
+        else:
+          less_chicken_add = chicken_consumption_weekly - chicken
+          chicken_spend = chicken_prices * less_chicken_add
+          chicken_lookup = impact_by_money(chicken_activity_id, region, chicken_spend)
+          carbon_savings_chicken = chicken_lookup['Carbon_emissions']
+          print("Carbon Savings Chicken: ", carbon_savings_chicken)
+          if pork > pork_consumption_weekly or pork == pork_consumption_weekly:
+            less_pork_add = 0
+            carbon_savings_pork = 0
+          else:
+            less_pork_add = pork_consumption_weekly - pork
+            pork_spend = average_pork_prices * less_pork_add
+            pork_lookup = impact_by_money(pork_activity_id, region, pork_spend)
+            carbon_savings_pork = pork_lookup['Carbon_emissions']
+            print("Carbon Savings Pork: ", carbon_savings_pork)
 
     if drycleaning_form is None: 
       drycleaning_savings = 0
@@ -2580,7 +2658,7 @@ def trackershopping():
     else: 
       drycleaning_form = float(drycleaning_form)
       if drycleaning_form > float(drycleaning_spend_db) or drycleaning_form == float(drycleaning_spend_db):
-        flash("Oops you it looks like you didn't save on drycleaning this month")
+        flash("Oops you it looks like you didn't save on drycleaning this month.")
         drycleaning_savings = 0
         carbon_savings_drycleaning = 0
       else:
@@ -2604,79 +2682,126 @@ def trackershopping():
         restaurants_form = float(restaurants_form)
         restaurants = float(restaurants)
         if restaurants_form > restaurants or restaurants_form == restaurants:
-          flash("Oops looks like you didn't save on restaurants this month")
-          restarants_savings = 0
+          flash("Oops looks like you didn't save on restaurants this month.")
+          restaurants_savings = 0
           carbon_savings_restaurants = 0
         else: 
+          print("Restaurants from form: ", restaurants_form)
+          print("Restaurants: ", restaurants)
           restaurants_savings = restaurants - restaurants_form
-          restaurants_lookup = impact_by_money(restaurants_activity_id, region, restarants_savings)
+          print("Restaurants Savings: ", restaurants_savings)
+          restaurants_lookup = impact_by_money(restaurants_activity_id, region, restaurants_savings)
           carbon_savings_restaurants = restaurants_lookup['Carbon_emissions']
 
     if accessories_form is None: 
       accessories_savings = 0
       carbon_savings_accessories = 0
     else: 
-      accessories_activity_id = "consumer_goods-type_clothing_clothing_accessories_stores"
       if accessories == "No info given":
         accessories = 0
         accessories_savings = 0
         carbon_savings_accessories = 0
       else:
-        accessories_form = float(accessories_form)
+        accessories_activity_id = "consumer_goods-type_clothing_clothing_accessories_stores"
         accessories = float(accessories) 
-        if accessories_form > accessories_spend or accessories_form == accessories_spend:
-          flash("Looks like you actually spent more than usual on accessories")
+        print("Accessories: ", accessories)
+        accessories_form = float(accessories_form)
+        print("Accessories Form: ", accessories_form)
+        if accessories_form > accessories or accessories_form == accessories:
+          flash("Looks like you actually spent the same amount or more than usual on accessories")
           accessories_savings = 0
           carbon_savings_accessories = 0
         else: 
           accessories_savings = accessories - accessories_form
+          print("Accessories Savings: ", accessories_savings)
           accessories_lookup = impact_by_money(accessories_activity_id, region, accessories_savings)
           carbon_savings_accessories = accessories_lookup['Carbon_emissions']
+          print("Carbon Savings from Accessories: ", carbon_savings_accessories)
 
     # Tally totals based on previous values in trackers form
-    get_db_tracker = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    get_db_tracker = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
     print("GET DB shopping: ", get_db_tracker)
     for info in get_db_tracker: 
       vintage_clothes = info['vintage_clothing']
       sustainable_clothes = info['sustainable_clothing']
       saved_plastic = info['saved_plastic']
-      saved_money = info['saved_money']
+      saved_money = (info['saved_money']).replace("$", "")
       bought_local = info['bought_local']
       less_beef = info['less_beef']
       less_chicken = info['less_chicken']
       less_pork = info['less_pork']
+      carbon_savings_db = info['carbon_savings']
       total_score = info['total_score']
     
     vintage_clothes_total = int(vintage_clothes) + vintage_clothes_add
+    print("Vintage Clothes Total: ", vintage_clothes_total)
     sustainable_clothes_total = int(sustainable_clothes) + sustainable_clothes_add
+    print("Sustainable Clothes Total: ", sustainable_clothes_total)
     saved_plastic_total = int(saved_plastic) + plastic_saved_by_paper + plastic_saved_by_reusable
-    saved_money_total = float(saved_money) + money_savings_plastic + drycleaning_savings + accessories_savings 
+    print('Saved Plastic Total: ', saved_plastic_total)
+    if "," in saved_money:
+      saved_money = saved_money.replace(",", "")
+    saved_money_total = formatfloat(float(saved_money) + float(money_savings_plastic) + float(drycleaning_savings) + float(accessories_savings) + float(restaurants_savings))
+    print("Saved money total: ", saved_money_total)
     bought_local_total = int(bought_local) + local_points
+    print("Bought Local Total: ", bought_local_total)
     new_beef_total = int(less_beef) + less_beef_add
+    print("New beef total: ", new_beef_total)
     new_chicken_total = int(less_chicken) + less_chicken_add
+    print("New chicken total: ", new_chicken_total)
     new_pork_total = int(less_pork) + less_pork_add
-    carbon_savings_total = carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + carbon_savings_drycleaning + carbon_savings_restaurants + carbon_savings_accessories
-    new_total_score = float(total_score) + vintage_clothes_add + sustainable_clothes_add + plastic_saved_by_paper + plastic_saved_by_reusable + local_points + less_beef_add + less_chicken_add + less_pork_add + carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + money_savings_plastic + drycleaning_savings + accessories_savings 
+    print("New pork total: ", new_pork_total)
+    if "," in carbon_savings_db:
+      carbon_savings_db = carbon_savings_db.replace(",", "")
+    carbon_savings_total = float(carbon_savings_db) + carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + carbon_savings_drycleaning + carbon_savings_restaurants + carbon_savings_accessories
+    print("Carbon Savings total: ", carbon_savings_total)
+    if "," in total_score:
+      total_score = total_score.replace(",", "")
+    new_total_score = formatfloat(float(total_score) + vintage_clothes_add + sustainable_clothes_add + plastic_saved_by_paper + plastic_saved_by_reusable + local_points + less_beef_add + less_chicken_add + less_pork_add + carbon_savings_beef + carbon_savings_chicken + carbon_savings_pork + money_savings_plastic + drycleaning_savings + accessories_savings)
     print("CArbon savings total: ", carbon_savings_total)
+    
     # Update DB
     update_db = db.execute("UPDATE trackers SET vintage_clothing=?, sustainable_clothing=?, saved_plastic=?, saved_money=?, bought_local=?, less_beef=?, less_chicken=?, less_pork=?, carbon_savings=?, total_score=? WHERE user_id=?", vintage_clothes_total, sustainable_clothes_total, saved_plastic_total, saved_money_total, bought_local_total, new_beef_total, new_chicken_total, new_pork_total, carbon_savings_total, new_total_score, session.get("user_id"))
     check_db = db.execute("SELECT vintage_clothing, sustainable_clothing, saved_plastic, saved_money, bought_local, less_beef, less_chicken, less_pork, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id")) 
-
+    print("Check DB after totals: ", check_db)
+    
     # Update LB
     get_lb_score = db.execute("SELECT carbon_saved, plastic_saved, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
+    print("Get LB Scores: ", get_lb_score)
     lb_old_score = 0
     lb_carbon_savings = 0
     lb_plastic_savings = 0
     for score in get_lb_score:
       lb_carbon_savings = score['carbon_saved']
+      if "," in lb_carbon_savings:
+        lb_carbon_savings = lb_carbon_savings.replace(",", "")
+      print("Carbon savings in lb", lb_carbon_savings)
       lb_plastic_savings = score['plastic_saved']
-      lb_old_score = score['total_points']
-    new_lb_score = float(lb_old_score) + new_total_score
-    new_lb_plastic = float(lb_carbon_savings) +  carbon_savings_total
-    new_lb_carbon_savings = float(lb_plastic_savings) + saved_plastic_total
+      print("Plastic savings in lb: ", lb_plastic_savings)
+      lb_old_score = str(score['total_points'])
+      print("LB OLD SCORE: ", lb_old_score)
+      if "," in lb_old_score:
+        lb_old_score = lb_old_score.replace(",", "")
+      print("LB Old score: ", lb_old_score)
+      if "," in new_total_score:
+        new_total_score = new_total_score.replace(",", "")
+      if "," in total_score:
+        total_score = total_score.replace(",", "")
+    
+    # New LB totals 
+    new_lb_score = formatfloat(float(lb_old_score) + float(new_total_score) - float(total_score))
+    print("New leaderboard score: ", new_lb_score)
+    print(type(new_lb_score))
+    new_lb_carbon_savings = carbon_savings_total
+    print("New lb carbon saved: ", new_lb_carbon_savings)
+    print(type(new_lb_carbon_savings))
+    new_lb_plastic = formatfloat(float(lb_plastic_savings) + plastic_saved_by_paper + plastic_saved_by_reusable)
+    print("New lb plastic saved: ", new_lb_plastic)
+    print(type(new_lb_plastic))
     update_lb_total_points = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", new_lb_carbon_savings, new_lb_plastic, new_lb_score, session.get("user_id"))
     check_db = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
     print("Updates made to DB: ", check_db)
+    flash("😀 Would you like to track something else?")
     return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
   
   # Handle GET request
@@ -2707,12 +2832,12 @@ def trackershopping():
         restaurants_spend = "You didn't mention when you started how much you were spending on restaurants. You can update that at any point. How much did you spend this month?"
       else:
         print("We're stuck in else over here")
-        restaurants_spend = "When you got started you said you were spending $" + restaurants + "each month. How much did you spend this month?"
+        restaurants_spend = "When you got started you said you were spending $" + restaurants + " each month. How much did you spend this month?"
       
       if accessories == "No info given":
         accessories_spend = "You didn't mention when you started how much you were spending on accessories. You can update that at any point. How much did you spend this month?"
       else:
-        accessories_spend = "When you got started you said you were spending $" + accessories + "each month. How much did you spend this month?"
+        accessories_spend = "When you got started you said you were spending $" + accessories + " each month. How much did you spend this month?"
       return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
 
 @app.route("/trackertransport", methods=["GET", "POST"])
@@ -2728,21 +2853,28 @@ def trackertransport():
     get_db_transport = db.execute("SELECT short_haul, medium_haul, long_haul FROM transport_footprint WHERE user_id=?", session.get("user_id"))
     get_db_spending = db.execute("SELECT hotels FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
     print("GET TRANSPORT FROM DB: ", get_db_transport)
+    
+    # Extract flight info from transport table
     for info in get_db_transport:
       short_haul = info['short_haul']
       medium_haul = info['medium_haul']
       long_haul = info['long_haul']
     total_flights = int(short_haul) + int(medium_haul) + int(long_haul)
+    print("Total Flights: ", total_flights)
+    
+    # Extract flight info from spending table
     for info in get_db_spending: 
       hotel_nights = info['hotels']
-      print("Hotel nights: ", hotel_nights)
+    print("Hotel nights from DB: ", hotel_nights)
     if hotel_nights == "No info given":
       hotel_nights = "You didn't mention how many nights you spend on average in hotels. You can change this at anytime to track your changes here."
       fewer_hotels_db = 0
+      hotel_counter = hotel_nights
     else:
       fewer_hotels_db = hotel_nights
+      hotel_counter = "When you started you reported spending an average of " + fewer_hotels_db + " nights in hotels per year."
     
-    # Get current values from form
+    # Get current values from form 
     get_db = db.execute("SELECT saved_money, saved_energy, vacationed_local, green_tariff, solar_panels, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
     print("GET DB: ", get_db)
     fewer_flights = request.form.get("fewer_flights")
@@ -2754,6 +2886,7 @@ def trackertransport():
     transport_savings = request.form.get("transport_savings")
     local_vacation = request.form.get("local_vacation")
     carbon_offset = request.form.get("carbon_offset")
+    print("Fewer hotels from form: ", fewer_hotels)
 
     # Get values from tracker database
     tracker_db = db.execute("SELECT saved_money, vacationed_local, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
@@ -2762,7 +2895,7 @@ def trackertransport():
       saved_money_db = info['saved_money']
       vacationed_local_db = info['vacationed_local']
       fewer_flights_db = info['fewer_flights']
-      fewer_hotels_db = info['fewer_hotels']
+      fewer_hotels_tracker = info['fewer_hotels']
       more_direct_flights_db = info['more_direct_flights']
       miles_walked_biked_db = info['miles_walk_bike']
       carbon_offset_db = info['carbon_offset']
@@ -2781,25 +2914,38 @@ def trackertransport():
         flights_saved = 0
       else:
         flights_saved = total_flights - int(fewer_flights)
+        print("Flights Saved: ", flights_saved)
     
-    if fewer_hotels is None or fewer_hotels_db == 0:
-      print("no fewer nights in hotels")
-      hotel_nights_saved = 0 
-      carbon_savings_hotel = 0
-    else: 
-      print("Fewer nights in hotels:", fewer_hotels)
-      if hotel_nights == 0:
-        hotel_nights_saved = 0 
-        carbon_savings_hotel = 0
-      else: 
-        hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
-        # From calculator
-        print("Hotel Nights Saved: ", hotel_nights_saved)
-        hotel_activity_id = "accommodation_type_hotel_stay"
-        hotel_lookup = impact_by_number(hotel_activity_id, hotel_nights_saved, region)
-        carbon_savings_hotel = hotel_lookup['Carbon_emissions']
-        print("Hotels savings; ", hotel_nights_saved)
-        print("Carbon Emissions saved: ", carbon_savings_hotel)
+    carbon_savings_hotels = 0
+    if fewer_hotels is None:
+      print("No fewer flights")
+      hotel_nights_saved = 0
+      
+    elif fewer_hotels_db == 0:
+      hotel_nights_saved = 0
+      carbon_savings_hotels = 0
+      print("We hvae zero in DB and user is getting 0")
+      flash("Please update the calculator with info to start tracking this")
+    elif int(fewer_hotels) > int(fewer_hotels_db) or int(fewer_hotels) == int(fewer_hotels_db):
+      print("this is the same you spent last time")
+      flash("It looks like you didn't spend any fewer nights")
+      hotel_nights_saved = 0
+      carbon_savings_hotels = 0
+    else:
+      hotel_nights_saved = int(fewer_hotels_db) - int(fewer_hotels)
+      print("Updated hotels", hotel_nights_saved)
+      print(type(hotel_nights_saved))
+      hotel_activity_id = "accommodation_type_hotel_stay"
+      original_carbon_impact = impact_by_number(hotel_activity_id, int(fewer_hotels_db), region)
+      print("Original Carbon Impact: ", original_carbon_impact)
+      initial_carbon_impact_hotels = float(original_carbon_impact['Carbon_emissions'])  
+      current_carbon_impact = impact_by_number(hotel_activity_id, int(fewer_hotels), region)
+      print("Current Carbon impact", current_carbon_impact)
+      current_carbon_impact_hotels = float(current_carbon_impact['Carbon_emissions'])
+      print("Past C02 impact from hotels", initial_carbon_impact_hotels)
+      print("The current CO2 from hotels", current_carbon_impact_hotels)
+      carbon_savings_hotels = initial_carbon_impact_hotels - current_carbon_impact_hotels
+      print("Current Carbon Savings from fewer nights in hotels:", carbon_savings_hotels)
     
     if direct_flights is None:
       print("No more direct flights")
@@ -2831,10 +2977,10 @@ def trackertransport():
     
     if transport_savings is None:
       print("No transport savings")
-      money_savings_transport = 0
+      money_savings_transport = 0.00
     else: 
       print("Transport Savings: ", transport_savings)
-      money_savings_transport = float(transport_savings)
+      money_savings_transport = float(transport_savings) * 1.00
     
     if carbon_offset is None:
       print("No offsets")
@@ -2845,17 +2991,27 @@ def trackertransport():
     
     # New scores totals
     total_flights_saved = int(fewer_flights_db) + flights_saved + more_trains_add
-    carbon_savings_total = carbon_savings_hotel + float(carbon_savings_db)
+    carbon_savings_total = formatfloat(carbon_savings_hotels + float(carbon_savings_db))
+    print("Carbon")
+    print("More direct flights from DB", more_direct_flights_db)
+    print("Direct Flights to add: ", direct_flights_add)
     direct_flights_total = direct_flights_add + int(more_direct_flights_db)
+    print("Total direct flights that should be added to DB: ", direct_flights_total)
     local_vacation_total = int(vacationed_local_db) + local_vacation_add
     total_hotel_nights_saved = int(fewer_hotels_db) + hotel_nights_saved
-    total_bike_walk = float(miles_walked_biked_db) + biked_miles_add
-    money_savings_total = money_savings_transport + float(saved_money_db)
-    carbon_offset_total = float(carbon_offset_db) + carbon_offset_status
-    new_total_score = float(total_score_db) + flights_saved + hotel_nights_saved + more_trains_add  + carbon_savings_hotel + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
+    total_bike_walk = formatfloat(float(miles_walked_biked_db) + biked_miles_add)
+    if "$" in saved_money_db:
+      saved_money_db = saved_money_db.replace("$", "")
+      if "," in saved_money_db:
+        saved_money_db = saved_money_db.replace(",", "")
+    if "," in total_score_db:
+      total_score_db = total_score_db.replace(",", "")
+    money_savings_total = formatfloat((float(money_savings_transport) + float(saved_money_db)) * 1.00)
+    carbon_offset_total = formatfloat(float(carbon_offset_db) + carbon_offset_status)
+    new_total_score = float(total_score_db) + flights_saved + hotel_nights_saved + more_trains_add  + carbon_savings_hotels + direct_flights_add + local_vacation_add + biked_miles_add + money_savings_transport + carbon_offset_status
 
     print("Total flights saved: ", total_flights_saved)
-    print("Carbon Savings From hotel: ", carbon_savings_hotel)
+    print("Carbon Savings From hotel: ", carbon_savings_hotels)
     print("Carbon Savings From db: ", carbon_savings_db)
     print("Carbon savings total: ", carbon_savings_total)
     print("Total direct flights: ", direct_flights_total)
@@ -2867,9 +3023,13 @@ def trackertransport():
 
     # Add new scores to db
     update_db = db.execute("UPDATE trackers SET saved_money=?, vacationed_local=?, fewer_flights=?, fewer_hotels=?, more_direct_flights=?, miles_walk_bike=?, carbon_offset=?, carbon_savings=?, total_score=? WHERE user_id=?", money_savings_total, local_vacation_total, total_flights_saved, total_hotel_nights_saved, direct_flights_total, total_bike_walk, carbon_offset_total, carbon_savings_total, new_total_score, session.get("user_id"))
+    update_lb = db.execute("UPDATE leaderboard SET green_miles=?, carbon_saved=?, total_points=? WHERE user_id=?", total_bike_walk, carbon_savings_total, new_total_score, session.get("user_id"))
     check_db = db.execute("SELECT saved_money, vacationed_local, fewer_flights, fewer_hotels, more_direct_flights, miles_walk_bike, carbon_offset, carbon_savings, total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+    check_lb = db.execute("SELECT green_miles, carbon_saved, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
     print("Check db for update: ", check_db)
-    return render_template("/trackertransport.html", totalflights=total_flights, hotelnights=hotel_nights)
+    print("Check lb for update: ", check_lb)
+    flash("Processed 😀 Would you like to track something else?")
+    return render_template("/trackertransport.html", hotelcounter=hotel_counter, totalflights=total_flights, hotelnights=hotel_nights)
   else:
     print("We're here in get")
     # Get values from db to populate fields:
@@ -2880,14 +3040,20 @@ def trackertransport():
       short_haul = info['short_haul']
       medium_haul = info['medium_haul']
       long_haul = info['long_haul']
+   
     total_flights = int(short_haul) + int(medium_haul) + int(long_haul)
+    
     for info in get_db_spending: 
       hotel_nights = info['hotels']
+      hotel_counter = 0
     if hotel_nights == "No info given":
       hotel_nights = "You didn't mention how many nights you spend on average in hotels. You can change this at anytime to track your changes here."
+      hotel_counter = "You haven't tracked the amount of average nights you spend in hotels in the calculator. Update that to start tracking your progress."
     else:
       hotel_nights = hotel_nights
-  return render_template("/trackertransport.html", totalflights=total_flights, hotelnights=hotel_nights)
+      hotel_counter = "When you started you reported spending an average of " + hotel_nights + " nights in hotels per year. How many less did you spend?"
+  
+  return render_template("/trackertransport.html", hotelcounter=hotel_counter, totalflights=total_flights, hotelnights=hotel_nights)
 
 
 

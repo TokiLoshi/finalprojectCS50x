@@ -6,11 +6,14 @@
 
 {% block main %}
 <form action="/leaderboard" method="get">
-  <h3 class="darkBlue">Leaderboard:</h3>
-  <div class="card body rounded-2 shadow p-1 border-0 m-1 justify-content-center mx-auto w-75">
+
+  <div class="container p-3 shadow rounded-3 grey">
+ 
+  <h3 class="darkBlue">Leaderboard</h3>
   <!--High angle view of cyclists by Pixabay on Pexels https://www.pexels.com/photo/high-angle-view-of-people-on-bicycle-248547/-->
   
-  <img class="img-fluid rounded-2 mb-1" src="/static/bike_race.jpg" mx-auto w-auto alt="bike_race"/>   
+  <img class="img-fluid rounded-2" src="/static/bike_race.jpg" width="600" alt="bike_race"/>   
+  <div class="card body rounded-2 shadow p-3 border-0 m-2"> 
   <h4>Hey there, {{leaderboardname}}!</h4> 
   <h5>Check out what this amazing community has accomplished:</h5>
   <div class="card-body">

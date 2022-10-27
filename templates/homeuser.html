@@ -23,7 +23,6 @@
                         <form action="/calculator" method="post">
                           <button class="btn btn-dark btn-sm m-1 p-2">Calculator</button>
                         </form>
-                        <form action="/homeuser" method="post">
                       </li>
                       <li class="nav-item">
                         <form action="/trackershopping" method="post">
@@ -92,9 +91,8 @@
                     <div class="card shadow rounded-3 mx-auto" style="width: 16rem;">
                       <div class="card-body">
                         <h3>👣</h3>
-                          <h5 class="card-title"><b>Carboon Footprint:</b></h5>
-                          <p>When you started you were taking on average {{totalflights}} per year.</p>
-                          <p><b>Carbon savings to date:</b></p> 
+                          <h5 class="card-title"><b>Carbon Footprint:</b></h5>
+                          <p><b>Your carbon footprint when you started:</b></p> 
                           <p>{{consumption}} </p>
                           <p><b>Carbon offsets purchased to date:</b>
                           <p>{{carbonoffsets}}</p>
@@ -111,7 +109,7 @@
                         <h3>💵</h3>
                           <h5 class="card-title"><b>Savings:</b></h5>
                           <p>Your sustainable actions have saved you a total of</p> 
-                          <p><b>${{savings}}</b></p>
+                          <p><b>{{savings}}</b></p>
                           <p>And counting...</p>
                           <p>When you started you were spending</p>
                           <p><b>${{transportcost}} each month on your commute</b></p>
