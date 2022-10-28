@@ -731,6 +731,7 @@ def changename():
 
     # Check to see if user has entered a leaderboard name
     new_leaderboard_name = request.form.get("leaderboardname")
+    print("New leader board name: ", new_leaderboard_name)
     if new_leaderboard_name is None:
       return render_template("/changename.html", randomname=randomname)
 
@@ -755,6 +756,10 @@ def changename():
   else:
     print("We're in get")
     randomname = random_leaderboardname()
+    new_leaderboard_name = request.form.get("leaderboardname")
+    print("New leader board name: ", new_leaderboard_name)
+    if new_leaderboard_name is None:
+      return render_template("/changename.html", randomname=randomname)
 
     if new_leaderboard_name is None:
        flash("Enter your new name into the form below.")

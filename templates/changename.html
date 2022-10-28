@@ -16,8 +16,13 @@
           <p class="pt-1"><i>Need inspiration? Generate a random name</i></p>
           <img class="img-fluid rounded-2" src="/static/cat-close.jpg" width="100" alt="green island in the ocean"/>
           </br>
+          {% block javascript %}
           <form action="/changename" method="post">
-            <h5>{{randomname}}</h5>
+            <div>
+            <input type="text" class="copy-selector m-2 p-2" id="randomLeaderboardName" value={{randomname}} mx-auto w-100>
+          </div>
+            <button type="reset" class="btn btn-light mb-2" onclick="copyName()"><i class="fa-regular darkBlue fa-copy fa-2x white"></i></button>
+            <div><p class="output" id="output"></p></div>
             <button name="changename" class="btn btn-primary">Find Another</button>
           </form>
         </div>
@@ -26,9 +31,28 @@
         </form>
         <form action="/changename" method="post">  
           <input type="text" name="leaderboardname" autofocus class="form-control mx-auto mt-2 w-auto pt-1" id="leaderboardname" placeholder="e.g CarbonCrusher">
+          {% endblock%}
           <button name="leaderboardname" id="leaderboardname" class="btn btn-dark justify-content-center col-5 mx-auto mt-2 text-center mb-2" type="submit">Change Leaderboard Name</button>       
         </form>
         </br>
       </div>
+       <!--Copy paste button tutorial https://www.w3schools.com/howto/howto_js_copy_clipboard.asp-->
+            
+      <script>
+        function copyName() {
+        // Get the text using Element By Id
+        var newName = document.getElementById("randomLeaderboardName");
+        // Select the text field with the name in it
+        newName.select();
+        newName.setSelectionRange(0, 99999); 
+        // Copy the text for the user
+        navigator.clipboard.writeText(newName.value);
+        // Alert the user that the text has been copied:
+        // Used this to learn how to update the innerHTML https://www.w3schools.com/jsref/prop_html_innerhtml.asp
+        document.getElementById("output").innerHTML = "Copied! Go ahead and paste it in the field below so we can make it your new leaderboarname."
+      }
+      </script>
+
+
     </div>
 {% endblock %}

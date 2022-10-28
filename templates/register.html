@@ -22,9 +22,18 @@
             <p><i>Try out the random Leaderboard Name Generator for ideas</i></p>
             <img class="img-fluid rounded-2" autofocus="True" src="/static/cat-close.jpg" width="100" alt="green island in the ocean"/>
             </br>
+            {% block javascript %}
             <form action="/register" method="post">
               <h5>{{randomname}}</h5>
+              <div>
+                <input type="text" class="copy-selector m-2 p-2" id="randomLeaderboardName" value={{randomname}} mx-auto w-100>
+              </div>
+                <button type="reset" class="btn btn-light mb-2" onclick="copyName()"><i class="fa-regular darkBlue fa-copy fa-2x white"></i></button>
+                <div><p class="output" id="output"></p></div>
+                {% endblock%}
+                <button name="changename" class="btn btn-primary">Find Another</button>
               <button name="goback" class="btn btn-primary">Try Again</button>
+            
             </form>
           </div>
         </div>
@@ -39,5 +48,22 @@
       </div>
     </div>
   </div>
+  <script>
+    // This is the same as what we did for the accounts page
+    function copyName() {
+    // Get the text using Element By Id
+    var newName = document.getElementById("randomLeaderboardName");
+    // Select the text field with the name in it
+    newName.select();
+    newName.setSelectionRange(0, 99999); 
+    // Copy the text for the user
+    navigator.clipboard.writeText(newName.value);
+    // Alert the user that the text has been copied:
+    // Used this to learn how to update the innerHTML https://www.w3schools.com/jsref/prop_html_innerhtml.asp
+    document.getElementById("output").innerHTML = "Copied! Go ahead and paste it in the field below so we can make it your new leaderboarname."
+
+  }
+  </script>
+
 </form>
 {% endblock %}

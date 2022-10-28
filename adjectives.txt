@@ -28,7 +28,7 @@ Comfortable
 Concerned 
 Confused 
 Cooperative 
-Corageous 
+Courageous  
 Crazy 
 Curious 
 Cute 
@@ -103,7 +103,7 @@ Loving
 Low-key 
 Loki 
 Magnificent 
-Mischievious 
+Mischievous 
 Misty-eyed 
 Misty 
 Modern 
@@ -121,7 +121,7 @@ Outstanding
 Perfect 
 Pleasant 
 Poised 
-Proposterous 
+Preposterous
 Powerful 
 Precious 
 Precise 
@@ -139,7 +139,7 @@ Smiling
 Splendid 
 Spectacular 
 Stormy 
-Succesful 
+Successful 
 Super 
 Superstar 
 Strange 
