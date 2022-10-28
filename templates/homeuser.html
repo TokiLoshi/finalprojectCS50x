@@ -42,9 +42,14 @@
                     </ul>
                   </div>
                   <div class="card-body">
+                    {% block javascript %}
+                    <!--Use of bootstrap tool tips adapted with this tutorial https://www.w3schools.com/bootstrap/bootstrap_tooltip.asp-->
                     <h5 class="card-title">Since you joined:</h5>
                     <p class="card-text">on {{datetime}}</p>
-                    <p><b>Total points: {{totalscore}}</b></p>
+                    <p><b>Total points: {{totalscore}}  </b>
+                      <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="This is the sum of all the points you've accumulated from making greener decisions. We track your points so you don't have to.">
+                      <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="This is the sum of all the points you've accumulated from making greener decisions. We track your points so you don't have to."></i>
+                        </button>
                     {% for challenge in challengesdb %}
                     {% for item in challenge.items() %}
                               <p>{{values}}</p>
@@ -94,8 +99,10 @@
                           <h5 class="card-title"><b>Carbon Footprint:</b></h5>
                           <p><b>Your carbon footprint when you started:</b></p> 
                           <p>{{consumption}} </p>
+                          <h3>⚖️</h3>
                           <p><b>Carbon offsets purchased to date:</b>
                           <p>{{carbonoffsets}}</p>
+                          <h3>💚</h3>
                           <p><b>Total carbon savings from your choices:</b>
                           <p>{{carbonsavings}}</p>
                       </div>
@@ -113,6 +120,7 @@
                           <p>And counting...</p>
                           <p>When you started you were spending</p>
                           <p><b>${{transportcost}} each month on your commute</b></p>
+                          <h3>🚦</h3>
                           <p>Since then you've biked / walked to rack up a cumulative:</p>
                           <p><b>{{bikewalkmiles}}</b></p>
                       </div>
@@ -127,10 +135,10 @@
                           <h5 class="card-title"><b>Sustainable shopping:</b></h5>
                           <p>Your sustainable decisions have saved you from using a lot of plastic.</p>
                           <p>{{plastic}}</p>
-                          <p>🧥</p>
+                          <h3>🧥</h3>
                           <p>You've also made more sustainable fashion decisions:</p>
                           <p><b>{{sustainableshopping}}</b></p>
-                          <p>🥑</p>
+                          <h3>🥑</h3>
                           <p>Shopping for groceries locally is great for local farmers and small businesses</p>
                           <p><b>{{locallegend}}</b></p>
                       </div>
@@ -145,13 +153,14 @@
                           <h5 class="card-title"><b>Waste:</b></h5>
                           <p>When you started you were throwing out:</p>
                           <p><b>{{totalwaste}} bags per week.</b></p>
-                          <p>You were recycling around </p>
+                          <p>You were recycling around:</p>
                           <p><b>{{recycling}}</b></p>
                           <p>Your carbon footprint from landfill was:</p> 
                           <p><b>{{landfillimpact}}</b></p>
-                          <p>compared to your impact from recycling 
+                          <p>compared to your impact from recycling: 
                           <p><b>{{recyclingimpact}}</b></p>
-                          <p>Since starting you last reported increasing your recycling to</p>
+                          <h3>🪴</h3>
+                          <p>Since starting you last reported increasing your recycling by:</p>
                           <p><b>{{morerecycling}}</b></p>
                           <p>And you've composted</p>
                           <p><b>{{morecompost}}</b></p>
@@ -171,13 +180,14 @@
                           <p><b>{{energysaved}} kWh</b></p>
                           <p>When you started you were using:</b></p>
                           <p><b>{{electricitydb}} kWh per month</b></p>
-                          <p>💧</p>
                           <p>At the same time you've been saving water:</p>
-                          <p>{{savedwater}}</p>
-                          <p>As far as solar goe:</p>
-                          <p>{{solardisplay}}</p>
-                          <p>And asking your provider for sustainable energy</p>
-                          <p>{{greentariff}}</p>
+                          <h3>💧</h3>
+                          <p><b>{{savedwater}}</b></p>
+                          <p>As far as solar goes:</p>
+                          <h3>☀️</h3>
+                          <p><b>{{solardisplay}}</b></p>
+                          <p>And asking your provider for sustainable energy:</p>
+                          <p><b>{{greentariff}}</b></p>
                       </div>
                     </div>
                   </div>
@@ -189,19 +199,19 @@
                         <h3>🐮</h3>
                           <h5 class="card-title"><b>Reduced meat consumption:</b></h5>
                           <p>When you started you said:</p>
-                          <p>🥩</p>
+                          <h3>🥩</h3>
                           <p><b>{{beef}}</b></p>
-                          <p>And since you started you have </p>
+                          <p>And since you started you have:</p>
                           <p><b>{{beefsub}}</b></p>
                           <p>When you started you said:</p>
-                          <p>🍗</p>
+                          <h3>🍗</h3>
                           <p><b>{{chicken}}</b></p>
-                          <p>And since you started you have </p>
+                          <p>And since you started you have:</p>
                           <p><b>{{chickensub}}</b></p>
                           <p>When you started you said:</p>
-                          <p>🥓</p>
+                          <h3>🥓</h3>
                           <p><b>{{pork}}</b></p>
-                          <p>And since you started you have </p>
+                          <p>And since you started you have:</p>
                           <p><b>{{porksub}}</b></p>
                       </div>
                     </div>
@@ -217,7 +227,7 @@
                           <p><b>{{addedfriends}}</b></p> 
                           <p>Helped a community garden or taught sustainability: </p>
                           <p><b>{{helpedout}}</b></p>
-                          <p>🌳</p>
+                          <h3>🌳</h3>
                           <p>Made your community greener by planting trees</p>
                           <p><b>{{plantedtrees}}</b></p>
                       </div>
@@ -234,6 +244,7 @@
                           <p><b>{{localvacations}}</b></p>
                           <p>When you started you were reported spending this many nights in hotels per year:</p>
                           <p><b>{{hotelnights}}</b></p>
+                          <h3>⭐️</h3>
                           <p>Since you've started you've spent fewer nights in hotels: </p>
                           <p><b>{{hotelsaved}}</b></p>
                       </div>
@@ -250,6 +261,7 @@
                             <p><b>{{totalflights}} flights per year</b></p>
                           <p>Flights saved to date:</p>
                           <p><b>{{flightsaved}} flights</b></p>
+                          <h3>🛬</h3>
                           <p>And you've taken more direct flights:</p>
                           <p><b>{{flightsdirect}}</b></p>
                       </div>
@@ -258,13 +270,19 @@
                 </div>
               </div>
             </div>
-
             </div>
           </div>  
         
       </div>
   </div>
   </div>
+  {% endblock %}
   </div>
+  <script>
+    // Bootstrap Tooltips https://getbootstrap.com/docs/4.0/components/tooltips
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
 </form>
 {% endblock %}

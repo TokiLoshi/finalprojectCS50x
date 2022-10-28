@@ -13,14 +13,20 @@
           <h4>Let's measure your current carbon footprint</h4>
           <h5>Here's how it works:</h5>
           <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
-          <img class="img-fluid rounded-2 mx-auto w-50 justify-content-center mx-auto" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
-          <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors (how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life. </p>
+          <img class="img-fluid rounded-2 mx-auto w-auto justify-content-center mx-auto" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
+          {% block javascript %}
+          <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life.">
+            <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life."></i>
+              </button> </p>
+          <p><b>This calculator focuses on three main areas:</b></p>
           <ol class="calculator">
             <li class="justify-content-lg-start">Your household electricity usage and waste management</li>
             <li>Your modes of transport and travel</li>
             <li>And lastly, your shopping and dining</li>
           </ol>
-          <p>We've chosen the Climatiq API for the most accurate, industry standard estimations.</p>
+          <p>We've chosen the Climatiq API for the most accurate, industry standard estimations.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="The data comes from sources validated by Climatiq and are available in the Open Emission Factor Database(OEFDB).">
+            <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="The data comes from sources validated by Climatiq and are available in the Open Emission Factor Database(OEFDB)."></i>
+              </button> </p>
           <p>Once you're done your score will be calculated in seconds, and we'll provide a full breakdown, as well as easy actions to take that turn into big wins.</p>
         </div>
         </br>
@@ -34,13 +40,16 @@
             <!--Assorted color walls by Jessica Bryant from Pexels https://www.pexels.com/photo/assorted-color-wall-paint-house-photo-1370704/ -->
             <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
               <div class="mb-3 container-fluid align-content-start">
-                <label for="building" class="form-label"><b>What kind of building do you live in?</b></label>
+                <label for="building" class="form-label"><b>What kind of building do you live in?</b>
                   <select name="building" class="form-select" aria-label="Default select example" required>
                     <option value="" selected disabled>Please select the type of building you live in</option>
                     <option value="construction-type_multifamily_residential_structures">Multi-family building / an apartment</option>
                     <option value="construction-type_single_family_residential_structures">Single-family home</option>
                   </select>
-                <label for="state" name="state" class="form-label"><b>Which State do you live in?:</b></label>
+                  <!--Stats re grid generation https://www.nei.org/resources/statistics/state-electricity-generation-fuel-shares-->
+                <label for="state" name="state" class="form-label"><b>Which State do you live in?: <p><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute (nei.org): California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute nei.org: California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar."></i>
+                    </button></b> </p></label>
                   <select required name="state" class="form-select" aria-label="Default select example" required >
                     <option selected value="" disabled>Please select your State</option>
                     <option value="AL">Alabama (AL)</option>
@@ -106,6 +115,11 @@
                     <option value="5">5+</option>
                   </select>
                 <label for="rubbish" class="form-label"><b>How often do you have to take out the trash?</b></label>
+                  <!--Average amount of trash Americans throw out https://www.greenmatters.com/p/how-much-garbage-does-average-person-produce-->
+                  <!--Average bin size https://trashcansunlimited.com/blog/what-size-trash-can-is-right-for-your-home-kitchen/#:~:text=While%20the%20exact%20sizes%20will,to%20be%2012%E2%80%9316%20gallons.-->
+                  <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="The average American produces 4.9 pounds of garbage daily, according to an EPA estimate from 2018. A standard kitchen trash can is around 7-10 gallons.">
+                    <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="The average American produces 4.9 pounds of garbage daily, according to an EPA estimate from 2018. A standard kitchen trash can is around 7-10 gallons."></i>
+                      </button></b> </p>
                   <select name="rubbish" class="form-select" aria-label="Default select example" required>
                     <option selected value="" disabled>How many full gallon bags do you throw out per week?</option>
                     <option value="1">1 full gallon bag</option>
@@ -127,15 +141,27 @@
                     <option value="70">70% recycling</option>
                     <option value="75">More than 75% recycling and compost</option>
                   </select>
-                <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month?</b></label>
+                  <!--https://www.eia.gov/tools/faqs/faq.php?id=97&t=3#:~:text=In%202021%2C%20the%20average%20annual,about%20886%20kWh%20per%20month.-->
+                <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021."></i>
+                    </button></b> </p></b></label>
                   <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="KWh on average" required>
-                <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month?</b></label>
+                <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint."></i>
+                    </button></b> </p></b></label>
                   <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
                   <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>
               </div>
           </div>
         </div>
     </div>
+    {% endblock %}
   </div>
+  <script>
+    // Bootstrap Tooltips https://getbootstrap.com/docs/4.0/components/tooltips
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
 </form>
 {% endblock %}

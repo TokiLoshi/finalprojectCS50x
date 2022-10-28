@@ -1229,7 +1229,7 @@ def homeuser():
     if hotels_db == "No info given":
       hotels_display = "Please complete the calculator to start tracking this"
     else:
-      hotels_display = str(hotels_db) + " nights a year"
+      hotels_display = str(int(hotels_db)) + " nights a year"
 
     # Calculate total footprint and times 1000:
     if "tons" in total_footprint_general_db:
@@ -1362,7 +1362,7 @@ def homeuser():
         saved_water_display = "You've logged your first time saving water. Keep it going!"
       else: 
         saved_water_db = str(saved_water_db)
-        saved_water_display = "You've saved " + saved_water_db + " times. Thank you!" 
+        saved_water_display = "You've saved water " + saved_water_db + " times. Thank you!" 
 
       # Format flexitarian options 
       if less_beef_db == 0:
@@ -1390,12 +1390,12 @@ def homeuser():
       if more_recycling_db == 0:
         more_recycling_display = "If you've recycled more lately log it in the tracker to start seeing progress."
       else: 
-        more_recycling_display = str(more_recycling_db) + "%"
+        more_recycling_display = str(more_recycling_db * 10) + "%"
       
       if more_compost_db == 0:
         more_compost_display = "If you've composted more lately log it in the tracker"
       else:
-        more_compost_display = str(more_compost_db) + "%"
+        more_compost_display = str(more_compost_db) + "% more"
 
       if less_waste_db == 0:
         less_waste_display = "If you've been throwing out less garbage than usual log it in the tracker"
@@ -1431,17 +1431,17 @@ def homeuser():
       if fewer_flights_db == 0:
         flights_display = "Please log an event in which you chose to take fewer flights to start tracking your progress here"
       else:
-        flights_display = fewer_flights_db
+        flights_display = int(fewer_flights_db)
 
       if fewer_hotels_db == 0:
         hotels_saved_display = "If you spent fewer nights in hotels than you usually do please log that in the tracker"
       else: 
-        hotels_saved_display = str(fewer_hotels_db) + " fewer nights"
+        hotels_saved_display = str(int(fewer_hotels_db)) + " fewer nights"
       
       if more_direct_flights_db == 0:
         direct_flights_display = "Please log an event in which you chose a direct flight"
       else:
-        direct_flights_display = "A total of " + str(more_direct_flights_db) + " direct flights" 
+        direct_flights_display = "A total of " + str(int(more_direct_flights_db)) + " direct flights" 
 
       if vacationed_local_db == 0: 
         local_vacations_display = "If you've taken local vacation days please let us know in tracker so we can give you kudos"
@@ -1619,17 +1619,20 @@ def login():
 
     # Check for email render apology
     if not request.form.get("email"):
-      return apology("Please enter your email", 403)
+      flash("Please enter your email")
+      return render_template("/login.html")
 
     # Check for password if no password render apology
     elif not request.form.get("password"):
-      return apology("Please enter your password", 403)
+      flash("Please enter your password")
+      return render_template("/login.html")
     
     email_in_db = db.execute("SELECT * FROM users WHERE email=?", request.form.get("email"))
     print("Check if email in db: ", email_in_db)
 
     if len(email_in_db) == 0:
-      return apology("No account is associated with that email")
+      flash("No account is associated with that email")
+      return render_template("/login.html")
     
     for detail in email_in_db:
       emailadd = detail['email']
@@ -1643,14 +1646,16 @@ def login():
     # Check email exists and password is correct
     print("Email in database: ", email_in_db)
     if useremail != emailadd:
-      return apology("No account for that email")
+      flash("No account was found for that email")
+      return render_template("/login.html")
     
     elif len(email_in_db) != 1 or not check_password_hash(email_in_db[0]["hash"], password):
-      return apology("Oops! Either your username or password are incorrect", 403)
+      flash("Oops either your email or password are incorrect")
+      return render_template("/login.html")
 
     # Remember which user has logged in
     session["user_id"] = email_in_db[0]["id"]
-    return render_template("/homeuser.html")
+    return redirect("/homeuser")
   
   else:
     return render_template("/login.html")
@@ -1687,11 +1692,15 @@ def register():
     
     # Check name isn't blank
     if len(name) == 0:
-      return apology("Please enter your name", 403)
+      flash("Please enter your name")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Please enter your name", 403)
     
     # Check email isn't blank
     if len(email) == 0:
-      return apology("Please enter your email")
+      flash('Please enter your email addresss')
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Please enter your email")
 
     email_check = email
     count = db.execute("SELECT count(email) FROM users WHERE email=?", email_check)
@@ -1700,26 +1709,38 @@ def register():
       email_count = int(usermail['count'])
       print("Count Email: ", email_count)
     if (email_count == 1):
-      return apology("I'm sorry an account already exists for that email")
+      flash("I'm sorry an account is already registered for that email. Please go ahead and log in.")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("I'm sorry an account already exists for that email")
 
     # Check password isn't blank
     if password is None:
-      return apology("Oops! Password cannot be blank", 403)
+      flash("Oops! Password was blank. Please enter a password")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Oops! Password cannot be blank", 403)
     
     if confirmation is None:
-      return apology("Confirmation is blank")
+      flash("Confirmation is blank, please enter a confirmation of your chosen password")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Confirmation is blank")
     
     # Check password and confirmation match
     if password != confirmation:
-      return apology("Oops! Your passwords don't match", 403)
+      flash("Oops! Your passwords don't match. Please try again.")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Oops! Your passwords don't match", 403)
     
     elif len(password) < 8:
-      return apology("Password should be at least 8 char long for your security")
+      flash("Passwords should be at least characters long to help keep your account secure. Please try again.")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Password should be at least 8 char long for your security")
 
     # Check leaderboard name isn't blank
     print("LEADERBOARD NAME: ", leaderboardname)
     if len(leaderboardname) == 0:
-      return apology("Please choose a leaderboard name", 403)
+      flash("Please choose a leaderboard name. Our random leaderboardname is there to give you inspiration")
+      return render_template("/register.html", randomname=random_leaderboard) 
+      # return apology("Please choose a leaderboard name", 403)
     
     # Check leaderboard name is unique
     leaderboard_check = db.execute("SELECT * FROM users WHERE leaderboardname=?", request.form.get("leaderboardname"))
