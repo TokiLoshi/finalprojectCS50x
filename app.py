@@ -119,26 +119,31 @@ def calculator():
     print("We're in calculator Post: ")
     
     # Check the user hasn't already asked this: 
-    check_not_answered = db.execute("SELECT user_id FROM footprint")
+    check_not_answered = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
     print("check if not answered: ", check_not_answered)
+    len_footprint = len(check_not_answered)
+    print("Len of the answer in the Database: ", len_footprint)
 
-    if check_not_answered is not None:
+    if len_footprint != 0:
       # Check if the user has completed the transport calculator
-      user_check = 0
       users_transport_footprint = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
       print("Users footprint transport: ", users_transport_footprint)
-      if users_transport_footprint is None: 
+      print(type(users_transport_footprint))
+      if len(users_transport_footprint) == 0: 
+        print("Length of transport is: ", len(users_transport_footprint))
         return render_template("/calculatortransport.html")
       else: 
         # Check if user has completed the consumption calculator:
         users_consumption_footprint = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
         print("User's consumption footprint: ", users_consumption_footprint)
-        if users_consumption_footprint is None: 
+        len_consumption = len(users_consumption_footprint)
+        print("Length of answers in consumption database: ", len_consumption)
+        if len(users_consumption_footprint) == 0: 
           return render_template("/calculatorconsumption")
         else: 
           flash("You've already answered this, but you can update your answers in consumption.")
           return render_template("/calculatorconsumptionupdate.html")
-    
+
     # Get information from form
     building = request.form.get("building")
     print("Building: ", building)
@@ -265,23 +270,51 @@ def calculator():
     print("update general footprint to db: ", update_db_general_footprint)
     check_db = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
     print("This is what was updated in the database from the transport footprint (gen)", check_db)
-    return render_template("/calculatortransport.html")
+    return redirect("/calculatortransport")
   else:
     print("We're in calculator get: ")
-    check_not_answered_footprint = db.execute("SELECT user_id FROM consumption_footprint")
-    print("Check not answered: ", check_not_answered_footprint)
-    if check_not_answered_footprint is None:
-      return render_template("/calculatorconsumption.html")
-    else:
-      user_check = 0
-      for id in check_not_answered_footprint:
-        user_check = id['user_id']
-        print("Check user id: ", user_check)
-        print("Session id: ", session.get("user_id"))
-        if session.get("user_id") == user_check:
-          flash("You've already answered this, but you can update your answers in consumption.")
+    check_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("Checking footprint: ", check_footprint)
+    len_footprint = len(check_footprint)
+    print("Length of Footprint: ", len_footprint)
+    if len(check_footprint) == 0:
+      print("We have a footprint the length of zero and we're going to redirect to the calculator page, hopefully this will be a POST request")
+      return render_template("/calculator.html")
+    else: 
+      check_transport = db.execute("SELECT * FROM transport_footrpint WHERE user_id=?", session.get("user_id"))
+      print("Checking transport: ", check_transport)
+      len_transport = len(check_transport)
+      print("Length of info in transport db: ", len_transport)
+      if len_transport == 0:
+        print("The length of transport is zero so we'll redirect them to the transport calculator first")
+        return render_template("/calculatortransport.html")
+      else:
+        print("The lenght was not zero and now we need to check if there's something in the consumption DB")
+        check_consumption = db.execute("SELECT * FROM consumption WHERE user_id=?", session.get("user_id"))
+        print("Checking consumption Footprint", check_consumption)
+        len_consumption = len(check_consumption)
+        print("Length of consumption: ", len_consumption)
+        if len_consumption == 0:
+          print("There was nothing in consumption so we can send them there")
+          return render_template("/calculatorconsumption.html")
+        else:
+          print("There was something in consumption so let's send them to the update page")
+          flash("You've already answered this, but you can update your answer in consumption")
           return render_template("/calculatorconsumptionupdate.html")
-    return render_template("/calculator.html")
+    # check_not_answered_footprint = db.execute("SELECT user_id FROM consumption_footprint")
+    # print("Check not answered: ", check_not_answered_footprint)
+    # if len(check_not_answered_footprint) == 0:
+    #   return render_template("/calculatorconsumption.html")
+    # else:
+    #   user_check = 0
+    #   for id in check_not_answered_footprint:
+    #     user_check = id['user_id']
+    #     print("Check user id: ", user_check)
+    #     print("Session id: ", session.get("user_id"))
+    #     if session.get("user_id") == user_check:
+    #       flash("You've already answered this, but you can update your answers in consumption.")
+    #       return render_template("/calculatorconsumptionupdate.html")
+    # return redirect("/calculator.html")
 
 # Calculator page for transport
 @app.route("/calculatortransport", methods=["GET", "POST"])
@@ -348,8 +381,34 @@ def calculatortransport():
     check_updates_db = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
     return render_template("/calculatorconsumption.html")
   else: 
-    print("Nope")
-    return render_template("/calculatortransport.html")
+    print("We're in the transport calculator at get")
+    check_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("Checking the footprint to makke sure we're not missing out on stuff", check_footprint)
+    len_footprint = len(check_footprint)
+    if len_footprint == 0:
+      print("It looks like they got to transport without going through the footprint, lets send them back")
+      return render_template("/calculator.html")
+    else:
+      check_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+      print("Checking transport: ", check_transport)
+      len_transport = len(check_transport)
+      print("Length of the transport is: ", len_transport)
+      if len_transport == 0:
+        print("Length of the transport is 0 so we can show them transport")
+        return render_template("/calculatortransport.html")
+      else: 
+        print("It wasn't zero so we should check consumption")
+        check_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+        print("Checking consumption database: ", check_consumption)
+        len_consumption = len(check_consumption)
+        print("Length of consumption: ", len_consumption)
+        if len_consumption == 0:
+          print("There's nothing in consumption and we can show them that page")
+          return render_template("/calculatorconsumption.html")
+        else:
+          print("There was something in consumption so it looks like we need to show them the update page")
+          flash("It looks like we already have your answers saved, but you can update any of these you haven't answered and then view the updated results.")
+          return render_template("/calculatorconsumptionupdate.html")
 
 # Calculator page for consumption
 @app.route("/calculatorconsumption", methods=["GET", "POST"])
@@ -357,6 +416,9 @@ def calculatortransport():
 def calculatorconsumption():
   """Quiz user takes to tally up their carbon score"""
   if request.method == "POST":
+    print("We're in calculator consumption and it's a post request")
+
+    # Get values from the form
     beef = request.form.get("beef")
     print("Beef consumption: ", beef)
     pork = request.form.get("pork")
@@ -376,12 +438,14 @@ def calculatorconsumption():
     hotels = request.form.get("hotels")
     print("Hotels: ", hotels)
     region = "US"
+    
     # Work out impact from food consumption
     # Impact by beef consumption 2021 3.7609kg/EUR 
     # We might need to look further into this guessing each person eats half a pound per adult
     beef_activity_id = "consumer_goods-type_meat_products_beef"
     beef_frequency = int(beef)
     beef_price = (5.12 / 2)
+    
     # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving and then by number of weeks in a year
     beef_spend = (beef_price * beef_frequency * 52)
     beef_emissions = impact_by_money(beef_activity_id, region, beef_spend)
@@ -389,14 +453,15 @@ def calculatorconsumption():
     beef_impact = beef_emissions['Carbon_emissions']
     print("Beef impact: ", beef_impact)
     
-    
     # We might want to look at port as well which is 2021 and higher 0.4543 kg/USD
     pork_activity_id = "consumer_goods-type_meat_products_pork"
     pork_frequency = int(pork)
+    
     # Average price obtained from USDA https://www.ams.usda.gov/mnreports/lsmnprpork.pdf
     pork_prices = [1.21, 11.21, 9.64, 11.26, 8.89, 9.04, 16.22, 9.56, 8.20, 7.92, 8.83, 9.04, 8.79, 8.76, 11.25]
     sum_pork_prices = sum(pork_prices)
     average_pork_prices = sum(pork_prices) / len(pork_prices)
+    
     # We might want to weight this by popularity at a later stage
     # To get the spend we need to figure out how many times a week the person is eating it multiplied by the average cost per serving and then by number of weeks in a year
     pork_spend = (int(pork_frequency) * average_pork_prices) * 52
@@ -404,7 +469,6 @@ def calculatorconsumption():
     print("Pork emissions: ", pork_emissions)
     pork_impact = pork_emissions['Carbon_emissions']
     print("Pork impact; ", pork_impact)
-    
     
     # Chicken is 2021 at 0.6325 USD/kg
     chicken_activity_id = "consumer_goods-type_meat_products_poultry"
@@ -473,7 +537,6 @@ def calculatorconsumption():
     #   electronics_emissions = impact_by_money(electronics_activity_id, region, electronics_spend)
     #   electronics_impact = electronics_emissions['Carbon_emissions']
       
-
     # Impact by appliances (cooking) 2020 - 0.524kg/USD
     appliances_activity_id = "electrical_equipment-type_home_cooking_appliances"
     if len(appliances) == 0: 
@@ -513,8 +576,35 @@ def calculatorconsumption():
     check_updates_made_to_db = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
     return redirect("/results")
   else: 
-    print("I know this is confusing but we're here")
-    return render_template("/calculatorconsumption.html")
+    print("I know this is confusing but we're in the consumption calculator in a get request over here")
+    check_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("Checking the footprint: ", check_footprint)
+    len_footprint = len(check_footprint)
+    print("Getting the length of the footprint")
+    if len_footprint == 0:
+      print("I don't know how but their info isn't in footprint, let's send them back")
+      return render_template("/calculator.html")
+    else: 
+      check_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", check_transport)
+      print("We're checking the transport databas: ", check_transport)
+      len_transport = len(check_transport)
+      print("Checking the length of the transport DB", len_transport)
+      if len_transport == 0: 
+        print("There's nothing in the transport database about this user so they should probably go there first")
+        return render_template("/calculatortransport.html")
+      else: 
+        print("Cool they have stuff in transport now let's check consumption")
+        check_consumption = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
+        print("Checking consumption: ", check_consumption)
+        len_consumption = len(check_consumption)
+        print("Checking the length of consumption in the db: ", len_consumption)
+        if len_consumption == 0: 
+          print("They don't have stuff in consumption so we can let them answer that")
+          return render_template("/calculatorconsumption.html")
+        else: 
+          print("It looks like they have an answer to that")
+          flash("You've already answered that but you can update any answers you haven't filled out and review your updated results")
+          return render_template("/caclulatorconsumptionupdate")
 
 @app.route("/iconcolor", methods=["GET", "POST"])
 @login_required
@@ -572,6 +662,7 @@ def leaderboardicon():
 def calculatorconsumptionupdate():
   """Quiz user can update certain fields of their carbon score if they didn't do that already"""
   if request.method == "POST":
+    print("We're in calculator consumption in a post request")
     new_clothes = request.form.get("new_clothes")
     restaurants = request.form.get("restaurants")
     accessories = request.form.get("accessories")
@@ -717,8 +808,34 @@ def calculatorconsumptionupdate():
     flash("Results are ready 🤩")
     return redirect("/results")
   else: 
-    print("What on earth is happening here? ")
-    return render_template("/calculatorconsumptionupdate.html")
+    print("We're in calculator consumption update in a get request")
+    check_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
+    print("Checking they've answered stuff in footprint: ", check_footprint)
+    len_footprint = len(check_footprint)
+    print("Checking the length of the footprint: ", len_footprint)
+    if len_footprint == 0: 
+      print("Somehow they haven't answered the footprint page so we gotta send them back: ", len_footprint)
+      return render_template("/calculator.html")
+    else: 
+      print("They have stuff in the footprint, now let's check their transport")
+      check_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
+      print("Checking the transport db: ", check_transport)
+      len_transport = len(check_transport)
+      print("Checking the length of the transport:", len_transport)
+      if len_transport == 0:
+        print("They still haven't answered transport correctly. Send 'em back")
+        return render_template("/calculatortransport.html")
+      else:
+        print("Now we need to check their consumption")
+        check_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+        print("Checking the consumption DB: ", check_consumption)
+        len_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+        print("Checking the length of the consumption db for this user: ", len_consumption)
+        if len_consumption == 0:
+          print("It looks like somehow they haven't answered this")
+          return render_template("/calculatorconsumption.html")
+        else:
+          return render_template("/calculatorconsumptionupdate.html")
 
 @app.route("/changename", methods=["GET", "POST"])
 @login_required
@@ -1867,15 +1984,20 @@ def reset():
 def results():
   """Shows user the results from their carbon footprint quiz"""
   if request.method == "POST":
+    print("We landed in post in results and we send them back to results hopefull the get request")
     return render_template("/results.html")
   else:
+    print("We're in results in a get request")
+    
     # get user:
     user = session.get("user_id")
+    print("user", user)
     
     # Get footprint scores from db
     db_footprint = db.execute("SELECT * FROM footprint WHERE user_id=?", session.get("user_id"))
-    print("DB Footprint: ", db_footprint)
+    print("DB Footprint here: ", db_footprint)
     total_footprint_general_formatted = 0
+    total_footprint_general = ""
     for score in db_footprint: 
       building = score['building']
       print("Building Score; ", building)
@@ -1889,16 +2011,11 @@ def results():
       impact_of_construction = float(score['building_impact'])
       print("Impact of construction: ", impact_of_construction)
 
-      # TO DO: 
-      # Tell user why their state matters: 
       state = score['state']
       electricity = score['electricity']
       print("Electricity Score: ", electricity)
       electricity_impact = formatfloat(float(score['electricity_impact']))
-      print("Electricity Impact: ", electricity_impact)
-      
-      # TO DO: 
-      # Tell user why we asked for occupants 
+      print("Electricity Impact: ", electricity_impact) 
       household_occupants = score['household_occupants']
       print("Household occupants: ", household_occupants)
       waste_frequency = score['waste_frequency']
@@ -1914,27 +2031,32 @@ def results():
       drycleaning_impact = co2(float(score['drycleaning_impact']))
       print("Drycleaning Impact: ", drycleaning_impact)
       total_footprint_general = score['total_footprint_general']
-      print("Total Footprint Genera: ", total_footprint_general)
+      print("Total Footprint General: ", total_footprint_general)
    
     if "tons of cO2 per year" in total_footprint_general:
       individual_score = ((float(total_footprint_general.replace("tons of cO2 per year", ""))) / (int(household_occupants)))
-      print("Individual Score for tons: ", individual_score)  
+      print("Individual Score for tons: ", individual_score)
+      individual_score_formatted = co2(individual_score * 1000)
+      print("Individual Score formatted for tons: ", individual_score_formatted)  
     elif "ton of cO2 per year" in total_footprint_general:
       individual_score = ((float(total_footprint_general.replace("ton of cO2 per year", ""))) / (int(household_occupants)))
       print("Individual Score for ton: ", individual_score)
-    individual_score_formatted = co2(individual_score * 1000)
-    print("Individual Score Formatted", individual_score_formatted)
+      individual_score_formatted = co2(individual_score * 1000)
+      print("Individual Score Formatted", individual_score_formatted)
     
     if "tons of cO2 per year" in total_footprint_general:
       total_footprint_general_formatted = co2(float(total_footprint_general.replace("tons of cO2 per year", "")) * 1000)
       print("Total footprint general for tons: ", total_footprint_general_formatted)
+      impact_of_construction_formatted = co2lifetime(impact_of_construction)
+      print("Impact of construction formatted (tons):", impact_of_construction_formatted)
+      drycleaning_formatted = "{:.2f}".format(drycleaning_spend)
     elif "ton of cO2 per year" in total_footprint_general:
       total_footprint_general_formatted = co2(float(total_footprint_general.replace("ton of cO2 per year", "")) * 1000)
       print("Total footprint general formatted for ton: ", total_footprint_general_formatted)
-    impact_of_construction_formatted = co2lifetime(impact_of_construction)
-    print("Impact of construction formatted: ", impact_of_construction_formatted)
-    drycleaning_formatted = "{:.2f}".format(drycleaning_spend)
-    print("Drycleaning Formatted: ", drycleaning_formatted)
+      impact_of_construction_formatted = co2lifetime(impact_of_construction)
+      print("Impact of construction formatted: ", impact_of_construction_formatted)
+      drycleaning_formatted = "{:.2f}".format(drycleaning_spend)
+      print("Drycleaning Formatted: ", drycleaning_formatted)
 
     # Get transport footprint scores from db
     db_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", user)
@@ -1947,59 +2069,67 @@ def results():
       commuter_distance = score['commuter_distance']
       print("Commuter Distance: ", commuter_distance)
       
-      transport_mode = score['transport_mode']
-      if transport_mode == "passenger_vehicle-vehicle_type_pickup_trucks_vans_suvs-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
-        mode_of_transport = "SUV / Pickup Truck / Van"
-      elif transport_mode == "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na": 
-        mode_of_transport = "Gas Vehicle"
-      elif transport_mode == "passenger_train-route_type_urban-fuel_source_na":
-        mode_of_transport = "Subway / Tram"
-      elif transport_mode == "passenger_train-route_type_intercity-fuel_source_na":
-        mode_of_transport = "Intercity Amtrak"
-      elif transport_mode == "passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na":
-        mode_of_transport = "Bus"
-      elif transport_mode == "passenger_vehicle-vehicle_type_motorcycle_bicycle_parts-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
-        mode_of_transport = "Bicycle"
-      elif transport_mode == "passenger_vehicle-vehicle_type_boat-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
-        mode_of_transport = "Ferry"
-      else: 
-        mode_of_transport = "Motorcycle"
-      print("Transport Mode: ", transport_mode)
-      transport_cost = float(score['transport_cost']) * 1.00
-      print("Transport Cost: ", transport_cost)
-      impact_of_commute = co2(float(score['commuter_impact']))
-      print("Impact of commute: ", impact_of_commute)
-      short_haul_flights = score['short_haul']
-      print("Short Haul Flights: ", short_haul_flights)
-      short_haul_flights_impact = co2(float(score['short_haul_impact']))
-      print("Short Haul Flights Impact; ", short_haul_flights_impact)
-      medium_haul_flights = score['medium_haul']
-      print("Medium Haul Flights: ", medium_haul_flights)
-      medium_haul_flights_impact = co2(float(score['medium_haul_impact']))
-      print("Medium Haul Flights Impact: ", medium_haul_flights_impact)
-      long_haul_flights = score['long_haul']
-      print("Long Haul Flights: ", long_haul_flights)
-      long_haul_flights_impact = co2(float(score['long_haul_impact']))
-      print("Long Haul Flights impact: ", long_haul_flights_impact)
-      total_footprint_transport = score['transport_footprint_total']
-      print("Total Footprint Transport: ", total_footprint_transport)
-      if "tons of cO2 per year" in total_footprint_transport:
-        total_footprint_transport_formatted = co2(float(total_footprint_transport.replace("tons of cO2 per year", "")) * 1000)
-        print("Total Footprint Transport Formatted: ", total_footprint_transport_formatted)
-      else:
-        total_footprint_transport_formatted = co2(float(total_footprint_transport.replace("ton of cO2 per year", "")) * 1000)
-        print("Total Footprint Transport Formatted: ", total_footprint_transport_formatted)
+    transport_mode = score['transport_mode']
+    if transport_mode == "passenger_vehicle-vehicle_type_pickup_trucks_vans_suvs-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
+      mode_of_transport = "SUV / Pickup Truck / Van"
+    elif transport_mode == "passenger_vehicle-vehicle_type_car-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na": 
+      mode_of_transport = "Gas Vehicle"
+    elif transport_mode == "passenger_train-route_type_urban-fuel_source_na":
+      mode_of_transport = "Subway / Tram"
+    elif transport_mode == "passenger_train-route_type_intercity-fuel_source_na":
+      mode_of_transport = "Intercity Amtrak"
+    elif transport_mode == "passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na":
+      mode_of_transport = "Bus"
+    elif transport_mode == "passenger_vehicle-vehicle_type_motorcycle_bicycle_parts-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
+      mode_of_transport = "Bicycle"
+    elif transport_mode == "passenger_vehicle-vehicle_type_boat-fuel_source_na-engine_size_na-vehicle_age_na-vehicle_weight_na":
+      mode_of_transport = "Ferry"
+    else: 
+      mode_of_transport = "Motorcycle"
+        
+    print("Transport Mode: ", transport_mode)
+    transport_cost = float(score['transport_cost']) * 1.00
+    print("Transport Cost: ", transport_cost)
+    impact_of_commute = co2(float(score['commuter_impact']))
+    print("Impact of commute: ", impact_of_commute)
+    short_haul_flights = score['short_haul']
+    print("Short Haul Flights: ", short_haul_flights)
+    short_haul_flights_impact = co2(float(score['short_haul_impact']))
+    print("Short Haul Flights Impact; ", short_haul_flights_impact)
+    medium_haul_flights = score['medium_haul']
+    print("Medium Haul Flights: ", medium_haul_flights)
+    medium_haul_flights_impact = co2(float(score['medium_haul_impact']))
+    print("Medium Haul Flights Impact: ", medium_haul_flights_impact)
+    long_haul_flights = score['long_haul']
+    print("Long Haul Flights: ", long_haul_flights)
+    long_haul_flights_impact = co2(float(score['long_haul_impact']))
+    print("Long Haul Flights impact: ", long_haul_flights_impact)
+    total_footprint_transport = score['transport_footprint_total']
+    print("Total Footprint Transport: ", total_footprint_transport)
+    
+    if "tons of cO2 per year" in total_footprint_transport:
+      total_footprint_transport_formatted = co2(float(total_footprint_transport.replace("tons of cO2 per year", "")) * 1000)
+      print("Total Footprint Transport Formatted: ", total_footprint_transport_formatted)
+    else:
+      total_footprint_transport_formatted = co2(float(total_footprint_transport.replace("ton of cO2 per year", "")) * 1000)
+      print("Total Footprint Transport Formatted: ", total_footprint_transport_formatted)
+      
     if int(commuter_days) > 1:
       commuter_days = str(commuter_days) + " days of the week"
     else:
       commuter_days = str(commuter_days) + " day of the week"
-    print("Commuter days: ", commuter_days)
+      print("Commuter days: ", commuter_days)
 
-    # Get consumption footprint scores from db 
+    # Get consumption footprint scores from db
+    hotels_add = 0
+    appliances_add = 0
+    accessories_add = 0
+
     db_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", user)
     print("Consumption stats from DB: ", db_consumption)
     for score in db_consumption: 
       beef_consumption = int(score['beef_consumption'])
+      
       if beef_consumption > 1:
         beef_consumption = str(beef_consumption) + " times"
       else:
@@ -2013,7 +2143,7 @@ def results():
       if pork_consumption > 1:
         pork_consumption = str(pork_consumption) + " times"
       else:
-        pork_consumption = str(pork_consumption) + " times"
+        pork_consumption = str(pork_consumption) + " time"
       pork_impact = co2(float(score['pork_impact']))
       pork_add = float(score['pork_impact'])
       print("Pork impact: ", pork_impact)
@@ -2029,8 +2159,6 @@ def results():
       print("Chicken impact: ", chicken_impact)
       print("Chicken Add: ", chicken_add)
 
-      # TO DO:
-      # Tell user why we asked this 
       willingness_to_adjust_diet = (score['dietary_attitude']).replace("_", " ")
       new_clothing_spend = score['new_clothes']
       print("Willingness to adjust diet: ", willingness_to_adjust_diet)
@@ -2055,6 +2183,7 @@ def results():
       # Manage empty fields in restaurants:
       restaurants_spend = score['restaurants']
       restaurants_impact = ""
+      restaurants_add = 0
       if restaurants_spend == "No info given":
         restaurants_spend = "No info given"
         restaurants_impact = "Unknown, we need more information from you to calculate this."
@@ -2072,10 +2201,11 @@ def results():
           restaurants_add = float(restaurants_add)
           print("Restaurants Add: ", restaurants_add)
           print(type(restaurants_add))
+        
+      # Check   
       print("Restaurants Spend: ", restaurants_spend)
       print("Restaurants Impact: ", restaurants_impact)
       print("Restaurants Add: ", restaurants_add)
-
       # Manage empty fields in accessories 
       accessories_spend = score['accessories']
       if accessories_spend == "No info given":
@@ -2086,6 +2216,7 @@ def results():
         accessories_spend = "$" + format(float(accessories_spend))
         accessories_impact = co2(float(score['accessories_impact']))
         accessories_add = accessories_impact
+        
         if "tons of cO2 per year" in accessories_impact:
           accessories_add = float(accessories_impact.replace("tons of cO2 per year", ""))
         else:
@@ -2096,6 +2227,7 @@ def results():
 
       # Manage empty fields in appliances 
       appliances_spend = score['appliances']
+      appliances_add = 0
       if appliances_spend == "No info given":
         appliances_spend = "No info given"
         appliances_impact = "Unknown, we need more information from you to calculate this."
@@ -2107,49 +2239,54 @@ def results():
           appliances_add = float(appliances_impact.replace("tons of cO2 per year", ""))
         else:
           appliances_add = float(appliances_impact.replace("ton of cO2 per year", ""))
+        
       print("Appliances spend: ", appliances_spend)
       print("Appliances Impact: ", appliances_impact)
       print("Appliances Add: ", appliances_add)
 
       # Manage empty fields in hotels
       hotels = score['hotels']
+        
       if hotels == "No info given":
         hotels = "No info given"
         hotels_impact = "Unknown, we need more information from you to calculate this."
         hotels_add = 0
       else:
         hotels = int(hotels)
+        hotels_add = hotels
         hotels_impact = co2(float(score['hotels_impact']))
+        
         if "tons of cO2 per year" in hotels_impact:
           hotels_add = float(hotels_impact.replace("tons of cO2 per year", ""))
         else:
           hotels_add = float(hotels_impact.replace("ton of cO2 per year", ""))
-      print("Hotels: ", hotels)
-      print("Hotels Impact: ", hotels_impact)
-      print("Hotels Add: ", hotels_add)
       
-      print("Below is type for hotels add: ", hotels_add)
-      print(type(hotels_add))
-      print("Below is type for appliances add: ", appliances_add)
-      print(type(appliances_add))
-      print("Below is the type for accessories add: ", accessories_add)
-      print(type(accessories_add))
-      print("Below is the type for restaurants add: ", restaurants_add)
-      print(type(restaurants_add))
-      print("Below is the type for new clothing add: ", new_clothing_add)
-      print(type(new_clothing_add))
-      print("Below is the type for less beef: ", beef_add)
-      print(type(beef_add))
-      print("Below is the type for less chicken: ", chicken_add)
-      print(type(chicken_add))
-      print("Below is the type for less pork: ", pork_add)
-      print(type(pork_add))
+    print("Hotels: ", hotels)
+    print("Hotels Impact: ", hotels_impact)
+    print("Hotels Add: ", hotels_add)
+      
+    print("Below is type for hotels add: ", hotels_add)
+    print(type(hotels_add))
+    print("Below is type for appliances add: ", appliances_add)
+    print(type(appliances_add))
+    print("Below is the type for accessories add: ", accessories_add)
+    print(type(accessories_add))
+    print("Below is the type for restaurants add: ", restaurants_add)
+    print(type(restaurants_add))
+    print("Below is the type for new clothing add: ", new_clothing_add)
+    print(type(new_clothing_add))
+    print("Below is the type for less beef: ", beef_add)
+    print(type(beef_add))
+    print("Below is the type for less chicken: ", chicken_add)
+    print(type(chicken_add))
+    print("Below is the type for less pork: ", pork_add)
+    print(type(pork_add))
 
-      total_footprint_consumption = hotels_add + appliances_add + accessories_add + restaurants_add + new_clothing_add + beef_add + chicken_add + pork_add
-      print("Total Footprint Consumption: ", total_footprint_consumption)
-      date_completed = score['datetime']
-      date_completed = date_completed[:11]
-      print("Date Completed: ", date_completed)
+    total_footprint_consumption = hotels_add + appliances_add + accessories_add + restaurants_add + new_clothing_add + beef_add + chicken_add + pork_add
+    print("Total Footprint Consumption: ", total_footprint_consumption)
+    date_completed = score['datetime']
+    date_completed = date_completed[:11]
+    print("Date Completed: ", date_completed)
 
     # Format General Footprint for sum
     sum_total_footprint_general = total_footprint_general
@@ -2170,11 +2307,17 @@ def results():
       sum_total_footprint_transport = float(total_footprint_transport.replace("ton of cO2 per year", "")) * 1000
     else:
       print("Something else is going on")
-    print("Sum Total of Footrprint Transport: ", sum_total_footprint_transport)
 
     # Format Consumption Footprint for sum
     sum_total_footprint_consumption = float(total_footprint_consumption)
     print("Formatted float of total footprint consumption: ", sum_total_footprint_consumption)
+    print(type(sum_total_footprint_consumption))
+    print("Sum Total footprint General: ", sum_total_footprint_general)
+    print(type(sum_total_footprint_general))
+    print("Sum total footprint transport: ", sum_total_footprint_transport)
+    print(type(sum_total_footprint_transport))
+    print("Sum total Footprint Consumption: ", sum_total_footprint_consumption)
+    print(type(sum_total_footprint_consumption))
 
     total = sum_total_footprint_general + sum_total_footprint_transport + sum_total_footprint_consumption
     grand_total = co2(total)
@@ -2187,7 +2330,7 @@ def results():
     # Get stats for averagage american to show how they compare 
     # Get stats from how much this translates to in forests
 
-    return render_template("/results.html", total=grand_total, datetime=date_completed, household=total_footprint_general, transport=total_footprint_transport, consumption=total_footprint_consumption, building=building_type, buildingimpact=impact_of_construction_formatted, state=state, electricity=electricity, electrictyimpact=electricity_impact, wastefrequency=waste_frequency, landfill=landfill_impact, recycling=recycling, recyclingimpact=recycling_impact, drycleaning=drycleaning_formatted, drycleaningimpact=drycleaning_impact, totalfootprint=total_footprint_general_formatted, individualfootprint=individual_score_formatted, worksituation=work_situation, commuterdays=commuter_days, commuterdistance=commuter_distance, transportmode=mode_of_transport, transportcost=transport_cost, commuterimpact=impact_of_commute, shorthaul=short_haul_flights, shorthaulimpact=short_haul_flights_impact, mediumhaul=medium_haul_flights, mediumhaulimpact=medium_haul_flights_impact, longhaul=long_haul_flights, longhaulimpact=long_haul_flights_impact, totaltransportfootprint=total_footprint_transport_formatted, beef=beef_consumption, beefimpact=beef_impact, pork=pork_consumption, porkimpact=pork_impact, chicken=chicken_consumption, chickenimpact=chicken_impact, willingness=willingness_to_adjust_diet, newclothing=new_clothing_spend, newclothingimpact=new_clothing_impact, restaurants=restaurants_spend, restaurantsimpact=restaurants_impact, accesories=accessories_spend, accessories=accessories_spend, accessoriesimpact=accessories_impact, appliances=appliances_spend, appliancesimpact=appliances_impact, hotels=hotels, hotelsimpact=hotels_impact, totalconsumptionfootprint=total_footprint_consumption)
+    return render_template("/results.html", total=grand_total, datetime=date_completed, household=total_footprint_general, transport=total_footprint_transport, consumption=total_footprint_consumption, building=building_type, buildingimpact=impact_of_construction_formatted, state=state, electricity=electricity, electrictyimpact=electricity_impact, wastefrequency=waste_frequency, landfill=landfill_impact, recycling=recycling, recyclingimpact=recycling_impact, drycleaning=drycleaning_formatted, drycleaningimpact=drycleaning_impact, totalfootprint=total_footprint_general_formatted, individualfootprint=individual_score_formatted, worksituation=work_situation, commuterdays=commuter_days, commuterdistance=commuter_distance, transportmode=mode_of_transport, transportcost=transport_cost, commuterimpact=impact_of_commute, shorthaul=short_haul_flights, shorthaulimpact=short_haul_flights_impact, mediumhaul=medium_haul_flights, mediumhaulimpact=medium_haul_flights_impact, longhaul=long_haul_flights, longhaulimpact=long_haul_flights_impact, totaltransportfootprint=total_footprint_transport_formatted, beef=beef_consumption, beefimpact=beef_impact, pork=pork_consumption, porkimpact=pork_impact, chicken=chicken_consumption, chickenimpact=chicken_impact, willingness=willingness_to_adjust_diet, newclothing=new_clothing_spend, newclothingimpact=new_clothing_impact, restaurants=restaurants_spend, restaurantsimpact=restaurants_impact, accessories=accessories_spend, accessoriesimpact=accessories_impact, appliances=appliances_spend, appliancesimpact=appliances_impact, hotels=hotels, hotelsimpact=hotels_impact, totalconsumptionfootprint=total_footprint_consumption)
 
 # Tracker page to track carbon footprint
 @app.route("/trackercommunity", methods=["GET", "POST"])

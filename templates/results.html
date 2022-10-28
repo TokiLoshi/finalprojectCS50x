@@ -248,8 +248,15 @@
           <td>{{totalconsumptionfootprint}}</td>
         </tr> 
     </table>
+    {% endblock %}
   </div>
   <button class="btn btn-dark btn-sm m-2 p-3">Start reducing my impact</button>
 </form>
+<script>
+  // Bootstrap Tooltips https://getbootstrap.com/docs/4.0/components/tooltips
+  $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
 </form>
 {% endblock %}

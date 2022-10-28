@@ -11,9 +11,8 @@
       <h2 class="darkBlue">You can only improve what you measure</h2>
         <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
           <h4>Let's measure your current carbon footprint</h4>
-          <h5>Here's how it works:</h5>
           <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
-          <img class="img-fluid rounded-2 mx-auto w-auto justify-content-center mx-auto" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
+          <img class="img-fluid rounded-2 mx-auto justify-content-center w-75" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
           {% block javascript %}
           <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life.">
             <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life."></i>
@@ -30,7 +29,7 @@
           <p>Once you're done your score will be calculated in seconds, and we'll provide a full breakdown, as well as easy actions to take that turn into big wins.</p>
         </div>
         </br>
-        <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-75">
+        <div class="card body rounded-2 shadow p-12border-0 m-1 justify-content-center mx-auto w-auto">
           <p>Page 1 of 3</p>
           <div class="progress">
             <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
@@ -38,16 +37,16 @@
             </br>
             <h4>Your household</h4>  
             <!--Assorted color walls by Jessica Bryant from Pexels https://www.pexels.com/photo/assorted-color-wall-paint-house-photo-1370704/ -->
-            <img class="img-fluid rounded-2 mx-auto" src="/static/houses.jpg" width="300" alt="colourful houses in a row in San Francisco"/>
+            <img class="img-fluid rounded-2 mx-auto w-75 mb-1" src="/static/houses.jpg" alt="colourful houses in a row in San Francisco"/>
               <div class="mb-3 container-fluid align-content-start">
-                <label for="building" class="form-label"><b>What kind of building do you live in?</b>
+                <label for="building" class="form-label mb-1"><b>What kind of building do you live in?</b>
                   <select name="building" class="form-select" aria-label="Default select example" required>
                     <option value="" selected disabled>Please select the type of building you live in</option>
                     <option value="construction-type_multifamily_residential_structures">Multi-family building / an apartment</option>
                     <option value="construction-type_single_family_residential_structures">Single-family home</option>
                   </select>
                   <!--Stats re grid generation https://www.nei.org/resources/statistics/state-electricity-generation-fuel-shares-->
-                <label for="state" name="state" class="form-label"><b>Which State do you live in?: <p><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute (nei.org): California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar.">
+                <label for="state" name="state" class="form-label mt-1"><b>Which State do you live in?: <p><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute (nei.org): California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar.">
                   <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute nei.org: California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar."></i>
                     </button></b> </p></label>
                   <select required name="state" class="form-select" aria-label="Default select example" required >
@@ -114,22 +113,32 @@
                     <option value="4">5 of us</option>
                     <option value="5">5+</option>
                   </select>
-                <label for="rubbish" class="form-label"><b>How often do you have to take out the trash?</b></label>
+                <label for="rubbish" class="form-label mt-1"><b>How often do you have to take out the trash?</b></label>
                   <!--Average amount of trash Americans throw out https://www.greenmatters.com/p/how-much-garbage-does-average-person-produce-->
                   <!--Average bin size https://trashcansunlimited.com/blog/what-size-trash-can-is-right-for-your-home-kitchen/#:~:text=While%20the%20exact%20sizes%20will,to%20be%2012%E2%80%9316%20gallons.-->
                   <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="The average American produces 4.9 pounds of garbage daily, according to an EPA estimate from 2018. A standard kitchen trash can is around 7-10 gallons.">
                     <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="The average American produces 4.9 pounds of garbage daily, according to an EPA estimate from 2018. A standard kitchen trash can is around 7-10 gallons."></i>
                       </button></b> </p>
                   <select name="rubbish" class="form-select" aria-label="Default select example" required>
-                    <option selected value="" disabled>How many full gallon bags do you throw out per week?</option>
-                    <option value="1">1 full gallon bag</option>
-                    <option value="2">2 full gallon bags</option>
-                    <option value="3">3 full gallon bags</option>
-                    <option value="4">4 full gallon bags</option>
-                    <option value="5">5 full gallon bags</option>
-                    <option value="5">6+ full gallon bags</option>
+                    <option selected value="" disabled>How many gallons of rubbish do you throw out per week?</option>
+                    <option value="5">5 gallons</option>
+                    <option value="6">6 gallons</option>
+                    <option value="7">7 gallons</option>
+                    <option value="8">8 gallons</option>
+                    <option value="9">9 gallons</option>
+                    <option value="10">10 gallons</option>
+                    <option value="11">11 gallons</option>
+                    <option value="12">12 gallons</option>
+                    <option value="13">13 gallon</option>
+                    <option value="14">14 gallon</option>
+                    <option value="15">15 gallon</option>
+                    <option value="16">16 gallon</option>
+                    <option value="17">17 gallon</option>
+                    <option value="18">18 gallon</option>
+                    <option value="19">19 gallon</option>
+                    <option value="20">20+ gallon</option>
                   </select>
-                <label for="recycling" class="form-label"><b>How much for your rubbish do you recycle?</b></label>
+                <label for="recycling" class="form-label mt-1"><b>How much for your rubbish do you recycle?</b></label>
                   <select name="recycling" class="form-select" aria-label="Default select example" required>
                     <option selected value="" disabled>How much of your trash is recycling and compost?</option>
                     <option value="10">10% recycling</option>
@@ -142,14 +151,15 @@
                     <option value="75">More than 75% recycling and compost</option>
                   </select>
                   <!--https://www.eia.gov/tools/faqs/faq.php?id=97&t=3#:~:text=In%202021%2C%20the%20average%20annual,about%20886%20kWh%20per%20month.-->
-                <label for="utilitybill" class="form-label"><b>How many Kilowatt Hours do you use on average each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021.">
+                <label for="utilitybill" class="form-label mt-1"><b>How many kilowatt-hours do you use on average each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021.">
                   <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021."></i>
                     </button></b> </p></b></label>
-                  <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="KWh on average" required>
-                <label for="drycleaning" class="form-label"><b>How much does your household spend on drycleaning each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint.">
-                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint."></i>
+                  <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="kWh on average" required>
+                <!--https://greenbusinessbureau.com/industries/dry-cleaning/sustainable-dry-cleaners-getting-started-guide/-->
+                  <label for="drycleaning" class="form-label mt-1"><b>How much does your household spend on drycleaning each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint."></i>
                     </button></b> </p></b></label>
-                  <input type="number" name="drycleaning" class="form-control mx-auto w-auto" id="name" placeholder="$" required>
+                  <input type="number" name="drycleaning" class="form-control mx-auto w-auto mb-1" id="name" placeholder="$" required>
                   <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>
               </div>
           </div>
