@@ -2002,9 +2002,9 @@ def results():
       building = score['building']
       print("Building Score; ", building)
       if building == "construction-type_multifamily_residential_structures":
-        building_type = "Multifamily building / apartment"
+        building_type = "Multi-family building / apartment"
       else:
-        building_type = "Singlefamily home"
+        building_type = "Single-family home"
       
       # TO DO: 
       # Tell user this is not part of their final score and why - create a hover question mark with more information and implement JS for this

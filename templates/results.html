@@ -15,16 +15,25 @@
     <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto">
       <h4>We believe things are only going to get better from here</h4>
       <p>Good news! We've calculated your results.</p>
+      {% block javascript %}
       <div class="mb-3 container-fluid align-content-start">
         <h5>Your Total Carbon Footprint is: </h5>
         <h3>{{total}}</h3>
         <h1>👣</h1>
         <p><b>This is made up of an estimate from three sectors of your life:</b></p>
-        <p><b>Houshold footprint:</b> {{household}}</p>
-        <p><b>Transport footprint:</b> {{transport}}</p>
-        <p><b>Consumption and spending footprint:</b> {{consumption}}</p>
-        <p>As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
-        <p>But first let's take a better look at each footprint.</p>
+        <p><b>Houshold footprint:</b> {{household}}</p><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your household footprint includes the electricity you use, what kind of home you live in, how much waste you produce and how much of that you recycle.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your household footprint includes the electricity you use, what kind of home you live in, how much waste you produce and how much of that you recycle."></i>
+            </button>
+        <p class="mt-2"><b>Transport footprint:</b> {{transport}}</p>
+        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute, mode of transport as well as air travel.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute, mode of transport as well as air travel."></i>
+            </button>
+        <p class="mt-2"><b>Shopping and Dining footprint:</b> {{consumption}}</p>
+        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly and also provides the opportunity for you to see how your average spending affects your carbon footprint.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly and also provides the opportunity for you to see how your average spending affects your carbon footprint"></i>
+            </button>
+        <p class="mt-2">As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
+        <p>Let's take a look at each footprint.</p>
         <form action="/challenges" method="post">
       </div>
     </div>
@@ -43,7 +52,9 @@
         <tbody>
           <tr>
             <th scope="row">Your Building:</th>
-            <td>{{building}}</td>
+            <td>{{building}} <button type="button" class="btn btn-dark btn-sm" data-toggle="tooltip" data-placement="top" title="We calculate the lifetime impact of the construction and provide it for your interest. We do not include this in your individual carbon footprint score.">
+              <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="We calculate the lifetime impact of the construction and provide it for your interest. We do not include this in your individual carbon footprint score."></i>
+                </button></td>
           </tr>
            <tr>
             <th scope="row">The impact of this kind of construction:</th>
