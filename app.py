@@ -100,7 +100,17 @@ def account():
       leaderboardname = info['leaderboardname']
       emailaddy = info['email']
       datejoined = info['datejoined']
+
+    if datejoined is not None:
       datejoined = datejoined[:10]
+    else:
+      get_join_date = db.execute("SELECT datetime FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+      for datapoint in get_join_date:
+        datejoined = datapoint['datetime']
+      if datejoined is None:
+        datejoined = "Unknown"
+      else:
+        datejoined = datejoined[:10]
       
   print("USER INFO: ", get_user_info)
   if request.method == "POST":
@@ -281,7 +291,7 @@ def calculator():
       print("We have a footprint the length of zero and we're going to redirect to the calculator page, hopefully this will be a POST request")
       return render_template("/calculator.html")
     else: 
-      check_transport = db.execute("SELECT * FROM transport_footrpint WHERE user_id=?", session.get("user_id"))
+      check_transport = db.execute("SELECT * FROM transport_footprint WHERE user_id=?", session.get("user_id"))
       print("Checking transport: ", check_transport)
       len_transport = len(check_transport)
       print("Length of info in transport db: ", len_transport)
@@ -290,7 +300,7 @@ def calculator():
         return render_template("/calculatortransport.html")
       else:
         print("The lenght was not zero and now we need to check if there's something in the consumption DB")
-        check_consumption = db.execute("SELECT * FROM consumption WHERE user_id=?", session.get("user_id"))
+        check_consumption = db.execute("SELECT * FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
         print("Checking consumption Footprint", check_consumption)
         len_consumption = len(check_consumption)
         print("Length of consumption: ", len_consumption)
@@ -1037,10 +1047,15 @@ def challenges():
         pledge = item['pledge']
         print("We're in the loop and their pledge is: ", pledge)
         print(type(pledge))
-        print("Challenge Accepted: ", challenge_selected)
+        print("Challenge Selected: ", challenge_selected)
+        print("Challenge Accepted: ", challenge_accepted)
         if challenge_selected in challenge_accepted:
-          flash("You've already selected that. If you've finished it please mark it as done in your account ✅")
-          return redirect("/challenges")
+          if flexitarian is None and lightbulbs is None and green_miles is None and fashion is None and plastics is None and bags is None and challenge_accepted == "None Accepted":
+            flash("Let's get you started with a challenge")
+            return render_template("/challenges.html")
+          else:
+            flash("You've already selected that. If you've finished it please mark it as done in your account ✅")
+            return redirect("/challenges")
       
       # Get leaderboard info
       get_leaderboard_name = db.execute("SELECT leaderboardname FROM users WHERE id=?", session.get("user_id"))
@@ -1204,6 +1219,7 @@ def homeuser():
       print("Challenge updated to database: ", update_challenges_database)
       no_challenges = 0
       check_challenges = db.execute("SELECT * FROM challenges WHERE user_id=?", session.get("user_id"))
+      
       # Handling case where there are no challenges left
       if check_challenges is None:
         update_pledge = 0
@@ -1223,6 +1239,19 @@ def homeuser():
       print("LB challenges Updated: ", lb_challenge_update)
       check_updated_lb = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
       print("UPDATED LB: ", check_updated_lb)
+      # Update points in trackers: 
+      get_original_points = db.execute("SELECT total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+      print("Get_original_points", get_original_points)
+      for score in get_original_points:
+        old_score = score['total_score']
+      if "," in old_score:
+        old_score = old_score.replace(",", "")
+      old_score = float(old_score)
+      new_score = old_score + 1.00
+      print("New Score: ", new_score)
+      update_trackers = db.execute("UPDATE trackers SET total_score=? WHERE user_id=?", new_score, session.get("user_id"))
+      check_trackers = db.execute("SELECT total_score FROM trackers WHERE user_id=?", session.get("user_id"))
+      print("Check that trackers updated properly: ", check_trackers)
       return redirect("/homeuser")
     
     # Get footprint Data
@@ -1236,17 +1265,24 @@ def homeuser():
     print("Trackers DB: ", trackers_db)
     get_date_joined = db.execute("SELECT leaderboardname, datejoined FROM users WHERE id=?", session.get("user_id"))
     print("Get Date Joined: ", get_date_joined)
-    homeuser = impact_by_energy("electricity-energy_source_grid_mix", "CA", 400)
-    print("Home user: ", homeuser)
 
     # Extract date joined
-    for info in get_date_joined:
-      date_joined = info['datejoined']
-      leaderboardname = info['leaderboardname']
-    print("DATE JOINED: ", date_joined)
-    # Format date time
     months_in_year = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 : "August", 9 : "September", 10: "October", 11 : "November", 12 : "December"}
-    formatted_date_joined = date_joined[:10]
+    for item in get_date_joined:
+      leaderboardname = item['leaderboardname']
+      date_joined = item['datejoined']
+    if date_joined is None or len(date_joined) == 0:
+      get_datetime_consumption = db.execute("SELECT datetime FROM consumption_footprint WHERE user_id=?", session.get("user_id"))
+      print("Get Date Time from consumption", get_datetime_consumption)
+      for item in get_datetime_consumption:
+        date_joined = item['datetime']
+      if date_joined is None or len(get_datetime_consumption) == 0:
+        formatted_date_joined = "Unknown"
+      else:
+        formatted_date_joined = date_joined[:10]
+    else:
+      formatted_date_joined = date_joined[:10]
+    
     date_year = (formatted_date_joined[:5])
     date_month = int(formatted_date_joined[5:8].replace("-", ""))
     date_day = formatted_date_joined[8:]
@@ -1973,7 +2009,7 @@ def reset():
       except Exception as e:
         message = "oops"
         print(e)
-      return render_template("/login.html")
+      return redirect("/login")
   else: 
     flash("Oopsie, it happens, we can help you with that.")
   return render_template("/reset.html")
@@ -2006,8 +2042,7 @@ def results():
       else:
         building_type = "Single-family home"
       
-      # TO DO: 
-      # Tell user this is not part of their final score and why - create a hover question mark with more information and implement JS for this
+      # Work out lifetime impact of construction for user information - this does not factor into their overall score
       impact_of_construction = float(score['building_impact'])
       print("Impact of construction: ", impact_of_construction)
 
@@ -2427,7 +2462,7 @@ def trackerelectricity():
   """Allows user to track their progress"""
   if request.method == "POST":
     print("We're in post in electricity")
-    flash("😀 Would you like to track something else?")
+    flash("😀 Would you like to track something else? To see updates to your score please see your home page.")
 
     # Get benchmark values from db: 
     get_db_electricity = db.execute("SELECT state, electricity, electricity_impact, waste_frequency, recycling FROM footprint WHERE user_id=?", session.get("user_id"))
@@ -3049,7 +3084,7 @@ def trackershopping():
     update_lb_total_points = db.execute("UPDATE leaderboard SET carbon_saved=?, plastic_saved=?, total_points=? WHERE user_id=?", new_lb_carbon_savings, new_lb_plastic, new_lb_score, session.get("user_id"))
     check_db = db.execute("SELECT * FROM leaderboard WHERE user_id=?", session.get("user_id"))
     print("Updates made to DB: ", check_db)
-    flash("😀 Would you like to track something else?")
+    flash("😀 Would you like to track something else? To see updates to your score please see your home page.")
     return render_template("/trackershopping.html", dietaryattitude=dietary_attitude, beefconsumption = beef_consumption, chickenconsumption=chicken_consumption, porkconsumption=pork_consumption, drycleaningspend=drycleaning_spend_db, restaurantsspend=restaurants_spend, accessories=accessories_spend)
   
   # Handle GET request
@@ -3276,7 +3311,7 @@ def trackertransport():
     check_lb = db.execute("SELECT green_miles, carbon_saved, total_points FROM leaderboard WHERE user_id=?", session.get("user_id"))
     print("Check db for update: ", check_db)
     print("Check lb for update: ", check_lb)
-    flash("Processed 😀 Would you like to track something else?")
+    flash("Processed 😀 Would you like to track something else? To see updates to your score please see your home page.")
     return render_template("/trackertransport.html", hotelcounter=hotel_counter, totalflights=total_flights, hotelnights=hotel_nights)
   else:
     print("We're here in get")
