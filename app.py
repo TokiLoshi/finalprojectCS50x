@@ -1178,7 +1178,6 @@ def homeuser():
   # Handle GET request
   else:
     print("Hi we're in get")
-    
     # check if this is the user's first time on the home page: 
     check_footprint = db.execute("SELECT user_id FROM footprint WHERE user_id=?", session.get("user_id"))
     print("CHeck if user in footprint: ", check_footprint)
