@@ -1277,7 +1277,7 @@ def homeuser():
       for item in get_datetime_consumption:
         date_joined = item['datetime']
       if date_joined is None or len(get_datetime_consumption) == 0:
-        formatted_date_joined = "Unknown"
+        formatted_date_joined = "2022-10-19"
       else:
         formatted_date_joined = date_joined[:10]
     else:
@@ -1645,18 +1645,16 @@ def leaderboard():
     # Get total carbon savings:
     carbon_savings_db = db.execute("SELECT carbon_savings FROM trackers")
     print("Carbon_Savings_db: ", carbon_savings_db)
-    carbon_savings_list = [0, 1]
-    print("Carbon Savings List", carbon_savings_list)
-    print(type(carbon_savings_list))
+    carbon_savings_total = 0
     for savings in carbon_savings_db:
       if savings['carbon_savings'] is not None:
-        carbon_savings = carbon_savings_list.append(savings['carbon_savings'])
+        # carbon_savings_total = carbon_savings_list.append(savings['carbon_savings'])
+        carbon_savings_total = carbon_savings_total + float(savings['carbon_savings'])
+        print("Carbon Savings: ", carbon_savings_total)
       else:
         print('Nothing here to see')
-    carbon_savings_total = 0
+        carbon_savings_total = carbon_savings_total + 0
     
-    for item in carbon_savings_list:
-      carbon_savings_total = carbon_savings_total + float(item)
     print("Total carbon saved so far", carbon_savings_total)
     
     # for item in carbon_savings_total: 
@@ -1719,7 +1717,7 @@ def leaderboard():
     print("FLEXITARIAN: ", total_flex)
 
     # Pull leaders from leaderboard 
-    leaders = db.execute("SELECT leaderboardname, challenges, total_points FROM leaderboard ORDER BY total_points DESC LIMIT 10")
+    leaders = db.execute("SELECT leaderboardname, challenges, total_points FROM leaderboard ORDER BY challenges DESC LIMIT 10")
     print("LEADERS: ", leaders)
     for leader in leaders: 
       leadingname = leader['leaderboardname']
