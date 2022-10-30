@@ -508,6 +508,7 @@ def leaderboardicon():
   if request.method == "POST":
     # check which icon user chose via args 
     check_icon = request.args.get("animal")
+    flash("Nice! New icons are 🤩")
     return render_template("leaderboardicon.html")
   else:
     # check which icon user chose via args 
