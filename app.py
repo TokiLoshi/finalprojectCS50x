@@ -1293,7 +1293,7 @@ def homeuser():
         green_tariff_display = "Nice work on asking your energy provider to keep you green."
       
       if solar_panels_db == "No":
-        solar_panel_display = "If you've gone solar let us know in the db"
+        solar_panel_display = "If you've gone solar let us know in the tracker."
       else:
         solar_panel_display = "Nice work going solar and getting your energy from renewable sources!"
       
