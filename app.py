@@ -82,7 +82,7 @@ def about():
   return render_template("/about.html")
 
 # Users account page
-@app.route("/account", methods=["GET", "POST"])
+@app.route("/account", methods=["GET"])
 @login_required
 def account():
   """Users' account page with their username information"""
@@ -120,10 +120,11 @@ def account():
       else:
         datejoined = datejoined[:10]
       
-  if request.method == "POST":
-    # This is to allower user to change their password
-    return render_template("/changepassword.html")
-  else:
+  # if request.method == "POST":
+  #   # This is to allower user to change their password or icon
+  #   print("We've got a post request over here")
+  #   return render_template("/changepassword.html")
+  # else:
     print("This GET request should show values on template")
   return render_template("/account.html", icon=icon, name=name, leaderboardname=leaderboardname, emailaddy=emailaddy, datejoined=datejoined)
 
@@ -507,18 +508,23 @@ def leaderboardicon():
   """Update Leadearboard and user icons"""
   if request.method == "POST":
     # check which icon user chose via args 
+    print("This is a post request with an animal in the args potentially")
     check_icon = request.args.get("animal")
+    print("Checking for the icon: ", check_icon)
     flash("Nice! New icons are 🤩")
     return render_template("leaderboardicon.html")
   else:
     # check which icon user chose via args 
+    print("This is a get request")
     check_icon = request.args.get("animal")
+    print("Checking the icon: ", check_icon)
     if check_icon is not None: 
       # Check which icon user had in db
       check_db_icon = db.execute("SELECT icon FROM users WHERE id=?", session.get("user_id"))
+      print("Looking for what the user had in the db: ", check_icon)
       for item in check_db_icon:
         old_icon = item['icon']
-      
+      print("This is their old item: ", old_icon)
       # Handle case for new users not having an icon in the db
       if old_icon == None:
         icon = check_icon
@@ -529,6 +535,7 @@ def leaderboardicon():
 
         # Update icon where users had already selected an icon and it was saved to the database
         icon = check_icon
+        print("icon", icon)
         update_new_icon = db.execute("UPDATE users SET icon=? WHERE id=?", icon, session.get("user_id"))
         flash("Nice new icon!")
         return redirect("/account")
@@ -756,7 +763,7 @@ def changename():
 def changepassword():
   """Allow users to change their password"""
   if request.method == "POST":
-    
+    print("Change password is getting a post request")
     # Get password and confirmation from form
     newpassword = request.form.get("password")
     confirmpassword = request.form.get("confirmpassword")
