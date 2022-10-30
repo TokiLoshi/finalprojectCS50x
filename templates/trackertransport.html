@@ -10,7 +10,7 @@
     <h2 class="darkBlue">You inspire us</h2>
     <!--Reach for the stars by Designecologist from Pexels https://www.pexels.com/photo/reach-for-the-and-blue-moon-neon-signages-1510659/ -->
     <!--Easy ideas on reducing one's carbon footprint https://www.futurelearn.com/info/blog/how-to-reduce-your-carbon-footprint-tips-->
-    <img class="img-fluid rounded-2" src="/static/reach.jpg" width="300" alt="green island in the ocean"/>
+    <img class="img-fluid rounded-2" src="/static/reach.jpg" width="300" alt="Sign saying 'Reach for the stars' on blue background"/>
     </br>
     <div class="card text-center mt-2">
       <div class="card-header">
@@ -32,7 +32,6 @@
       </div>
 <div class="card-body">
   <h5 class="card-title">Log an activity to start wracking up points</h5>
-  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
   <div class="container text-center mb-3">
     <div class="container-fluid text-center mx-auto">
       <div class="row justify-content-center">
@@ -42,8 +41,8 @@
               <div class="card-body">
                 <h3>✈️</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I took fewer flights this year:</b></h5>
-                  <p>Fewer flights either meant you traveled directly more, or that you took fewer flights and lower co2 emissions. When you started you were taking on average {{totalflights}} per year. Tell us how many flights you so we can give you kudos.</p>
+                  <h5 class="card-title"><b>I took fewer flights this year.</b></h5>
+                  <p>Fewer flights mean you traveled with fewer connecting flights or took fewer flights overall. Either way, you're now responsible for fewer emissions. When you started, you were taking, on average, {{totalflights}} each year. Let us know how many flights you took this year so we can give you kudos.</p>
                   <input type="number" name="fewer_flights" class="form-control mx-auto w-auto mb-2" id="fewer_flights" placeholder="How many?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>
@@ -57,8 +56,8 @@
               <div class="card-body">
                 <h3>🏩</h3>
                   <form action="/trackertransport" method="post">
-                    <h5 class="card-title"><b>I spent fewer nights in hotels:</b></h5>
-                    <p>Cutting down on hotels can also save you money. How many nights did you spend this year?</p>
+                    <h5 class="card-title"><b>I spent fewer nights in hotels.</b></h5>
+                    <p>Cutting down on hotels can lower your carbon footprint and save you money. How many nights did you spend this year?</p>
                     <p>{{hotelcounter}}</p>
                     <input type="number" name="fewer_hotels" class="form-control mx-auto w-auto mb-2" id="fewer_hotels" placeholder="How many?" min="0">
                     <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
@@ -73,8 +72,8 @@
               <div class="card-body">
                 <h3>🛩</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I took more direct flights:</b></h5>
-                  <p>Direct flights not only save you time (flight time, security checks and layovers), but they also drastically reduce the amount of fuel you would use gettinng to places. Nicely done!</p>
+                  <h5 class="card-title"><b>I took more direct flights.</b></h5>
+                  <p>Direct flights save you time, additional security checks, and the headache of layovers. They also reduce how much fuel you would otherwise use, which means you are responsible for lower emissions. Nicely done!</p>
                   <input type="number" name="direct_flights" class="form-control mx-auto w-auto mb-2" id="direct_flights" placeholder="How many?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>
@@ -88,8 +87,8 @@
               <div class="card-body">
                 <h3>🚞</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I decided to take a train instead of a plane:</b></h5>
-                  <p>That might take a bit longer but you've saved on emissions, and we hope you enjoyed the scenic route. How many plane rides did you substitute?</p>
+                  <h5 class="card-title"><b>I decided to take a train instead of a plane.</b></h5>
+                  <p>That might take a bit longer, but you've saved on emissions, and we hope you enjoyed the scenic route. How many plane rides did you substitute?</p>
                   <input type="number" name="train_over_plane" class="form-control mx-auto w-auto mb-2" id="train_over_plane" placeholder="How many rides?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>
@@ -103,8 +102,9 @@
               <div class="card-body">
                 <h3>🏖</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I vacationed locally:</b></h5>
-                  <p>What an awesome way to get to know your city and surroundings even better. This is a great way to save money, and carbon emissions! How many vacation days did you spent locally?</p>
+                  <h5 class="card-title"><b>I vacationed locally.</b></h5>
+                  <p>Vacationing locally is an excellent way to get to know your city and its surroundings even better. It can also save money and emissions. We hope you had a great time! How many vacation days did you spend locally?
+                  </p>
                   <input type="number" name="local_vacation" class="form-control mx-auto w-auto mb-2" id="local_vacation" placeholder="How many days?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>
@@ -118,8 +118,9 @@
               <div class="card-body">
                 <h3>🚲</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I chose to walk or bike, not drive:</b></h5>
-                  <p>Good for the planet and you got some exercise, double points for that! Tell us how many miles did walked or cycled so we can add that to your score.</p>
+                  <h5 class="card-title"><b>I chose to walk or bike, not drive.</b></h5>
+                  <p>
+                    Great for the planet and your health, double points for that! Tell us how many miles you walked or cycled so we can add that to your score.</p>
                   <input type="number" name="bike_walk" class="form-control mx-auto w-auto mb-2" id="bike_walk" placeholder="How many miles?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>
@@ -133,7 +134,7 @@
               <div class="card-body">
                 <h3>💸</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I saved money on my transport:</b></h5>
+                  <h5 class="card-title"><b>I saved money on my transport.</b></h5>
                   <p>Amazing! That translates to cO2 savings and monetary savings! Double win, double points! Tell us how much you saved so we can add it to your points and savings scores.</p>
                   <input type="number" name="transport_savings" class="form-control mx-auto w-auto mb-2" id="transport_savings" placeholder="$" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
@@ -148,8 +149,8 @@
               <div class="card-body">
                 <h3>👏</h3>
                 <form action="/trackertransport" method="post">
-                  <h5 class="card-title"><b>I took my airline up on the offer to offest my carbon:</b></h5>
-                  <p>Congratulations on seizing the opportunity! Some offset programs are better than others. So it's always good to double check. How much carbon did you offset?</p>
+                  <h5 class="card-title"><b>I took my airline up on the offer to offset my carbon.</b></h5>
+                  <p>Congratulations on seizing the opportunity! Some offset programs are better than others. So it's always good to double-check. How much carbon did you offset?</p>
                   <input type="number" name="carbon_offset" class="form-control mx-auto w-auto mb-2" id="carbon_offset" placeholder="How much?" min="0">
                   <button type="submit" class="btn btn-dark btn-md m-2">Track</button>
                 </form>

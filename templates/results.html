@@ -8,8 +8,8 @@
 <form action="/results" method="post">
   <div class="container p-3 shadow rounded-3 grey">
     <h2 class="darkBlue">Your results are in</h2>
-    <!--Laughing male construction by by Andrea Piacquadio from Pexels https://www.pexels.com/photo/laughing-male-constructor-showing-thumb-up-at-working-desk-3760613/ -->
-    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/laughing_construction.jpg" alt="green island in the ocean"/>
+    <!--Laughing male construction worker by Andrea Piacquadio from Pexels https://www.pexels.com/photo/laughing-male-constructor-showing-thumb-up-at-working-desk-3760613/ -->
+    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/laughing_construction.jpg" alt="Laughing male construction worker"/>
     </br>
 </form>       
     <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto">
@@ -20,19 +20,19 @@
         <h5>Your Total Carbon Footprint is: </h5>
         <h3>{{total}}</h3>
         <h1>👣</h1>
-        <p><b>This is made up of an estimate from three sectors of your life:</b></p>
-        <p><b>Houshold footprint:</b> {{household}}</p><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your household footprint includes the electricity you use, what kind of home you live in, how much waste you produce and how much of that you recycle.">
-          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your household footprint includes the electricity you use, what kind of home you live in, how much waste you produce and how much of that you recycle."></i>
+        <p><b>This score is calculated based on estimates from three sectors of your life:</b></p>
+        <p><b>Houshold footprint:</b> {{household}}</p><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your household footprint includes your electricity usage, the kind of home you live in, how much waste you produce, and how much you recycle.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your household footprint includes your electricity usage, the kind of home you live in, how much waste you produce, and how much you recycle."></i>
             </button>
         <p class="mt-2"><b>Transport footprint:</b> {{transport}}</p>
-        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute, mode of transport as well as air travel.">
-          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute, mode of transport as well as air travel."></i>
+        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute and mode of transport.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your transport footprint looks at your typical commute and mode of transport."></i>
             </button>
         <p class="mt-2"><b>Shopping and Dining footprint:</b> {{consumption}}</p>
-        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly and also provides the opportunity for you to see how your average spending affects your carbon footprint.">
-          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly and also provides the opportunity for you to see how your average spending affects your carbon footprint"></i>
+        <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly. Also, it allows you to see how your average spending affects your carbon footprint.">
+          <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Your footprint from spending and dining looks at what kinds of meat you consume regularly. Also, it allows you to see how your average spending affects your carbon footprint."></i>
             </button>
-        <p class="mt-2">As of {{datetime}} you are more informed than ever. Now that you have a benchmark you'll be surprised by just how easy it is to change your impact, and how good that feels.</p>
+        <p class="mt-2">As of {{datetime}}, you are more informed than ever. Now that you have a benchmark, you can start making greener choices. You might even be surprised by how easy it is and how good making a positive impact feels.</p>
         <p>Let's take a look at each footprint.</p>
         <form action="/challenges" method="post">
       </div>
@@ -40,9 +40,9 @@
     <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
       <h4>Your household general footprint</h4>
       <!--Composition of detergents on the table by Anna Shvets from Pexels https://www.pexels.com/photo/composition-of-detergents-on-table-5217889/ -->
-      <img class="img-fluid rounded-2 mx-auto w-100" src="/static/detergents.jpg" alt="green island in the ocean"/>
+      <img class="img-fluid rounded-2 mx-auto w-100" src="/static/detergents.jpg" alt="Composition of detergents on the table"/>
       <table class="table table-striped table-hover table-responsive">
-        <caption>Data provided by Climatiq API</caption>
+        <caption>Data provided by Climatiq's API</caption>
         <thead>
           <tr>
             <th scope="col">Factor</th>
@@ -89,7 +89,7 @@
             <td>{{recyclingimpact}}</td>
           </tr>
           <tr>
-            <th scope="row">Typical spend on drycleaning:</th>
+            <th scope="row">Typical spend on dry cleaning:</th>
             <td>${{drycleaning}} per year</td>
           </tr>
           <tr>
@@ -97,7 +97,7 @@
             <td>{{drycleaningimpact}}</td>
           </tr>
           <tr>
-            <th scope="row">Total Household impact:</th>
+            <th scope="row">Total Household Impact:</th>
             <td>{{totalfootprint}}</td>
           </tr>
           <tr>
@@ -109,9 +109,9 @@
   <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
     <h4>Your transportation footprint</h4>
     <!--Arial photo of buildings and roads by Aleksejs Bergmanis from Pexels https://www.pexels.com/photo/aerial-photo-of-buildings-and-roads-681335/ -->
-    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/highway.jpg" alt="green island in the ocean"/>
+    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/highway.jpg" alt="Arial photo of buildings and roads"/>
     <table class="table table-striped table-hover table-responsive">
-      <caption>Data provided by Climatiq API</caption>
+      <caption>Data provided by Climatiq's API</caption>
       <thead>
         <tr>
           <th scope="col">Factor</th>
@@ -136,7 +136,7 @@
           <td>{{transportmode}}</td>
         </tr>
         <tr>
-          <th scope="row">Your cost of transportation:</th>
+          <th scope="row">How much your transport costs:</th>
           <td>${{transportcost}} per month</td>
         </tr>
         <tr>
@@ -152,7 +152,7 @@
           <td>{{shorthaulimpact}} per year</td>
         </tr>
         <tr>
-          <th scope="row">Number of medium haul-flights:</th>
+          <th scope="row">Number of medium-haul flights:</th>
           <td>{{mediumhaul}} per year</td>
         </tr>
         <tr>
@@ -176,9 +176,9 @@
   <div class="card body rounded-2 shadow p-3 border-0 m-2 justify-content-center mx-auto w-100">
     <h4>Your consumption footprint</h4>
     <!--Empty Shopping cart on yellow bracket by SHVETS production from Pexels https://www.pexels.com/photo/empty-shopping-cart-on-yellow-background-7195232/ -->
-    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/shopping_cart.jpg" alt="green island in the ocean"/>
+    <img class="img-fluid rounded-2 mx-auto w-100" src="/static/shopping_cart.jpg" alt="Empty Shopping cart on yellow bracket"/>
     <table class="table table-striped table-hover table-responsive">
-      <caption>Data provided by Climatiq API</caption>
+      <caption>Data provided by Climatiq's API</caption>
       <thead>
         <tr>
           <th scope="col">Factor</th>

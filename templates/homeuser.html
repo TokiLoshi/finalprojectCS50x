@@ -11,9 +11,9 @@
       <h2 class="darkBlue">You are making the world a better place!</h2> 
     </form>
     </br>
-  <img class="img-fluid rounded-2 justify-content-center w-50" src="/static/world.jpg" alt="green island in the ocean"/>
+     <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
+  <img class="img-fluid rounded-2 justify-content-center w-50" src="/static/world.jpg" alt="Sphere Shaped miniture of the earth with googly sticker eyes"/>
       <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
-        <!--Sphere Shaped miniture by Anna Shvets from Pexels https://www.pexels.com/photo/sphere-shaped-miniature-of-earth-with-googly-eyes-5217883/ -->
         <h4>Hello, {{leaderboardname}}</h4>
           <h5>What shall we do today?</h5>
                 <div class="card text-center">
@@ -43,12 +43,12 @@
                   </div>
                   <div class="card-body">
                     {% block javascript %}
-                    <!--Use of bootstrap tool tips adapted with this tutorial https://www.w3schools.com/bootstrap/bootstrap_tooltip.asp-->
+                    <!--Use of bootstrap tooltips adapted with this tutorial https://www.w3schools.com/bootstrap/bootstrap_tooltip.asp-->
                     <h5 class="card-title">Since you joined:</h5>
                     <p class="card-text">on {{datetime}}</p>
                     <p><b>Total points: {{totalscore}}  </b>
-                      <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="This is the sum of all the points you've accumulated from making greener decisions. We track your points so you don't have to.">
-                      <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="This is the sum of all the points you've accumulated from making greener decisions. We track your points so you don't have to."></i>
+                      <button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="This score is the sum of all the points you've accumulated from making greener decisions. We track your points, so you don't have to.">
+                      <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="This score is the sum of all the points you've accumulated from making greener decisions. We track your points, so you don't have to."></i>
                         </button>
                     {% for challenge in challengesdb %}
                     {% for item in challenge.items() %}
@@ -121,7 +121,7 @@
                           <p>When you started you were spending</p>
                           <p><b>${{transportcost}} each month on your commute</b></p>
                           <h3>🚦</h3>
-                          <p>Since then you've biked / walked to rack up a cumulative:</p>
+                          <p>Since then you've biked/walked to rack up a cumulative:</p>
                           <p><b>{{bikewalkmiles}}</b></p>
                       </div>
                     </div>
@@ -139,7 +139,7 @@
                           <p>You've also made more sustainable fashion decisions:</p>
                           <p><b>{{sustainableshopping}}</b></p>
                           <h3>🥑</h3>
-                          <p>Shopping for groceries locally is great for local farmers and small businesses</p>
+                          <p>Shopping locally for groceries and other items is great for local farmers and small businesses</p>
                           <p><b>{{locallegend}}</b></p>
                       </div>
                     </div>
@@ -151,7 +151,7 @@
                       <div class="card-body">
                         <h3>♻️</h3>
                           <h5 class="card-title"><b>Waste:</b></h5>
-                          <p>When you started you were throwing out:</p>
+                          <p>When you started, you were throwing out:</p>
                           <p><b>{{totalwaste}} bags per week.</b></p>
                           <p>You were recycling around:</p>
                           <p><b>{{recycling}}</b></p>
@@ -160,11 +160,11 @@
                           <p>compared to your impact from recycling: 
                           <p><b>{{recyclingimpact}}</b></p>
                           <h3>🪴</h3>
-                          <p>Since starting you last reported increasing your recycling by:</p>
+                          <p>Since starting, you last reported increasing your recycling by:</p>
                           <p><b>{{morerecycling}}</b></p>
                           <p>And you've composted</p>
                           <p><b>{{morecompost}}</b></p>
-                          <p>And last you reduced your waste:</p> 
+                          <p>And last, you reduced your waste:</p> 
                           <p><b>{{lesswaste}}</b></p>
                       </div>
                     </div>
@@ -180,7 +180,7 @@
                           <p><b>{{energysaved}} kWh</b></p>
                           <p>When you started you were using:</b></p>
                           <p><b>{{electricitydb}} kWh per month</b></p>
-                          <p>At the same time you've been saving water:</p>
+                          <p>At the same time, you've been saving water:</p>
                           <h3>💧</h3>
                           <p><b>{{savedwater}}</b></p>
                           <p>As far as solar goes:</p>
@@ -201,17 +201,17 @@
                           <p>When you started you said:</p>
                           <h3>🥩</h3>
                           <p><b>{{beef}}</b></p>
-                          <p>And since you started you have:</p>
+                          <p>And since you started, you have:</p>
                           <p><b>{{beefsub}}</b></p>
                           <p>When you started you said:</p>
                           <h3>🍗</h3>
                           <p><b>{{chicken}}</b></p>
-                          <p>And since you started you have:</p>
+                          <p>And since you started, you have:</p>
                           <p><b>{{chickensub}}</b></p>
                           <p>When you started you said:</p>
                           <h3>🥓</h3>
                           <p><b>{{pork}}</b></p>
-                          <p>And since you started you have:</p>
+                          <p>And since you started, you have:</p>
                           <p><b>{{porksub}}</b></p>
                       </div>
                     </div>
@@ -242,10 +242,10 @@
                           <h5 class="card-title"><b>Travel:</b></h5>
                           <p>Local vacations: </p>
                           <p><b>{{localvacations}}</b></p>
-                          <p>When you started you were reported spending this many nights in hotels per year:</p>
+                          <p>When you started, you were reported spending this many nights in hotels per year:</p>
                           <p><b>{{hotelnights}}</b></p>
                           <h3>⭐️</h3>
-                          <p>Since you've started you've spent fewer nights in hotels: </p>
+                          <p>Since you started, you've spent fewer nights in hotels: </p>
                           <p><b>{{hotelsaved}}</b></p>
                       </div>
                     </div>
@@ -257,7 +257,7 @@
                       <div class="card-body">
                         <h3>🛫</h3>
                           <h5 class="card-title"><b>Flights:</b></h5>
-                          <p>When you started you were taking on average:</p>
+                          <p>When you started, you were taking on average,</p>
                             <p><b>{{totalflights}} flights per year</b></p>
                           <p>Flights saved to date:</p>
                           <p><b>{{flightsaved}} flights</b></p>

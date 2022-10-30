@@ -11,11 +11,11 @@
       <h2 class="darkBlue">You can only improve what you measure</h2>
         <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
           <h4>Let's measure your current carbon footprint</h4>
-          <!--glove beside plastic spoon by by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
-          <img class="img-fluid rounded-2 mx-auto justify-content-center w-75" src="/static/plastic_world.jpg" with="300" alt="green island in the ocean"/>
+          <!--Glove beside plastic spoon by Artem Podrez from Pexels https://www.pexels.com/photo/glove-beside-plastic-spoons-7048060/ -->
+          <img class="img-fluid rounded-2 mx-auto justify-content-center w-75" src="/static/plastic_world.jpg" with="300" alt="Glove beside plastic spoon"/>
           {% block javascript %}
-          <p>This questionnaire uses the Climatiq API to calculate an estimate of your carbon footprint based on emission factors.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life.">
-            <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Emission factors are based off of how quickly greenhouse gases (GHGs) are released into the atmosphere) from 3 key areas of your life."></i>
+          <p>This questionnaire uses Climatiq's API to estimate your carbon footprint based on various emission factors.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Emission factors are based on how quickly greenhouse gases (GHGs) are released into the atmosphere from 3 key areas of your life.">
+            <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Emission factors are based on how quickly greenhouse gases (GHGs) are released into the atmosphere from 3 key areas of your life."></i>
               </button> </p>
           <p><b>This calculator focuses on three main areas:</b></p>
           <ol class="calculator">
@@ -23,10 +23,10 @@
             <li>Your modes of transport and travel</li>
             <li>And lastly, your shopping and dining</li>
           </ol>
-          <p>We've chosen the Climatiq API for the most accurate, industry standard estimations.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="The data comes from sources validated by Climatiq and are available in the Open Emission Factor Database(OEFDB).">
+          <p>We've chosen Climatiq's API for the most accurate, industry-standard estimations.<button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="The data comes from sources validated by Climatiq and are available in the Open Emission Factor Database(OEFDB).">
             <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="The data comes from sources validated by Climatiq and are available in the Open Emission Factor Database(OEFDB)."></i>
               </button> </p>
-          <p>Once you're done your score will be calculated in seconds, and we'll provide a full breakdown, as well as easy actions to take that turn into big wins.</p>
+          <p>Once you've completed the three sections, your score is calculated in seconds. Your results include a full breakdown, followed by easy-to-take actions that translate into big wins.</p>
         </div>
         </br>
         <div class="card body rounded-2 shadow p-12border-0 m-1 justify-content-center mx-auto w-auto">
@@ -46,11 +46,11 @@
                     <option value="construction-type_single_family_residential_structures">Single-family home</option>
                   </select>
                   <!--Stats re grid generation https://www.nei.org/resources/statistics/state-electricity-generation-fuel-shares-->
-                <label for="state" name="state" class="form-label mt-1"><b>Which State do you live in?: <p><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute (nei.org): California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar.">
-                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="We ask this because each state's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute nei.org: California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar."></i>
+                <label for="state" name="state" class="form-label mt-1"><b>Which State do you live in?<p><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="We ask this because each State's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute (nei.org): California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="We ask this because each State's grid uses a different mix of energy sources, which affects your carbon footprint. For example, according to the Nuclear Energy Institute nei.org: California uses 49% natural gas and 17.4% solar, and Indiana uses 57% coal and 0.7% solar."></i>
                     </button></b> </p></label>
                   <select required name="state" class="form-select" aria-label="Default select example" required >
-                    <option selected value="" disabled>Please select your State</option>
+                    <option selected value="" disabled>Please select your State:</option>
                     <option value="US-AL">Alabama (AL)</option>
                     <option value="US-AKGD">Alaska (AKGD)</option>
                     <option value="US-AZ">Arizona (AZ)</option>
@@ -77,7 +77,7 @@
                     <option value="US-MO">Missouri (MO)</option>
                     <option value="US-MS">Mississippi (MS)</option>
                     <option value="US-MT">Montana (MT)</option>
-                    <option value="US-NC">North Carolilna (NC)</option>
+                    <option value="US-NC">North Carolina (NC)</option>
                     <option value="US-ND">North Dakota (ND)</option>
                     <option value="US-NE">Nebraska (NE)</option>
                     <option value="US-NEWE">New England (NE)</option>
@@ -104,7 +104,7 @@
                     <option value="US-WI">Wisconsin (WI)</option>
                     <option value="US-WY">Wyoming (WY)</option>
                   </select>
-                <label for="household_occupants" class="form-label"><b>How many people in your household</b></label>
+                <label for="household_occupants" class="form-label"><b>How many people live in your household</b></label>
                   <select name="household_occupants" class="form-select" aria-label="Default select example" required>
                     <option selected value="" disabled>Please select how many people in your household</option>
                     <option value="1">Just Me</option>
@@ -138,7 +138,7 @@
                     <option value="19">19 gallon</option>
                     <option value="20">20+ gallon</option>
                   </select>
-                <label for="recycling" class="form-label mt-1"><b>How much for your rubbish do you recycle?</b></label>
+                <label for="recycling" class="form-label mt-1"><b>How much of your rubbish do you recycle?</b></label>
                   <select name="recycling" class="form-select" aria-label="Default select example" required>
                     <option selected value="" disabled>How much of your trash is recycling and compost?</option>
                     <option value="10">10% recycling</option>
@@ -151,13 +151,13 @@
                     <option value="75">More than 75% recycling and compost</option>
                   </select>
                   <!--https://www.eia.gov/tools/faqs/faq.php?id=97&t=3#:~:text=In%202021%2C%20the%20average%20annual,about%20886%20kWh%20per%20month.-->
-                <label for="utilitybill" class="form-label mt-1"><b>How many kilowatt-hours do you use on average each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021.">
-                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was in the range of 886kWh per month in 2021."></i>
+                <label for="utilitybill" class="form-label mt-1"><b>How many kilowatt-hours do you use on average each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was 886kWh per month in 2021.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="According to the U.S Energy Information Administration, the average monthly energy consumption for a residential utility customer was 886kWh per month in 2021."></i>
                     </button></b> </p></b></label>
                   <input type="number" name="utilitybill" class="form-control mx-auto w-auto" id="utilitybill" placeholder="kWh on average" required>
                 <!--https://greenbusinessbureau.com/industries/dry-cleaning/sustainable-dry-cleaners-getting-started-guide/-->
-                  <label for="drycleaning" class="form-label mt-1"><b>How much does your household spend on drycleaning each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint.">
-                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Some drycleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on drycleaning helps us estimate how much drycleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint."></i>
+                  <label for="drycleaning" class="form-label mt-1"><b>How much does your household spend on dry cleaning each month? <p><button type="button" class="btn btn-dark btn-sm mt-1" width="25" data-toggle="tooltip" data-placement="top" title="Some dry cleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on dry cleaning helps us estimate how much dry cleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint.">
+                  <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Some dry cleaning chemicals are harmful to the environment, and many drycleaners provide plastic hangers which (in addition to taking decades to degrade) only degrade into microplastics. Using your average monthly spend on dry cleaning helps us estimate how much dry cleaning your household goes through. We'll also split this according to how many people are in your household to give you a clearer picture of your individual footprint."></i>
                     </button></b> </p></b></label>
                   <input type="number" name="drycleaning" class="form-control mx-auto w-auto mb-1" id="name" placeholder="$" required>
                   <button type="submit" class="btn btn-dark m-2 p-3 col-8">Save my answers</button>

@@ -1151,7 +1151,7 @@ def contact():
       print(e)
     return render_template("/contact.html")
   else: 
-    flash("Oopsie, it happens.")
+    flash("🙌 Questions? Would love to hear them. Leave a message below.")
     return render_template("/contact.html")
 
 # Main home page

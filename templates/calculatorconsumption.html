@@ -12,13 +12,13 @@
   <div class="card body rounded-2 shadow p-2 border-0 m-2 justify-content-center mx-auto w-auto">
   <!--Man sitting on shopping cart by Edward from Pexels https://www.pexels.com/photo/man-sitting-on-shopping-cart-3427609/ -->
 
-  <img class="img-fluid rounded-2 justify-content-center mx-auto w-50" src="/static/shopping.jpg" width="300" alt="green island in the ocean"/>
+  <img class="img-fluid rounded-2 justify-content-center mx-auto w-50" src="/static/shopping.jpg" width="300" alt="Man sitting on shopping cart"/>
     <div class="mb-3 container-fluid align-content-start">
       {% block javascript %}
       <form action="/calculator" method="post">
         <!--https://www.ucdavis.edu/food/news/making-cattle-more-sustainable#:~:text=Each%20year%2C%20a%20single%20cow,the%20Department%20of%20Animal%20Science-->
-        <label for="beef" class="form-label mt-1"><b>How many times a week do you eat beef? </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Cattle are considered the biggest contributors to greenhouse gases from agriculture worldwide. A single cow is capable of releasing 220 pounds of methane every year. Methane is 28 times more potent than co2 when it comes to warming the atmosphere. Every time you decide to switch out one of your usual beef based meals, we'll give you points and calculate your carbon equivalent savings, so don't be shy. Things can only get better from here on out.">
-        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Cattle are considered the biggest contributors to greenhouse gases from agriculture worldwide. A single cow is capable of releasing 220 pounds of methane every year. Methane is 28 times more potent than co2 when it comes to warming the atmosphere. Every time you decide to switch out one of your usual beef based meals, we'll give you points and calculate your carbon equivalent savings, so don't be shy. Things can only get better from here on out."></i>
+        <label for="beef" class="form-label mt-1"><b>How many times a week do you eat beef? </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Cattle are considered the most significant contributors to greenhouse gases from agriculture worldwide. A single cow is capable of releasing 220 pounds of methane every year. Methane is 28 times more potent than co2 when it comes to warming the atmosphere. Every time you decide to switch out one of your usual beef-based meals, we'll give you points and calculate your carbon equivalent savings, so don't be shy. Things can only get better from here on out.">
+        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Cattle are considered the most significant contributors to greenhouse gases from agriculture worldwide. A single cow is capable of releasing 220 pounds of methane every year. Methane is 28 times more potent than co2 when it comes to warming the atmosphere. Every time you decide to switch out one of your usual beef-based meals, we'll give you points and calculate your carbon equivalent savings, so don't be shy. Things can only get better from here on out."></i>
           </button> </p></label>
       <select name="beef" class="form-select mx-auto w-auto" aria-label="Default select example">
         <option selected value="" disabled>On average...</option>
@@ -32,8 +32,8 @@
         <option value="6">Every day</option>
       </select>
       <!--https://www.businessinsider.com/the-top-10-foods-with-the-biggest-environmental-footprint-2015-9-->
-      <label for="pork" class="form-label mt-1"><b>How many times a week do you eat pork?  </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="As much as you love that crispy bacon, a kilogram of pork generates roughly 12.1kg of co2 equivalent. This is more than half of what beef generates per kilo (27kg CO2). Everytime you make a switch we'll be giving you credit, and tracking your carbon savings.">
-        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="As much as you love that crispy bacon, a kilogram of pork generates roughly 12.1kg of co2 equivalent. This is more than half of what beef generates per kilo (27kg CO2). Everytime you make a switch we'll be giving you credit, and tracking your carbon savings."></i>
+      <label for="pork" class="form-label mt-1"><b>How many times a week do you eat pork?  </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="As much as you love that crispy bacon, a kilogram of pork generates roughly 12.1kg of co2 equivalent. This is more than half of what beef generates per kilo (27kg CO2). Every time you make a switch, you will get points for your greener choices.">
+        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="As much as you love that crispy bacon, a kilogram of pork generates roughly 12.1kg of co2 equivalent. This is more than half of what beef generates per kilo (27kg CO2). Every time you make a switch, you will get points for your greener choices."></i>
           </button> </p></label>
       <select name="pork" class="form-select mx-auto w-auto" aria-label="Default select example" required>
         <option selected value="" disabled>On average...</option>
@@ -46,8 +46,8 @@
         <option value="6">Six times a week</option>
         <option value="7">Every day</option>
       </select>
-      <label for="chicken" class="form-label mt-1"><b>How many times a week do you eat chicken? </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Chicken is the 7th most carbon intensive meat. It generates almost half the CO2 of a kg of pork. Let us know often you usually eat chicken so we can credit you for greener choices and carbon savings.">
-        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Chicken is the 7th most carbon intensive meat. It generates almost half the CO2 of a kg of pork. Let us know often you usually eat chicken so we can credit you for greener choices and carbon savings."></i>
+      <label for="chicken" class="form-label mt-1"><b>How many times a week do you eat chicken? </b><button type="button" class="btn btn-dark btn-sm" width="25" data-toggle="tooltip" data-placement="top" title="Chicken is the 7th most carbon-intensive meat. It generates almost half the CO2 of a kg of pork. Let us know often you usually eat chicken so we can credit you for greener choices and carbon savings.">
+        <i class="fa-solid fa-circle-question" data-toggle="tooltip" data-placement="top" title="Chicken is the 7th most carbon-intensive meat. It generates almost half the CO2 of a kg of pork. Let us know often you usually eat chicken so we can credit you for greener choices and carbon savings."></i>
           </button> </p></label>
       <select name="chicken" class="form-select mx-auto w-auto" aria-label="Default select example" required>
         <option selected value="" disabled>On average...</option>
@@ -72,19 +72,19 @@
         <option value="Actively_looking">I'm actively looking to make a change</option>
       </select>
       <hr>
-      <p><i>Climatiq Api is able to provide GHG emission estimates on the lifecycle of comsumer goods based on your average spend on the following items. If you're curious please go ahead.</i></p>
-      <p><i>If you'd rather not say, don't worry we can still get you a decent benchmark. And you can come back and fill these out any time.</i></p>
+      <p><i>Climatiq's API provides GHG emission estimates on the lifecycle of consumer goods based on your average spend on the following items. If you're curious, please go ahead.</i></p>
+      <p><i>If you'd rather not say, don't worry; we can still provide you with a decent benchmark. And you can come back and fill these out any time.</i></p>
       
-      <p><b>How much would you say you...</b></p>
-      <label for="new_clothes" class="form-label mt-1"><b>spend each year on new clothes each year?</b></label>
+      <p><b>How much would you say you:</b></p>
+      <label for="new_clothes" class="form-label mt-1"><b>Spend each year on new clothes each year?</b></label>
         <input type="number" name="new_clothes" class="form-control mx-auto w-auto" id="new_clothes" placeholder="$ on clothes" min="0">
-      <label for="restaurants" class="form-label mt-1"><b>spend on restaurants in a month?</b></label>
+      <label for="restaurants" class="form-label mt-1"><b>Spend on restaurants in a month?</b></label>
         <input type="number" name="restaurants" class="form-control mx-auto w-auto" id="restaurants" placeholder="$ on restaurants" min="0">
-      <label for="accessories" class="form-label mt-1"><b>spend on new accessories each year?</b></label>
+      <label for="accessories" class="form-label mt-1"><b>Spend on new accessories each year?</b></label>
         <input type="number" name="accessories" class="form-control mx-auto w-auto" id="hotels" placeholder="$ on accessories" min="0">
-      <label for="appliances" class="form-label mt-1"><b>spend on new home appliances (e.g cooking appliances) each year?</b></label>
+      <label for="appliances" class="form-label mt-1"><b>Spend on new home appliances (e.g cooking appliances) each year?</b></label>
         <input type="number" name="appliances" class="form-control mx-auto w-auto mt-1" id="hotels" placeholder="$ on appliances" min="0">
-      <label for="hotels" class="form-label"><b>how many nights a year do you spend in hotels each year?</b></label>
+      <label for="hotels" class="form-label"><b>How many nights a year do you spend in hotels each year?</b></label>
         <input type="number" name="hotels" class="form-control mx-auto w-auto mt-1" id="hotels" placeholder="# nights in hotels" min="0">
       <button class="btn btn-sm btn-dark m-2 p-3 mx-auto w-auto">Calculate my Carbon Footprint</button>
       </form>
