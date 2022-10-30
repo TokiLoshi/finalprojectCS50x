@@ -6,86 +6,78 @@
 
 {% block main %}
 <form action="/home" method="get">
-<div class="container grey p-3 shadow rounded-3">
+<div class="container grey p-3 shadow rounded-3 grey">
   <h2 class="darkBlue">This carbon footprint tracker turns you into a hero</h2>
   <!--Green Island in the Ocean by Mikhail Nilov from Pexels https://www.pexels.com/photo/green-island-in-ocean-8412432/ -->
-  <img class="img-fluid rounded-2" src="/static/green_island.jpg" width="600" alt="green island in the ocean"/>
+  <img class="img-fluid rounded-2 justify-content-center w-50" src="/static/green_island.jpg" width="600" alt="green island in the ocean"/>
 </form>
   </br>
   <form action="/register" method="get">
+    <p class="mt-2">Not all heroes wear capes, but we see the hero in you. Also, there's a leaderboard waiting full of heroes waiting to welcome you.</p>
     <button action="/register" method="post" type="submit" class="btn btn-dark m-2 p-3">Get Started</button>
   </form>
 </div>
 </br>
-<div class="container text-center">
-  <div class="card body rounded-2 shadow dark-blue">
+<div class="container p-2 mb-2 shadow rounded-3">
     <!-- https://www.w3schools.com/html/html5_video.asp -->
-    <p class="darkBlue">Box for Video</p>
-    <div class="modal-dialog modal-lg"><video width="320" height="240" controls muted><source src="https://www.youtube.com/watch?v=Slsc3tkoS_I" type="video/mp4"></video></div>
+    <!-- <div class="modal-dialog modal-lg"><video width="320" height="240" controls muted><source src="https://www.youtube.com/watch?v=Slsc3tkoS_I" type="video/mp4"></video></div> -->
+    <img class="img-fluid mx-auto rounded-2 w-auto m-2 p-2" src="/static/video_preview.jpeg"/>
   </div>
 </div>
-<div class="container text-center">
-  <div class="row">
-    <div class="col-4">
-      <div class="d-flex p-2">
+<div class="container p-2 shadow rounded-3 grey mt-2">
+  <h3 class="darkBlue">We help you turn small green choices into major wins!</h3>
+  <div class="row justify-content-center">
+    <div class="col-auto mb-2">
+      <div class="d-flex">
         <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
+          <img src="/static/results.png" width="600" alt="card showing we have the results of the user's carbon footprint" class="img-fluid rounded-2">
+          <div class="card-body">
+            <p class="card-text">Calculate your carbon footprint and get your results on the app in seconds.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-auto mb-2">
+      <div class="d-flex">
+        <div class="card shadow rounded-3" style="width: 18rem;">
+            <img src="/static/track_your_progress.png" width="600" alt="cards showing user's progress for carbon savings and monetary savings" class="img-fluid rounded-2">
             <div class="card-body">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p class="card-text">Carbon Hero aims to make it fun, easy and engaging to make greener decisions that reduce your carbon footprint, save you money and build a more resilient community along with your peers.</p>
             </div>
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="d-flex p-2">
+    <div class="col-auto mb-2">
+      <div class="d-flex">
         <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
+          <img src="/static/leaderboard.png" width="600" alt="card showing leaderboard" class="img-fluid rounded-2">
             <div class="card-body">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p class="card-text">Accept challenges and compete with your community for points. Choose your leaderboardname, or use our random leaderboard generator to help you pick one or give you inspration. Everything you do on the app earns you points and we'll be there rooting for you.</p>
             </div>
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="d-flex p-2">
-        <div class="card shadow rounded-3" style="width: 18rem;">
-          <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-            <div class="card-body">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-4">
-    <div class="d-flex p-2">
+    <div class="col-auto mb-2">
+    <div class="d-flex">
       <div class="card shadow rounded-3" style="width: 18rem;">
-        <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
+        <img src="/static/challenges.png" width="600" alt="card showing challenges" class="img-fluid rounded-2">
         <div class="card-body">
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p class="card-text">Changing out one bulb? Going meatless for one day? No green action, no matter how small you may think it, goes unappreciated. We'll be giving you kudos the whole way.</p>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-4">
-    <div class="d-flex p-2">
+  <div class="col-auto mb-2">
+    <div class="d-flex">
       <div class="card shadow rounded-3" style="width: 18rem;">
-        <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
+        <img src="/static/customize.png" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
         <div class="card-body">
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p class="card-text">Nothing here is set in stone. Your carbon footprint when you start is just the beginning of a world of improvement. With all this potential for change, we understand you want to change your appearance from time to time. Feel free to customize your icons and leaderboardname as often as you feel like.</p>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-4">
-    <div class="d-flex p-2">
-      <div class="card shadow rounded-3" style="width: 18rem;">
-        <img src="/static/green_island.jpg" width="600" alt="green island in the ocean" class="img-fluid rounded-2">
-        <div class="card-body">
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 </div>
 </div>  
 </div>
