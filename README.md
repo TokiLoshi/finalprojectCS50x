@@ -1,6 +1,33 @@
-# Carbon Hero
-## A carbon footprint tracker that turns small acts into big wins
-### A Flask Web App built with Python, JavaScript and an sqlite database
-#### Video Demo:  <URL HERE>
-#### Description:
-TODO
+# **Carbon Hero**
+## **A carbon footprint tracker that turns small acts into big wins**
+### A Flask Web App built with Python, JavaScript and an sqlite database migrated to PostgreSQL during the deployment to Heroku.
+### **Video Demo**:  <URL"https://www.youtube.com/watch?v=ydtkXtZDEV0">
+#### Description: Carbon Hero is a Flask Web App built with Python and JavaScript. I built Carbon Hero for my CS50x Final project. Carbon Hero calculates your current carbon footprint using Climatiq's API and various statistics from organizations such as the Environmental Protection Agency (EPA). Your footprint is then used as a benchmark. You log every green choice you make and are awarded points for them. We also track the monetary savings from your greener decisions as well as your green miles and your contributions to your community. You can change your icons or leaderboard name any time as a little fun flair and a touch of customization that you can add to your profile. Accept a challenge, it can be as big or small as you like (you set the pledge) and when you are satisfied that you have completed it, marke it as done, and you score points. You can see where you rank on the leaderboard, and see what your community has achieved in terms of cumulative green miles, days people went flexitarian, total community $ savings, and more.
+## **What was the motivation?**
+#### Many carbon footprint calculators online provide you with a quick and easy ways to estimate your carbon footprint, however I've found these often have two typical call to actions. The first is that they often leave you feeling guilty for the impact you have on the planet, rather than motivated to do something about it. The second is that they often call you to purchase carbon offsets by including external links. These kinds of monetary offsets aren't accessible to everyone and it's hard to vet that the external links do what they promise they do. Offsets are a bandaid on a bullet wound as they do little to address the underlying  problem, much of what comes down to our behaviour and what we expect from the businesses we're loyal to. 
+## **Why was Carbon Hero built?**
+#### I wanted to build something that would be free, informative, easy to use and accessible for everyone. I wanted to build something that would empower users to know their impact on the world and see that not as something to feel guilty for, but as a jumping in point for better days. Over time Carbon Hero's goal is to show them the postive impact their greener decisions make, not just in terms of carbon emissions that would otherwise be added to their total score, but how these actions can simultaneously help them save money, time, and even exercise more. The triple bottom line (https://online.hbs.edu/blog/post/what-is-the-triple-bottom-line) alludes to people, planet and profit. This win, win, win is exactly what Carbon Hero endeavors to provide. The planet wins with fewer emissions, people win with access to easy actionable tasks that help them save money (profit) and benefit their communities, and health, whether that looks like fewer microplastics in the water, more green miles, more community gardens - it's a choose your own adventure that is designed to make you feel good. Feeling good about our actions is more likely to make us want to repeat those actions. 
+## **What problem does it solve**
+#### As I mention in the home page, Climate Change is shaping up to be one of the greatest threats to humanity, and scientists continue to issue grave warnings aout a very grim future if we continue on our current trajectory. When we first became aware about climate change and the devastating impacts it stands to have on the most vulnerable in the world, we looked to policy makers for guidance. We sat through COP conference after COP conference but policy moves slowly. Likely too slowly to enact the changes we need to make today to avoid the worrst impacts of climate change. Then we looked to big busines, but few were willing to step outside of the status quo they had established within the comfort of their profit margins. The people were angry at first, they marched, they listened to the dire warnings issued by the likes of David Attenborough and Jane Goodall, and felt a little powerless. It's my hope that Carbon Hero helps its users to feel a little more in control, to see a positive result every time they make a green decision. We can't wait for policy makers or businesses to fix this, but we can take matters into our own hands, and build the lives we're proud of.
+## **How does it work?**
+#### This web abb is built using Python, JavaScript, Flask, Bootstrap and some custom CSS and the Climatiq API. Users log in and are prompted to calculate their carbon footrpint - all other pages are disabled until the user completes the full questionnair consisting of three pages dedicated to three key areas of their life (home, transport and consumption.) The reason for this design is that these calculations are a necessary benchmark for tracking their carbon savings and financial savings. The calculator uses the Climatiq API for estimates. These estimates are broken down into categories in the helper file 
+* #### Impact by money
+* #### Impact by energy
+* #### Impact by distance
+* #### Impact by flights
+* #### Impact by number 
+* #### Impact by weight 
+#### For each API call Climatiq needs the following information:
+* #### emission_factor e.g energy used in kWh
+* #### activity_id e.g "electricity-energy_source_grid_mix" to calculate the impact of electricity generation in a particular state
+* #### region e.g "US-CA" - For Califonia, US
+#### Carbon Hero makes multiple API calls and parses the response using json queries to extract the data. A user's home questionnaire asks about electricity usage and would use the examples shown above to get a response from Climatiq's API. In some cases I had to do some math under the hood such as aggregating flight distances into short-haul, medium-haul and long-haul for simplicity. I have set those to average miles for each to simplify the API calls, and have provided examples of equivalent distances to the user in the calculator. One particular area which I labeled as a HACK is in the query about meat consumption. Climatiq's API categorizes this as an impact by money. I wanted to be able to challenge users to go one day of the week without meat, but in order to calculate the impact I had to set an average cost per dish, which meant making assumptions about the average portion size and average cost of that particular maet dish. All assumptions are noted in the comments and are likely going to be added to GitHub projects in the future to expand upon. 
+## Credits
+* ####  API [Climatiq](https://www.climatiq.io/)
+* #### Images from [Pexels](https://www.pexels.com) every aritst is credited in the respective template along with a link to their work
+* #### A map of the database (sqlite created during production) is available in Mermaid markup files. 
+* #### The login code and hash sequence was based of CS50x pset9- finance
+* ####  The Favicon is from Twemoji Twitter icons and has a full link to the license in the comments of the layout file
+* #### All icons are from Font Awesome
+## License
+#### This project is open sourced and is available to be forked on GitHub. If you have any questions, or requests, or would like to contribute, please let me know. I would be pleased to receive any feedback, suggestions or collaborate in the future. 
