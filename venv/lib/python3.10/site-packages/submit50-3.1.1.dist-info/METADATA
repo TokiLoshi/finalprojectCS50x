@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: submit50
+Version: 3.1.1
+Summary: This is submit50, with which you can submit solutions to problems for CS50.
+Home-page: https://github.com/cs50/submit50
+Author: CS50
+Author-email: sysadmins@cs50.harvard.edu
+License: GPLv3
+Keywords: submit,submit50
+Platform: UNKNOWN
+Classifier: Intended Audience :: Education
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Education
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6
+License-File: LICENSE
+Requires-Dist: lib50 (<4,>=3)
+Requires-Dist: requests (>=2.19)
+Requires-Dist: termcolor (>=1.1)
+
+UNKNOWN
+

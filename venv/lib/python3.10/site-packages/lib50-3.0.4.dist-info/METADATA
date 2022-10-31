@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: lib50
+Version: 3.0.4
+Summary: This is lib50, CS50's own internal library used in many of its tools.
+Home-page: https://github.com/cs50/lib50
+Author: CS50
+Author-email: sysadmins@cs50.harvard.edu
+License: GPLv3
+Keywords: lib50
+Platform: UNKNOWN
+Classifier: Intended Audience :: Education
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Education
+Classifier: Topic :: Utilities
+Requires-Python: >= 3.6
+License-File: LICENSE
+Requires-Dist: attrs (<21,>=18.1)
+Requires-Dist: pexpect (<5,>=4.6)
+Requires-Dist: pyyaml (<6,>=3.10)
+Requires-Dist: requests (<3,>=2.13)
+Requires-Dist: termcolor (<2,>=1.1)
+Requires-Dist: jellyfish (<1,>=0.7)
+Requires-Dist: cryptography (>=2.7)
+Provides-Extra: develop
+Requires-Dist: sphinx ; extra == 'develop'
+Requires-Dist: sphinx-autobuild ; extra == 'develop'
+Requires-Dist: sphinx-rtd-theme ; extra == 'develop'
+
+UNKNOWN
+
